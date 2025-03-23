@@ -1,14 +1,14 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import InfoPage from "@/Components/Partials/InfoPage";
 import Nav from "@/Components/Partials/Nav";
 import Sidebar from "@/Components/Partials/Sidebar";
-import Template from "@/Components/Partials/Template";
 
-function Home() {
+function Home({auth}) {
     return (
         <>
-            <Template sidebar={<Sidebar />} navbar={<Nav />} infoPage={<InfoPage />}>
-                
-            </Template>
+            <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
+            <h3>Hello world</h3>
+            </AuthenticatedLayout>
         </>
     );
 }
