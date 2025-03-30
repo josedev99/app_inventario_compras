@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('passwordShow',250);
             $table->string('categoria',50);
             $table->unsignedBigInteger('empresa_id')->nullable();
+            $table->unsignedBigInteger('sucursal_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
