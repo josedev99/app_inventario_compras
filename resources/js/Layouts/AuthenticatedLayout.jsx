@@ -5,7 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 
-export default function Authenticated({ user, sidebar, header, children }) {
+export default function Authenticated({ user,sidebar, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
@@ -18,9 +18,9 @@ export default function Authenticated({ user, sidebar, header, children }) {
                     <div className="main-header-logo">
                         {/* Logo Header */}
                         <div className="logo-header" data-background-color="dark">
-                            <a href="/" className="logo">
+                            <a href="index.html" className="logo">
                                 <img
-                                    src="/assets/img/kaiadmin/logo_light.svg"
+                                    src="assets/img/kaiadmin/logo_light.svg"
                                     alt="navbar brand"
                                     className="navbar-brand"
                                     height={20}
@@ -54,31 +54,33 @@ export default function Authenticated({ user, sidebar, header, children }) {
                         <nav className="pull-left">
                             <ul className="nav">
                                 <li className="nav-item">
-                                    <Link className="nav-link" href="http://www.themekita.com">
+                                    <a className="nav-link" href="http://www.themekita.com">
                                         ThemeKita
-                                    </Link>
+                                    </a>
                                 </li>
                                 <li className="nav-item">
-                                    <button className="nav-link btn btn-link" onClick={(e) => e.preventDefault()}>
-                                        Help
-                                    </button>
+                                    <a className="nav-link" href="#">
+                                        {" "}
+                                        Help{" "}
+                                    </a>
                                 </li>
                                 <li className="nav-item">
-                                    <button className="nav-link btn btn-link" onClick={(e) => e.preventDefault()}>
-                                        Licenses
-                                    </button>
+                                    <a className="nav-link" href="#">
+                                        {" "}
+                                        Licenses{" "}
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
                         <div className="copyright">
                             2024, made with <i className="fa fa-heart heart text-danger" /> by
-                            <Link href="http://www.themekita.com"> ThemeKita</Link>
+                            <a href="http://www.themekita.com">ThemeKita</a>
                         </div>
                         <div>
                             Distributed by
-                            <Link target="_blank" href="https://themewagon.com/">
+                            <a target="_blank" href="https://themewagon.com/">
                                 ThemeWagon
-                            </Link>
+                            </a>
                             .
                         </div>
                     </div>
