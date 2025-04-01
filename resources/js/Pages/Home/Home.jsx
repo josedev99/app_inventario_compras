@@ -4,12 +4,12 @@ import Nav from "@/Components/Partials/Nav";
 import Sidebar from "@/Components/Partials/Sidebar";
 import { Head } from '@inertiajs/react';
 
-function Home({auth}) {
+function Home({ auth }) {
     return (
         <>
             <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
-            <Head title="Inicio" />
-            <h3>Hello world</h3>
+                <Head title="Inicio" />
+                <h3>Hello world</h3>
             </AuthenticatedLayout>
         </>
     );

@@ -1,3 +1,6 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 function Nav() {
     return (
         <>
@@ -8,7 +11,7 @@ function Nav() {
                         <div className="input-group">
                             <div className="input-group-prepend">
                                 <button type="submit" className="btn btn-search pe-1">
-                                    <i className="fa fa-search search-icon" />
+                                    <i className="bi bi-search search-icon" />
                                 </button>
                             </div>
                             <input
@@ -28,7 +31,7 @@ function Nav() {
                                 aria-expanded="false"
                                 aria-haspopup="true"
                             >
-                                <i className="fa fa-search" />
+                                <i className="bi bi-search" />
                             </a>
                             <ul className="dropdown-menu dropdown-search animated fadeIn">
                                 <form className="navbar-left navbar-form nav-search">
@@ -52,7 +55,7 @@ function Nav() {
                                 aria-haspopup="true"
                                 aria-expanded="false"
                             >
-                                <i className="fa fa-envelope" />
+                                <i className="bi bi-envelope" />
                             </a>
                             <ul
                                 className="dropdown-menu messages-notif-box animated fadeIn"
@@ -117,7 +120,7 @@ function Nav() {
                                 <li>
                                     <a className="see-all" href="javascript:void(0);">
                                         See all messages
-                                        <i className="fa fa-angle-right" />
+                                        <i className="bi bi-envelope" />
                                     </a>
                                 </li>
                             </ul>
@@ -132,7 +135,7 @@ function Nav() {
                                 aria-haspopup="true"
                                 aria-expanded="false"
                             >
-                                <i className="fa fa-bell" />
+                                <i className="bi bi-bell" />
                                 <span className="notification">4</span>
                             </a>
                             <ul
@@ -187,7 +190,7 @@ function Nav() {
                                 <li>
                                     <a className="see-all" href="javascript:void(0);">
                                         See all notifications
-                                        <i className="fa fa-angle-right" />
+                                        <i className="bi bi-arrow-90deg-right" />
                                     </a>
                                 </li>
                             </ul>
@@ -199,7 +202,7 @@ function Nav() {
                                 href="#"
                                 aria-expanded="false"
                             >
-                                <i className="fas fa-layer-group" />
+                                <i className="bi bi-list" />
                             </a>
                             <div className="dropdown-menu quick-actions animated fadeIn">
                                 <div className="quick-actions-header">

@@ -1,3 +1,6 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 function Sidebar() {
     return (
         <>
@@ -32,10 +35,7 @@ function Sidebar() {
                     <div className="sidebar-content">
                         <ul className="nav nav-secondary">
                             <li className="nav-item active">
-                                <a data-bs-toggle="collapse"
-                                    href="#dashboard"
-                                    className="collapsed"
-                                    aria-expanded="false">
+                                <a data-bs-toggle="collapse" href="#dashboard" aria-expanded="false">
                                     <i className="bi bi-house-check-fill"></i>
                                     <p>Inicio</p>
                                     <span className="caret" />
@@ -51,19 +51,81 @@ function Sidebar() {
                                 </div>
                             </li>
                             <li className="nav-item">
-                                <a href="widgets.html">
-                                <i className="bi bi-graph-up-arrow"></i>
+                                <a data-bs-toggle="collapse" href="#sidebarLayouts">
+                                    <i className="bi bi-tags-fill" />
+                                    <p>Categorias</p>
+                                    <span className="caret" />
+                                </a>
+                                <div className="collapse" id="sidebarLayouts">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Categoría 1</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarProviders">
+                                    <i className="bi bi-shop" />
+                                    <p>Proveedores</p>
+                                    <span className="caret" />
+                                </a>
+                                <div className="collapse" id="sidebarProviders">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Proveedor 1</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarFinances">
+                                    <i className="bi bi-graph-up-arrow" />
                                     <p>Finanzas</p>
                                     <span className="badge badge-success">4</span>
                                 </a>
+                                <div className="collapse" id="sidebarFinances">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Reporte de Finanzas</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#base">
+                                <a data-bs-toggle="collapse" href="#sidebarInventarios">
+                                    <i className="bi bi-ui-checks" />
+                                    <p>Inventarios</p>
+                                    <span className="caret" />
+                                </a>
+                                <div className="collapse" id="sidebarInventarios">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Ingresos</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Salidas</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarPurchases">
                                     <i className="bi bi-bag-check" />
                                     <p>Compras</p>
                                     <span className="caret" />
                                 </a>
-                                <div className="collapse" id="base">
+                                <div className="collapse" id="sidebarPurchases">
                                     <ul className="nav nav-collapse">
                                         <li>
                                             <a href="components/avatars.html">
@@ -78,54 +140,73 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
+                            {/* Productos */}
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarLayouts">
+                                <a data-bs-toggle="collapse" href="#sidebarProducts">
                                     <i className="bi bi-box2-fill" />
                                     <p>Productos</p>
                                     <span className="caret" />
                                 </a>
-                            </li>
-                            <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#forms">
-                                    <i className="bi bi-ui-checks" />
-                                    <p>Inventario</p>
-                                    <span className="caret" />
-                                </a>
-                                <div className="collapse" id="forms">
+                                <div className="collapse" id="sidebarProducts">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="forms/forms.html">
-                                                <span className="sub-item">Ingresos</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="forms/forms.html">
-                                                <span className="sub-item">Salidas</span>
+                                            <a href="#">
+                                                <span className="sub-item">Producto 1</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
+                            {/* Sucursales */}
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#tables">
-                                    <i class="bi bi-house-add-fill"></i>
+                                <a data-bs-toggle="collapse" href="#sidebarBranches">
+                                    <i className="bi bi-house-add-fill" />
                                     <p>Sucursales</p>
                                     <span className="caret" />
                                 </a>
+                                <div className="collapse" id="sidebarBranches">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Sucursal 1</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
+                            {/* Empresas */}
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#charts">
-                                    <i class="bi bi-building-fill-check"></i>
+                                <a data-bs-toggle="collapse" href="#sidebarCompanies">
+                                    <i className="bi bi-building-fill-check" />
                                     <p>Empresas</p>
                                     <span className="caret" />
                                 </a>
+                                <div className="collapse" id="sidebarCompanies">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Empresa 1</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
+                            {/* Usuarios */}
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#maps">
+                                <a data-bs-toggle="collapse" href="#sidebarUsers">
                                     <i className="bi bi-people-fill" />
                                     <p>Usuarios</p>
                                     <span className="caret" />
                                 </a>
+                                <div className="collapse" id="sidebarUsers">
+                                    <ul className="nav nav-collapse">
+                                        <li>
+                                            <a href="#">
+                                                <span className="sub-item">Usuario 1</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     </div>
