@@ -24,7 +24,6 @@ class Producto extends Model
         'empresa_id',
         'sucursal_id',
         'user_id',
-        'proveedor_id',
         'categoria_id'
     ];
 

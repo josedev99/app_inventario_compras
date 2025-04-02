@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Categorias\CategoriaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,14 @@ Route::middleware('auth')->group(function () {
     /**parte para categorias */
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
     Route::post('/storeCategoria', [CategoriaController::class, 'storeCategoria'])->name('categoria.storeCategoria');
+});
+
+/**
+ * Routas para module productos
+ */
+Route::prefix('producto')->middleware('auth')->group(function () {
+    Route::get('/', [ProductoController::class, 'index'])->name('producto.index');
+    Route::post('/save', [ProductoController::class, 'save'])->name('producto.save');
 });
 
 

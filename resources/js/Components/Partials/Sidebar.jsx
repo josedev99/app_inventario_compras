@@ -149,9 +149,7 @@ function Sidebar() {
                                 <div className="collapse" id="sidebarProducts">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="#">
-                                                <span className="sub-item">Producto 1</span>
-                                            </a>
+                                            <Link href={route('producto.index')}><span className="sub-item">Gestionar productos</span></Link>
                                         </li>
                                     </ul>
                                 </div>
