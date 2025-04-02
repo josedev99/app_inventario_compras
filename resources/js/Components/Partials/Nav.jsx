@@ -1,6 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
 function Nav() {
     return (
         <>
@@ -280,7 +277,7 @@ function Nav() {
                                     />
                                 </div>
                                 <span className="profile-username">
-                                    <span className="op-7">Hi,</span>
+                                    <span className="op-7">Hola,</span>
                                     <span className="fw-bold">Hizrian</span>
                                 </span>
                             </a>

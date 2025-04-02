@@ -1,5 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { Link } from '@inertiajs/react';
 
 function Sidebar() {
     return (
@@ -53,15 +52,15 @@ function Sidebar() {
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarLayouts">
                                     <i className="bi bi-tags-fill" />
-                                    <p>Categorias</p>
+                                    <p>Categorías</p>
                                     <span className="caret" />
                                 </a>
                                 <div className="collapse" id="sidebarLayouts">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="#">
-                                                <span className="sub-item">Categoría 1</span>
-                                            </a>
+                                            <Link href={route('categorias.index')}>
+                                                <span className="sub-item">Categorías</span>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>

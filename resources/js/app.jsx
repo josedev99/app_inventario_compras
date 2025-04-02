@@ -1,8 +1,13 @@
-import './bootstrap';//axios library
+import './bootstrap'; /**Axios libreria */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import '../css/bootstrap/plugins.min.css';
 import '../css/bootstrap/kaiadmin.min.css';
+import '../js/core/jquery-3.7.1.min.js';
+import '../js/core/popper.min.js';
+import '../js/kaiadmin.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
