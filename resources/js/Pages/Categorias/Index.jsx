@@ -118,7 +118,7 @@ function Index({ auth, categorias, paginacion }) {
                         </div>
                         <div className="pagination mt-4">
                             <ul className="pagination justify-content-center">
-                                {/* Página Anterior */}
+                                {/* Pagina Anterior */}
                                 {paginacion.prev_page_url && (
                                     <li className="page-item">
                                         <a
@@ -130,7 +130,7 @@ function Index({ auth, categorias, paginacion }) {
                                     </li>
                                 )}
 
-                                {/* Páginas */}
+                                {/* Paginas */}
                                 {[...Array(paginacion.last_page)].map((_, i) => (
                                     <li
                                         key={i}
@@ -145,7 +145,7 @@ function Index({ auth, categorias, paginacion }) {
                                     </li>
                                 ))}
 
-                                {/* Página Siguiente */}
+                                {/* Pagina Siguiente */}
                                 {paginacion.next_page_url && (
                                     <li className="page-item">
                                         <a
