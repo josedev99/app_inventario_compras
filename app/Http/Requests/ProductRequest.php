@@ -21,7 +21,7 @@ class ProductRequest extends FormRequest
             'nombre' => 'required|string|max:255',
             'uMedida' => 'required|string|max:50',
             'costoUnit' => 'required|numeric|min:0|max:10000',
-            'categoria' => 'required',
+            'categoria_id' => 'required',
         ];
     }
 
@@ -45,7 +45,7 @@ class ProductRequest extends FormRequest
             'costoUnit.numeric' => 'El costo unitario debe ser un número.',
             'costoUnit.min' => 'El costo unitario no puede ser negativo.',
             'costoUnit.max' => 'El costo unitario no puede superar los 10,000.',
-            'categoria.required' => 'La categoría es obligatoria.'
+            'categoria_id.required' => 'La categoría es obligatoria.'
         ];
     }
 }

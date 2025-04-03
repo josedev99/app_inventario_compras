@@ -19,17 +19,28 @@ class ProductoController extends Controller
 
     public function save(ProductRequest $request){
         $userId = Auth::user()->id;
-        return request()->all();
+        $empresaId = Auth::user()->empresa_id;
+        $sucursalId = Auth::user()->sucursal_id;
         //En desarrollo
-        Producto::create([
+        $producto = Producto::create([
             'nombre' => $request['nombre'],
             'Umedida' => $request['uMedida'],
             'costo' => $request['costoUnit'],
             'codigo' => $request['codigo'],
-            'empresa_id' => 1,
-            'sucursal_id' => 1,
+            'empresa_id' => $empresaId,
+            'sucursal_id' => $sucursalId,
             'user_id' => $userId ,
-            'categoria_id' => $request['categoria']
+            'categoria_id' => $request['categoria_id']
         ]);
+
+        if ($producto) {
+            return back()->with('success','El producto se ha creado exitosamente.');
+        }
+        return back()->with('error','No se pudo crear el producto. Por favor, intenta de nuevo.');
+    }
+
+    public function getProductos(){
+        $productos = Producto::all();
+        return response()->json($productos);
     }
 }
