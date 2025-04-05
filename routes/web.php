@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Categorias\CategoriaController;
+use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
@@ -30,7 +31,19 @@ Route::middleware('auth')->group(function () {
     /**parte para categorias */
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
     Route::post('/storeCategoria', [CategoriaController::class, 'storeCategoria'])->name('categoria.storeCategoria');
+
+    /** Parte para empresas */
+    Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
+    Route::post('/storeEmpresa', [EmpresaController::class, 'store'])->name('empresa.store');
+    Route::put('/empresas/{id}', [EmpresaController::class, 'update'])->name('empresa.update');
+    Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('empresa.destroy');
+    Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
+    Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
+    
 });
+
+
+
 
 /**
  * Routas para module productos

@@ -181,13 +181,15 @@ function Sidebar() {
                                 <div className="collapse" id="sidebarCompanies">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="#">
-                                                <span className="sub-item">Empresa 1</span>
-                                            </a>
+                                            <Link href={route('empresas.index')}>
+                                                <span className="sub-item">Lista de Empresas</span>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
+
+
                             {/* Usuarios */}
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarUsers">
