@@ -5,73 +5,35 @@ import { Head } from '@inertiajs/react';
 import { Button, Card } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import FormProduct from './Modal/FormProduct';
-import { CDBCard, CDBCardBody, CDBDataTable, CDBContainer } from 'cdbreact';
 import axios from 'axios';
+import DataTable from 'datatables.net-react';
+import DT from 'datatables.net-bs5';
+import 'datatables.net-responsive-dt';
+import 'datatables.net-responsive-bs5';
+
+DataTable.use(DT);
 
 export default function Index({ auth, categorias }) {
     const [showModal, setShowModal] = useState(false);
     const [productos, setProductos] = useState([]);
 
-    const getProducts = () => {
-        axios.get(route('producto.all'))
-            .then((response) => {
-                setProductos(response.data);
-            }).catch((err) => {
-                console.log(err);
-            });
-    };
-
-    useEffect(() => {
-        getProducts();
-    }, []);
-
     const handleEdit = (id) => {
-        console.log(`Editar producto ID: ${id}`);
-        // Aquí puedes abrir un modal para editar
+        console.log('Editar producto con ID:', id);
+        // Aquí abrís el modal, cargás datos, etc.
+        setShowModal(true);
+        // Podés cargar datos por ID si querés
     };
-
+    
     const handleDelete = (id) => {
-        if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-            axios.delete(route('producto.delete', { id }))
-                .then(() => {
-                    getProducts();
-                }).catch((err) => {
-                    console.log(err);
-                });
-        }
-    };
-
-    const data = {
-        columns: [
-            { label: '#', field: 'id', width: 50, sort: 'asc' },
-            { label: 'Código', field: 'codigo', width: 100, sort: 'asc' },
-            { label: 'Nombre', field: 'nombre', width: 200, sort: 'asc' },
-            { label: 'Unidad de Medida', field: 'Umedida', width: 150, sort: 'asc' },
-            { label: 'Costo', field: 'costo', width: 100, sort: 'asc' },
-            { 
-                label: 'Acciones', 
-                field: 'acciones', 
-                width: 150, 
-                sort: 'disabled' 
-            }
-        ],
-        rows: productos.map((producto, index) => ({
-            id: index + 1,
-            codigo: producto.codigo,
-            nombre: producto.nombre,
-            Umedida: producto.Umedida,
-            costo: `$${parseFloat(producto.costo).toFixed(2)}`,
-            acciones: (
-                <>
-                    <Button variant="warning" size="sm" onClick={() => handleEdit(producto.id)}>
-                        <i className="bi bi-pencil"></i>
-                    </Button>{' '}
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(producto.id)}>
-                        <i className="bi bi-trash"></i>
-                    </Button>
-                </>
-            )
-        }))
+        if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    
+        axios.delete(route('producto.delete', id))
+            .then(() => {
+                $('.display').DataTable().ajax.reload(null, false); // Recargar tabla
+            })
+            .catch(err => {
+                console.error('Error al eliminar:', err);
+            });
     };
 
     return (
@@ -85,24 +47,77 @@ export default function Index({ auth, categorias }) {
                     </Button>
                 </Card.Header>
                 <Card.Body>
-                    <CDBContainer>
-                        <CDBCard>
-                            <CDBCardBody>
-                                <CDBDataTable
-                                    striped
-                                    bordered
-                                    hover
-                                    scrollY
-                                    maxHeight="50vh"
-                                    data={data}
-                                    searchTop={true} // Agrega esta línea
-                                    searchBottom={false} // Puedes cambiar a `true` si quieres la barra abajo
-                                    materialSearch
-                                    className="table-hover table-striped no-footer dtr-inline dataTable"
-                                />
-                            </CDBCardBody>
-                        </CDBCard>
-                    </CDBContainer>
+                    <DataTable
+                        className="display"
+                        options={{
+                            processing: true,
+                            serverSide: true,
+                            responsive: true,
+                            ajax: {
+                                url: route('producto.all'),
+                                type: 'GET',
+                            },
+                            columns: [
+                                {
+                                    data: null,
+                                    render: (data, type, row, meta) => meta.row + 1,
+                                    title: "#",
+                                },
+                                { data: 'codigo', title: 'Código',render: (data) => `<div class="text-center">${data}</div>` },
+                                { data: 'nombre', title: 'Nombre' },
+                                { data: 'unidad_medida', title: 'Unidad Medida' },
+                                { data: 'costo', title: 'Costo', render: (data) => `<div class="text-end">${data}</div>` },
+                                { data: 'categoria', title: 'Categoría' },
+                                {
+                                    data: null,
+                                    title: "Acciones",
+                                    orderable: false,
+                                    searchable: false,
+                                    render: function (data, type, row) {
+                                        return `
+                                            <div class="text-center">
+                                                <button class="btn btn-sm btn-outline-info btn-edit" data-id="${row.id}">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${row.id}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                    `;
+                                    }
+                                }
+                            ],
+                            drawCallback: function () {
+                                // Editar
+                                document.querySelectorAll('.btn-edit').forEach(btn => {
+                                  btn.addEventListener('click', (e) => {
+                                    console.log(e.currentTarget);
+                                    const id = e.currentTarget.getAttribute('data-id');
+                                    handleEdit(id); // Llama tu función de editar
+                                  });
+                                });
+                              
+                                // Eliminar
+                                document.querySelectorAll('.btn-delete').forEach(btn => {
+                                  btn.addEventListener('click', (e) => {
+                                    const id = e.currentTarget.getAttribute('data-id');
+                                    handleDelete(id); // Llama tu función de eliminar
+                                  });
+                                });
+                            }
+                        }}
+                    >
+                        <thead className='bg-dark text-light p-1 text-center'>
+                            <tr>
+                                <th>#</th>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Unidad Medida</th>
+                                <th>Costo</th>
+                                <th>Categoría</th>
+                            </tr>
+                        </thead>
+                    </DataTable>
                 </Card.Body>
             </Card>
         </AuthenticatedLayout>

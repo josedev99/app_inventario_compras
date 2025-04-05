@@ -34,13 +34,38 @@ class ProductoController extends Controller
         ]);
 
         if ($producto) {
-            return back()->with('success','El producto se ha creado exitosamente.');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'El producto se ha creado exitosamente.',
+                'producto' => $producto
+            ]);
         }
-        return back()->with('error','No se pudo crear el producto. Por favor, intenta de nuevo.');
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No se pudo crear el producto. Por favor, intenta de nuevo.'
+        ]);
     }
 
-    public function getProductos(){
+    public function getProductos(Request $request){
         $productos = Producto::all();
-        return response()->json($productos);
+        $data = $productos->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'empresa_id' => $producto->empresa_id,
+                'sucursal_id' => $producto->sucursal_id,
+                'codigo' => $producto->codigo,
+                'nombre' => $producto->nombre,
+                'unidad_medida' => $producto->Umedida,
+                'costo' => "$" . number_format($producto->costo, 2, '.', ''),
+                'categoria' => $producto->categoria->nombre ?? '',
+            ];
+        });
+    
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $data->count(),
+            'recordsFiltered' => $data->count(),
+            'data' => $data,
+        ]);
     }
 }

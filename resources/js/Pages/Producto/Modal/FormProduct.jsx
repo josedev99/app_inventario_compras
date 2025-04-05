@@ -17,25 +17,41 @@ export default function FormProduct({ title, showModal, setShowModal, producto =
             update(producto.id);
             return;
         }
-        console.log(data);
-        post(route('producto.save'), {
-            onSuccess: (response) => {
-                console.log(response);
+
+        axios.post(route('producto.save'),data)
+        .then((response)=>{
+            if(response.data.status){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Exito',
+                    text: response.data.message
+                })
                 reset();
-            },
-            onError: (errors) => {
-                console.log(errors);
-                // Mostrar el mensaje de error recibido del backend
+                setShowModal(false);
+                $(".display").DataTable().ajax.reload(null, false); // Recargar tabla
+            }else{
                 Swal.fire({
                     title: '¡Error!',
-                    text: errors.message || 'Hubo un problema al procesar la solicitud.',
+                    text: 'Hubo un problema al procesar la solicitud.',
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
-                setShowModal(true);
-            },
-            preserveState: false,
-        });
+            }
+            console.log(response)
+        }).catch(err => {
+            let errors = err.response?.data?.errors;
+            for (let [key, error] of Object.entries(errors)) {
+                console.log(key, error);
+                Swal.fire({
+                    title: '¡Error!',
+                    text: error[0],
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+            console.log();
+        })
     }
     return (
         <>
