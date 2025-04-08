@@ -24,9 +24,8 @@ export default function FormCategoria({ title, showModal, setShowModal }) {
                     });
                     reset();
                     setShowModal(false);
-                    // Recargar la tabla de categorías en el componente padre
                     if (typeof onCategoriaCreated === "function") {
-                        onCategoriaCreated(); // Esta función recargará las categorías
+                        onCategoriaCreated(); 
                     }
                 } else {
                     Swal.fire({

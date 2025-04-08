@@ -53,4 +53,27 @@ class CategoriaController extends Controller
         }
         abort(403, 'Solo se permite acceso AJAX');
     }
+
+    public function deleteCategoria($id)
+{
+    $categoria = Categoria::find($id);
+
+    if (!$categoria) {
+        return response()->json(['error' => 'Categoría no encontrada.'], 404);
+    }
+
+    if ($categoria->productos()->count() > 0) {
+        return response()->json(['error' => 'No se puede eliminar esta categoría porque tiene productos asociados.'], 400);
+    }
+
+
+    $categoria->delete();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'La categoría se ha eliminado exitosamente.',
+        'categoria' => $categoria
+    ]);
+}
+
 }

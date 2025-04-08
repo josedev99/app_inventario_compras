@@ -7,6 +7,7 @@ import { Button, Card, FormControl } from 'react-bootstrap';
 import FormCategoria from './Modal/FormCategoria';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 export default function Index({ auth }) {
@@ -15,9 +16,8 @@ export default function Index({ auth }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalRows, setTotalRows] = useState(0); // Guardar el total de registros
+    const [totalRows, setTotalRows] = useState(0);
 
-    // Función para obtener los datos con paginación
     const fetchCategorias = async () => {
         try {
             const response = await axios.get(route('categorias.all'), {
@@ -27,7 +27,7 @@ export default function Index({ auth }) {
                 },
             });
             setCategorias(response.data.data);
-            setTotalRows(response.data.total); // Guardar total de registros
+            setTotalRows(response.data.total);
         } catch (error) {
             console.error('Error al cargar las categorías:', error);
         }
@@ -37,13 +37,11 @@ export default function Index({ auth }) {
         fetchCategorias();
     }, [currentPage, perPage]);
 
-    // Filtrado de búsqueda
     const filteredCategorias = categorias.filter(categoria =>
         categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         categoria.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Columnas del DataTable
     const columns = [
         {
             name: '#',
@@ -83,11 +81,36 @@ export default function Index({ auth }) {
     };
 
     const handleDelete = (id) => {
-        if (window.confirm('¿Estás seguro de eliminar esta categoría?')) {
-            axios.delete(route('categoria.delete', id))
-                .then(() => fetchCategorias())
-                .catch(err => console.error('Error al eliminar:', err));
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('categoria.delete', id))
+                    .then(() => {
+                        Swal.fire(
+                            'Eliminado!',
+                            'La categoría ha sido eliminada.',
+                            'success'
+                        );
+                        fetchCategorias();
+                    })
+                    .catch(err => {
+                        console.error('Error al eliminar:', err);
+                        Swal.fire(
+                            'Error',
+                            'Hubo un problema al eliminar la categoría.',
+                            'error'
+                        );
+                    });
+            }
+        });
     };
 
     return (
@@ -125,7 +148,7 @@ export default function Index({ auth }) {
                             setCurrentPage(1);
                         }}
                         onChangePage={page => setCurrentPage(page)}
-                        paginationComponentOptions={{ noRowsPerPage: false }} // Asegura que se muestren números
+                        paginationComponentOptions={{ noRowsPerPage: false }}
                         responsive
                         highlightOnHover
                     />

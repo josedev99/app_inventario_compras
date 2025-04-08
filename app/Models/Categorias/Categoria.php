@@ -2,6 +2,7 @@
 
 namespace App\Models\Categorias;
 
+use App\Models\Productos\Producto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,5 +21,10 @@ class Categoria extends Model
     {
         $data = Categoria::select(['id', 'nombre', 'descripcion']);
         return  $data;
+    }
+
+    public function productos()
+    {
+        return $this->hasMany(Producto::class);
     }
 }
