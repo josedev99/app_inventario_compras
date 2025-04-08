@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
-export default function FormCategoria({ title, showModal, setShowModal }) {
+export default function FormCategoria({ title, showModal, setShowModal, onCategoriaCreated }) {
     const { data, setData, reset, processing } = useForm({
         nombre: '',
         descripcion: ''
@@ -12,7 +12,7 @@ export default function FormCategoria({ title, showModal, setShowModal }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-    
+
         axios.post(route('categoria.storeCategoria'), data)
             .then((response) => {
                 if (response.data.status && response.data.status.toLowerCase() === 'success') {
@@ -25,7 +25,7 @@ export default function FormCategoria({ title, showModal, setShowModal }) {
                     reset();
                     setShowModal(false);
                     if (typeof onCategoriaCreated === "function") {
-                        onCategoriaCreated(); 
+                        onCategoriaCreated(); // Recargar la tabla
                     }
                 } else {
                     Swal.fire({
@@ -58,7 +58,7 @@ export default function FormCategoria({ title, showModal, setShowModal }) {
                 }
             });
     };
-    
+
     return (
         <Modal
             size="lg"
