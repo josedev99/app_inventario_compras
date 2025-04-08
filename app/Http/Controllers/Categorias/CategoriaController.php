@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Categorias\Categoria;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Psy\CodeCleaner\ReturnTypePass;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoriaController extends Controller
 {
@@ -36,6 +36,21 @@ class CategoriaController extends Controller
 
         $categoria->save();
 
-        return response()->json(['success' => 'La categoria se agrego correctamente']);
+        return  response()->json([
+            'status' => 'success',
+            'message' => 'la categoria se ha creado exitosamente.',
+            'categoria' => $categoria
+        ]);
+    }
+
+    public function getCategorias(Request $request)
+    {
+        if ($request->ajax()) {
+            $categorias = Categoria::getCategories();
+            return DataTables::of($categorias)
+                ->addIndexColumn()
+                ->make(true);
+        }
+        abort(403, 'Solo se permite acceso AJAX');
     }
 }

@@ -15,4 +15,10 @@ class Categoria extends Model
         'nombre',
         'descripcion',
     ];
+
+    public static function getCategories()
+    {
+        $data = Categoria::select(['id', 'nombre', 'descripcion']);
+        return  $data;
+    }
 }

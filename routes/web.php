@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     /**parte para categorias */
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
     Route::post('/storeCategoria', [CategoriaController::class, 'storeCategoria'])->name('categoria.storeCategoria');
+    Route::get('/obtener-categorias', [CategoriaController::class, 'getCategorias'])->name('categorias.all');
 
     /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
