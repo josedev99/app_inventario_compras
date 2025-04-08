@@ -5,6 +5,7 @@ use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,7 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('empresa.destroy');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
-    
 });
 
 
@@ -52,6 +52,13 @@ Route::prefix('producto')->middleware('auth')->group(function () {
     Route::get('/', [ProductoController::class, 'index'])->name('producto.index');
     Route::post('/save', [ProductoController::class, 'save'])->name('producto.save');
     Route::get('/obtener-productos', [ProductoController::class, 'getProductos'])->name('producto.all');
+});
+
+/**
+ * Routas para usuarios
+*/
+Route::prefix('usuarios')->middleware('auth')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('user.index');
 });
 
 

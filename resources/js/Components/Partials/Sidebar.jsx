@@ -200,9 +200,9 @@ function Sidebar() {
                                 <div className="collapse" id="sidebarUsers">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="#">
-                                                <span className="sub-item">Usuario 1</span>
-                                            </a>
+                                            <Link href={route('user.index')}>
+                                                <span className="sub-item">Gestion de usuarios</span>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
