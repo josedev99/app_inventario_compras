@@ -93,25 +93,33 @@ export default function Index({ auth }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.delete(route('categoria.delete', id))
-                    .then(() => {
+                    .then((response) => {
                         Swal.fire(
                             'Eliminado!',
-                            'La categoría ha sido eliminada.',
+                            response.data.success || 'La categoría ha sido eliminada.',
                             'success'
                         );
                         fetchCategorias();
                     })
-                    .catch(err => {
-                        console.error('Error al eliminar:', err);
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema al eliminar la categoría.',
-                            'error'
-                        );
+                    .catch((err) => {
+                        if (err.response && err.response.data.error) {
+                            Swal.fire(
+                                'Error',
+                                err.response.data.error,
+                                'error'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                'Hubo un problema al eliminar la categoría.',
+                                'error'
+                            );
+                        }
                     });
             }
         });
     };
+
 
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
