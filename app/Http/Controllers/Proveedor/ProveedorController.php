@@ -79,4 +79,22 @@ class ProveedorController extends Controller
             'message' => 'Algo salió mal al actualizar el proveedor.'
         ], 500);
     }
+
+    public function deleteProveedor($id)
+    {
+        $proveedor = Proveedor::find($id);
+
+        if (!$proveedor) {
+            return response()->json(['error' => 'Proveedor no encontrado.'], 404);
+        }
+
+
+        $proveedor->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'La categoría se ha eliminado exitosamente.',
+            'proveedor' => $proveedor
+        ]);
+    }
 }

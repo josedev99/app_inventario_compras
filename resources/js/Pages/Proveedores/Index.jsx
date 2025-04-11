@@ -82,7 +82,7 @@ export default function Index({ auth }) {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(route('proveedores.delete', id))
+                axios.delete(route('proveedor.deleteProveedor', id))
                     .then((response) => {
                         Swal.fire(
                             'Eliminado!',

@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/obtener-proveedores', [ProveedorController::class, 'getProveedores'])->name('proveedores.all');
     Route::post('/store/proveedor', [ProveedorController::class, 'storeProveedor'])->name('proveedor.store');
     Route::post('/update/proveedor/{id}', [ProveedorController::class, 'updateProveedor'])->name('proveedor.updateProveedor');
+    Route::delete('/proveedor/delete/{id}', [ProveedorController::class, 'deleteProveedor'])->name('proveedor.deleteProveedor');
 
     /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');

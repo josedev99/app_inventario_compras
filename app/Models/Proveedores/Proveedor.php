@@ -2,6 +2,7 @@
 
 namespace App\Models\Proveedores;
 
+use App\Models\Productos\Producto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
