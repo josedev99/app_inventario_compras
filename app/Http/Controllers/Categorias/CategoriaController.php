@@ -12,11 +12,7 @@ class CategoriaController extends Controller
 {
     public function index()
     {
-        $categorias = Categoria::orderBy('id', 'asc')->paginate(5);
-        return Inertia::render('Categorias/Index', [
-            'categorias' => $categorias->items(),
-            'paginacion' => $categorias
-        ]);
+        return Inertia::render('Categorias/Index');
     }
 
     public function storeCategoria(Request $request)
@@ -52,6 +48,27 @@ class CategoriaController extends Controller
                 ->make(true);
         }
         abort(403, 'Solo se permite acceso AJAX');
+    }
+
+    public function updateCategoria(Request $request, $id)
+    {
+        $categoria = Categoria::find($id);
+        if (!$categoria) {
+            return response()->json(['error' => 'No se encontro la categoria que quieres actualizar'], 422);
+        }
+
+        $categoria->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion
+        ]);
+
+        if ($categoria) {
+            return   response()->json([
+                'status' => 'success',
+                'message' => 'la categoria se ha actualizo exitosamente.',
+                'categoria' => $categoria
+            ]);
+        }
     }
 
     public function deleteCategoria($id)
