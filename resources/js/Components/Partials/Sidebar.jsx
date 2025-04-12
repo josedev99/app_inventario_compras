@@ -154,23 +154,7 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
-                            {/* Sucursales */}
-                            <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarBranches">
-                                    <i className="bi bi-house-add-fill" />
-                                    <p>Sucursales</p>
-                                    <span className="caret" />
-                                </a>
-                                <div className="collapse" id="sidebarBranches">
-                                    <ul className="nav nav-collapse">
-                                        <li>
-                                            <a href="#">
-                                                <span className="sub-item">Sucursal 1</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                            
                             {/* Empresas */}
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarCompanies">

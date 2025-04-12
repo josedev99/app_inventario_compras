@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Sursales;
+namespace App\Models\Sucursales;
 
 use App\Models\Empresa\Empresa;
 use App\Models\User;
@@ -25,11 +25,14 @@ class Sucursal extends Model
         'user_id',
     ];
 
-    public function empresas(){
+    // Relación con la empresa (singular)
+    public function empresa()
+    {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function users()
+    // Relación con el usuario (singular)
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
