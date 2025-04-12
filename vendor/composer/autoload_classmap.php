@@ -49,7 +49,11 @@ return array(
     'App\\Models\\Inventarios\\Inventario' => $baseDir . '/app/Models/Inventarios/Inventario.php',
     'App\\Models\\Productos\\Producto' => $baseDir . '/app/Models/Productos/Producto.php',
     'App\\Models\\Proveedores\\Proveedor' => $baseDir . '/app/Models/Proveedores/Proveedor.php',
+<<<<<<< HEAD
     'App\\Models\\Sucursales\\Sucursal' => $baseDir . '/app/Models/Sucursales/Sucursal.php',
+=======
+    'App\\Models\\Sursales\\Sucursal' => $baseDir . '/app/Models/Sursales/Sucursal.php',
+>>>>>>> 5aac51f1c78cdd9ca8cc6b7676a10278c9c0f83d
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
@@ -6196,5 +6200,21 @@ return array(
     'Whoops\\Util\\Misc' => $vendorDir . '/filp/whoops/src/Whoops/Util/Misc.php',
     'Whoops\\Util\\SystemFacade' => $vendorDir . '/filp/whoops/src/Whoops/Util/SystemFacade.php',
     'Whoops\\Util\\TemplateHelper' => $vendorDir . '/filp/whoops/src/Whoops/Util/TemplateHelper.php',
+    'Yajra\\DataTables\\ApiResourceDataTable' => $vendorDir . '/yajra/laravel-datatables-oracle/src/ApiResourceDataTable.php',
+    'Yajra\\DataTables\\CollectionDataTable' => $vendorDir . '/yajra/laravel-datatables-oracle/src/CollectionDataTable.php',
+    'Yajra\\DataTables\\Contracts\\DataTable' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Contracts/DataTable.php',
+    'Yajra\\DataTables\\Contracts\\Formatter' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Contracts/Formatter.php',
+    'Yajra\\DataTables\\DataTableAbstract' => $vendorDir . '/yajra/laravel-datatables-oracle/src/DataTableAbstract.php',
+    'Yajra\\DataTables\\DataTables' => $vendorDir . '/yajra/laravel-datatables-oracle/src/DataTables.php',
+    'Yajra\\DataTables\\DataTablesServiceProvider' => $vendorDir . '/yajra/laravel-datatables-oracle/src/DataTablesServiceProvider.php',
+    'Yajra\\DataTables\\EloquentDataTable' => $vendorDir . '/yajra/laravel-datatables-oracle/src/EloquentDataTable.php',
+    'Yajra\\DataTables\\Exceptions\\Exception' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Exceptions/Exception.php',
+    'Yajra\\DataTables\\Facades\\DataTables' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Facades/DataTables.php',
+    'Yajra\\DataTables\\Processors\\DataProcessor' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Processors/DataProcessor.php',
+    'Yajra\\DataTables\\Processors\\RowProcessor' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Processors/RowProcessor.php',
+    'Yajra\\DataTables\\QueryDataTable' => $vendorDir . '/yajra/laravel-datatables-oracle/src/QueryDataTable.php',
+    'Yajra\\DataTables\\Utilities\\Config' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Utilities/Config.php',
+    'Yajra\\DataTables\\Utilities\\Helper' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Utilities/Helper.php',
+    'Yajra\\DataTables\\Utilities\\Request' => $vendorDir . '/yajra/laravel-datatables-oracle/src/Utilities/Request.php',
     'voku\\helper\\ASCII' => $vendorDir . '/voku/portable-ascii/src/voku/helper/ASCII.php',
 );
