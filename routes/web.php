@@ -53,7 +53,9 @@ Route::middleware('auth')->group(function () {
 Route::prefix('producto')->middleware('auth')->group(function () {
     Route::get('/', [ProductoController::class, 'index'])->name('producto.index');
     Route::post('/save', [ProductoController::class, 'save'])->name('producto.save');
-    Route::get('/obtener-productos', [ProductoController::class, 'getProductos'])->name('producto.all');
+    Route::get('/obtener-productos', [ProductoController::class, 'getProducosAll'])->name('producto.all');
+    Route::post('/actualizar-producto', [ProductoController::class, 'update'])->name('producto.update');
+    Route::post('/eliminar', [ProductoController::class, 'destroy'])->name('producto.destroy');
 });
 /**
  * Routas para usuarios
