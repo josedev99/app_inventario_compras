@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import React from 'react'
 import { Form, Modal } from 'react-bootstrap'
 import Swal from 'sweetalert2';
+import Select from 'react-select';
 
 export default function FormProduct({ title, showModal, setShowModal, producto = {}, categorias }) {
     const { data, post, patch, errors, reset, setData, processing } = useForm({
@@ -73,27 +74,26 @@ export default function FormProduct({ title, showModal, setShowModal, producto =
                             <div className="card-body p-1">
                                 <div className="row">
                                     <div className="col-sm-12 col-md-4">
-
                                         <div className="form-group mb-1 p-1">
                                             <label className='m-0' htmlFor="codigo">Código</label>
-                                            <input type="text" id='codigo' className='form-control' value={data.codigo} onChange={(e) => setData('codigo', e.target.value)} />
+                                            <input type="text" className='form-control' value={data.codigo} onChange={(e) => setData('codigo', e.target.value)} />
                                         </div>
                                     </div>
                                     <div className="col-sm-12 col-md-8">
                                         <div className="form-group mb-1 p-1">
-                                            <label className='m-0' htmlFor="codigo">Nombre</label>
+                                            <label className='m-0' htmlFor="nombre">Nombre</label>
                                             <input type="text" className='form-control' value={data.nombre} onChange={(e) => setData('nombre', e.target.value)} />
                                         </div>
                                     </div>
                                     <div className="col-sm-12 col-md-4">
                                         <div className="form-group mb-1 p-1">
-                                            <label className='m-0' htmlFor="codigo">Unidad de medida</label>
+                                            <label className='m-0' htmlFor="uMedida">Unidad de medida</label>
                                             <input type="text" className='form-control' value={data.uMedida} onChange={(e) => setData('uMedida', e.target.value)} />
                                         </div>
                                     </div>
                                     <div className="col-sm-12 col-md-4">
                                         <div className="form-group mb-1 p-1">
-                                            <label className='m-0' htmlFor="codigo">Costo unitario</label>
+                                            <label className='m-0' htmlFor="costo_unit">Costo unitario</label>
                                             <input type="number" step={'0.01'} min={'0'} max={'10000'} className='form-control' value={data.costoUnit} onChange={(e) => setData('costoUnit', e.target.value)} />
                                         </div>
                                     </div>
@@ -111,6 +111,19 @@ export default function FormProduct({ title, showModal, setShowModal, producto =
                                                     </option>
                                                 ))}
                                             </select>
+                                            <Select
+                                                value={data.categoria ? { value: data.categoria, label: data.categoria } : null}
+                                                onChange={(selectedOption) => setData('categoria', selectedOption ? selectedOption.value : '')} // Asegúrate de actualizar correctamente
+                                                options={[
+                                                    { value: 'Bodega', label: 'Bodega' },
+                                                    { value: 'Compra', label: 'Compra' },
+                                                    { value: 'Finanza', label: 'Finanza' },
+                                                ]}
+                                                className="basic-single"
+                                                classNamePrefix="Seleccionar"
+                                                isClearable
+                                                isSearchable
+                                            />
                                         </div>
                                     </div>
                                 </div>

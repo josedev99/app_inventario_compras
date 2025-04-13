@@ -24,6 +24,7 @@ return array(
     'App\\Http\\Controllers\\Producto\\ProductoController' => $baseDir . '/app/Http/Controllers/Producto/ProductoController.php',
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
     'App\\Http\\Controllers\\Sucursales\\SucursalController' => $baseDir . '/app/Http/Controllers/Sucursales/SucursalController.php',
+    'App\\Http\\Controllers\\UserController' => $baseDir . '/app/Http/Controllers/UserController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
@@ -49,11 +50,7 @@ return array(
     'App\\Models\\Inventarios\\Inventario' => $baseDir . '/app/Models/Inventarios/Inventario.php',
     'App\\Models\\Productos\\Producto' => $baseDir . '/app/Models/Productos/Producto.php',
     'App\\Models\\Proveedores\\Proveedor' => $baseDir . '/app/Models/Proveedores/Proveedor.php',
-<<<<<<< HEAD
     'App\\Models\\Sucursales\\Sucursal' => $baseDir . '/app/Models/Sucursales/Sucursal.php',
-=======
-    'App\\Models\\Sursales\\Sucursal' => $baseDir . '/app/Models/Sursales/Sucursal.php',
->>>>>>> 5aac51f1c78cdd9ca8cc6b7676a10278c9c0f83d
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',

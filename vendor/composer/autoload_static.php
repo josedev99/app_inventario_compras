@@ -573,6 +573,7 @@ class ComposerStaticInit9c491b8531eec05ba41a11d9276a5749
         'App\\Http\\Controllers\\Producto\\ProductoController' => __DIR__ . '/../..' . '/app/Http/Controllers/Producto/ProductoController.php',
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\Sucursales\\SucursalController' => __DIR__ . '/../..' . '/app/Http/Controllers/Sucursales/SucursalController.php',
+        'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
@@ -598,11 +599,7 @@ class ComposerStaticInit9c491b8531eec05ba41a11d9276a5749
         'App\\Models\\Inventarios\\Inventario' => __DIR__ . '/../..' . '/app/Models/Inventarios/Inventario.php',
         'App\\Models\\Productos\\Producto' => __DIR__ . '/../..' . '/app/Models/Productos/Producto.php',
         'App\\Models\\Proveedores\\Proveedor' => __DIR__ . '/../..' . '/app/Models/Proveedores/Proveedor.php',
-<<<<<<< HEAD
         'App\\Models\\Sucursales\\Sucursal' => __DIR__ . '/../..' . '/app/Models/Sucursales/Sucursal.php',
-=======
-        'App\\Models\\Sursales\\Sucursal' => __DIR__ . '/../..' . '/app/Models/Sursales/Sucursal.php',
->>>>>>> 5aac51f1c78cdd9ca8cc6b7676a10278c9c0f83d
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

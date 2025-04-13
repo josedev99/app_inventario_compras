@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresa\Empresa;
-use App\Models\Sursales\Sucursal;
+use App\Models\Sucursales\Sucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;

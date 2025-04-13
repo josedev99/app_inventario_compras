@@ -17,7 +17,7 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
         empresa_id: user?.empresa_id,
         sucursal_id: user?.sucursal_id,
     });
-    const [allSucursales, setSucursales] = useState(sucursales);
+    const [allSucursales, setSucursales] = useState([]);
     const handleSubmit = (e) => {
         e.preventDefault();
         if (user?.id) {
@@ -60,6 +60,10 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                 console.log();
             })
     }
+    useEffect(()=>{
+        setSucursales(sucursales)
+    },[]);
+
     useEffect(() => {
         if (data.empresa_id) {
             console.log("empresa_id seleccionado:", data.empresa_id);

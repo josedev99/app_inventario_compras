@@ -5,11 +5,8 @@ use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
-<<<<<<< HEAD
 use App\Http\Controllers\Sucursales\SucursalController; 
-=======
 use App\Http\Controllers\UserController;
->>>>>>> 5aac51f1c78cdd9ca8cc6b7676a10278c9c0f83d
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,18 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/storeEmpresa', [EmpresaController::class, 'store'])->name('empresa.store');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update'])->name('empresa.update');
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('empresa.destroy');
-<<<<<<< HEAD
-
     // Sucursales: Esta ruta se usará para la creación de sucursales desde el modal
     Route::get('/sucursales', [SucursalController::class, 'index']);
     Route::post('/sucursales', [SucursalController::class, 'store'])->name('sucursal.store');
     Route::get('/sucursales/create', [SucursalController::class, 'create'])->name('sucursal.create');
-
-
-=======
     Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
->>>>>>> 5aac51f1c78cdd9ca8cc6b7676a10278c9c0f83d
 });
 
 /**
@@ -64,9 +55,6 @@ Route::prefix('producto')->middleware('auth')->group(function () {
     Route::post('/save', [ProductoController::class, 'save'])->name('producto.save');
     Route::get('/obtener-productos', [ProductoController::class, 'getProductos'])->name('producto.all');
 });
-
-<<<<<<< HEAD
-=======
 /**
  * Routas para usuarios
 */
@@ -74,7 +62,4 @@ Route::prefix('usuarios')->middleware('auth')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/obtener-usuarios', [UserController::class, 'getUsersAll'])->name('usuario.all');
 });
-
-
->>>>>>> 5aac51f1c78cdd9ca8cc6b7676a10278c9c0f83d
 require __DIR__.'/auth.php';
