@@ -107,7 +107,6 @@ export default function FormProduct({ title, showModal, setShowModal, producto =
                 });
                 return;
             }
-            console.log();
         })
     }
     return (

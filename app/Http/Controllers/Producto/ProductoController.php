@@ -50,9 +50,10 @@ class ProductoController extends Controller
     }
 
     public function getProducosAll(Request $request){
-
+        $empresaId = Auth::user()->empresa_id;
         $productos = DB::table('productos as p')
         ->leftJoin('categorias as c', 'p.categoria_id', '=', 'c.id')
+        ->where('p.empresa_id', $empresaId)
         ->select(
             'p.id',
             'p.codigo',

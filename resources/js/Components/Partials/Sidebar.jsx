@@ -50,22 +50,6 @@ function Sidebar() {
                                 </div>
                             </li>
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarLayouts">
-                                    <i className="bi bi-tags-fill" />
-                                    <p>Categorías</p>
-                                    <span className="caret" />
-                                </a>
-                                <div className="collapse" id="sidebarLayouts">
-                                    <ul className="nav nav-collapse">
-                                        <li>
-                                            <Link href={route('categorias.index')}>
-                                                <span className="sub-item">Categorías</span>
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarProviders">
                                     <i className="bi bi-shop" />
                                     <p>Proveedores</p>
@@ -150,6 +134,11 @@ function Sidebar() {
                                     <ul className="nav nav-collapse">
                                         <li>
                                             <Link href={route('producto.index')}><span className="sub-item">Gestionar productos</span></Link>
+                                        </li>
+                                        <li>
+                                            <Link href={route('categorias.index')}>
+                                                <span className="sub-item">Categorías</span>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>

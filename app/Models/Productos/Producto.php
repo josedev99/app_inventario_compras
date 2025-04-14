@@ -5,7 +5,7 @@ namespace App\Models\Productos;
 use App\Models\Categorias\Categoria;
 use App\Models\Empresa\Empresa;
 use App\Models\Proveedores\Proveedor;
-use App\Models\Sursales\Sucursal;
+use App\Models\Sucursales\Sucursal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { useEffect,useState } from 'react';
 
-export default function FormUser({ title, showModal, setShowModal, user = {}, empresas = [], sucursales = [] }) {
+export default function FormUser({ title, showModal, setShowModal, user = {}, empresas = [], sucursales = [], editing, setReloadDt }) {
     const { data, post, patch, errors, reset, setData, processing } = useForm({
         nombre: user?.nombre,
         direccion: user?.direccion,
@@ -17,7 +17,33 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
         empresa_id: user?.empresa_id,
         sucursal_id: user?.sucursal_id,
     });
-    const [allSucursales, setSucursales] = useState([]);
+    useEffect(() => {
+        if (user && Object.keys(user).length > 0) {
+            const nuevoData = {
+                nombre: user.nombre || '',
+                direccion: user.direccion || '',
+                telefono: user.telefono || '',
+                email: user.email || '',
+                usuario: user.usuario || '',
+                password: user.password || '',
+                categoria: user.categoria || '',
+                empresa_id: user.empresa_id || '',
+                sucursal_id: user.sucursal_id || ''
+            };
+    
+            if (JSON.stringify(data) !== JSON.stringify(nuevoData)) {
+                setData(nuevoData);
+            }
+        }
+    }, [user]);
+    const [sucursalesEmpresa, setSucursalesEmpresa] = useState([]);
+    const handleEventEmpresa = (empresa_id) => {
+        let filter_sucursales = sucursales.filter((sucursal)=> parseInt(sucursal.empresa_id) === parseInt(empresa_id))
+        setSucursalesEmpresa(filter_sucursales);
+    }
+    const update = (id) => {
+
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         if (user?.id) {
@@ -35,17 +61,18 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                     })
                     reset();
                     setShowModal(false);
-                    $(".display").DataTable().ajax.reload(null, false); // Recargar tabla
+                    setReloadDt(true);
                 } else {
                     Swal.fire({
                         title: '¡Error!',
-                        text: 'Hubo un problema al procesar la solicitud.',
+                        text: response.data.message,
                         icon: 'error',
                         confirmButtonText: 'Aceptar'
                     });
                 }
                 console.log(response)
             }).catch(err => {
+                console.log(err);
                 let errors = err.response?.data?.errors;
                 for (let [key, error] of Object.entries(errors)) {
                     console.log(key, error);
@@ -57,30 +84,9 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                     });
                     return;
                 }
-                console.log();
             })
     }
-    useEffect(()=>{
-        setSucursales(sucursales)
-    },[]);
 
-    useEffect(() => {
-        if (data.empresa_id) {
-            console.log("empresa_id seleccionado:", data.empresa_id);
-    
-            // Filtra las sucursales según la empresa seleccionada
-            const filteredSucursales = allSucursales.filter((sucursal) => {
-                console.log(`Comparando: ${sucursal.empresa_id} con ${data.empresa_id}`);
-                return parseInt(sucursal.empresa_id) === parseInt(data.empresa_id);
-            });
-    
-            console.log("Sucursales filtradas:", filteredSucursales);
-            setSucursales(filteredSucursales);  // Actualiza el estado de sucursales disponibles
-        } else {
-            console.log("No se ha seleccionado empresa, limpiando las sucursales.");
-            setSucursales([]);  // Si no hay empresa seleccionada, limpia las sucursales
-        }
-    }, [data.empresa_id]);
     return (
         <>
             <Modal
@@ -166,7 +172,10 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                                                 value={data.empresa_id ?
                                                     { value: data.empresa_id, label: empresas.find(empresa => empresa.id === data.empresa_id)?.nombre }
                                                     : null}
-                                                onChange={(selectedOption) => setData('empresa_id', selectedOption ? selectedOption.value : '')} // Actualiza correctamente
+                                                onChange={(selectedOption) => {
+                                                    setData('empresa_id', selectedOption ? selectedOption.value : '');
+                                                    handleEventEmpresa(selectedOption.value)
+                                                }} // Actualiza correctamente
                                                 options={empresas.map((empresa) => ({
                                                     value: empresa.id,
                                                     label: empresa.nombre,
@@ -184,10 +193,10 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                                             <label className='m-0' htmlFor="sucursal_id">Sucursal</label>
                                             <Select
                                                 value={data.sucursal_id ?
-                                                    { value: data.sucursal_id, label: allSucursales.find(sucursal => sucursal.id === data.sucursal_id)?.nombre }
+                                                    { value: data.sucursal_id, label: sucursalesEmpresa.find(sucursal => parseInt(sucursal.id) === parseInt(data.sucursal_id))?.nombre }
                                                     : null}
                                                 onChange={(selectedOption) => setData('sucursal_id', selectedOption ? selectedOption.value : '')} // Actualiza correctamente
-                                                options={allSucursales.map((sucursal) => ({
+                                                options={sucursalesEmpresa.map((sucursal) => ({
                                                     value: sucursal.id,
                                                     label: sucursal.nombre,
                                                 }))}

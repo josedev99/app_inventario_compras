@@ -63,5 +63,6 @@ Route::prefix('producto')->middleware('auth')->group(function () {
 Route::prefix('usuarios')->middleware('auth')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/obtener-usuarios', [UserController::class, 'getUsersAll'])->name('usuario.all');
+    Route::post('/guardar', [UserController::class, 'save'])->name('user.save');
 });
 require __DIR__.'/auth.php';

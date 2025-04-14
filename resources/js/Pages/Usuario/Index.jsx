@@ -8,13 +8,18 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import FormUser from './Components/FormUser';
 
-export default function Index({ auth, empresas,sucursales }) {
+export default function Index({ auth, dataEmpresas,dataSucursales }) {
     const [users, setUsers] = useState([]);
+    const [user, setUser] = useState({});
+    const [empresas, setEmpresas] = useState([]);
+    const [sucursales,setSucursales] = useState([]);
     const [totalRows, setTotalRows] = useState(0);
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [reloadDt,setReloadDt] = useState(false);
+    const [editing,setEditing] = useState(false);
 
     const fetchUsers = async (page = 1, perPage = 10, search = '') => {
         const start = (page - 1) * perPage;
@@ -28,9 +33,6 @@ export default function Index({ auth, empresas,sucursales }) {
                     'search[value]': search,
                 },
             });
-
-            console.log(response.data);
-
             setUsers(response.data.data);
             setTotalRows(response.data.recordsTotal);
             setCurrentPage(page);
@@ -41,7 +43,10 @@ export default function Index({ auth, empresas,sucursales }) {
 
     useEffect(() => {
         fetchUsers(currentPage, perPage, searchTerm);
-    }, []);
+        setEmpresas(dataEmpresas);
+        setSucursales(dataSucursales);
+        setReloadDt(false);
+    }, [reloadDt]);
 
     const handlePageChange = page => {
         fetchUsers(page, perPage, searchTerm);
@@ -59,7 +64,10 @@ export default function Index({ auth, empresas,sucursales }) {
     };
 
     const handleEdit = id => {
-        console.log("Editar usuario con ID:", id);
+        let userFind = users.find((item)=>parseInt(item.id) === parseInt(id));
+        setUser(userFind);
+        setShowModal(true);
+        setEditing(true);
     };
 
     const handleDelete = id => {
@@ -107,10 +115,18 @@ export default function Index({ auth, empresas,sucursales }) {
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Usuarios" />
-            <FormUser title="Registrar nuevo usuario" showModal={showModal} setShowModal={setShowModal} empresas={empresas} sucursales={sucursales} />
+            {
+                editing ?
+                <FormUser title="Registrar nuevo usuario" user={user} showModal={showModal} setShowModal={setShowModal} editing={editing} setReloadDt={setReloadDt} empresas={empresas} sucursales={sucursales} />
+                :
+                <FormUser title="Registrar nuevo usuario" showModal={showModal} setShowModal={setShowModal} editing={editing} setReloadDt={setReloadDt} empresas={empresas} sucursales={sucursales} />
+            }
             <Card>
                 <Card.Header className="d-flex justify-content-between align-items-center">
-                    <Button variant='outline-success' size='sm' onClick={() => setShowModal(true)}>
+                    <Button variant='outline-success' size='sm' onClick={() => {
+                        setShowModal(true);
+                        setEditing(false);
+                    }}>
                         <i className="bi bi-plus-circle"></i> Nuevo usuario
                     </Button>
 
