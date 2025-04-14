@@ -4,39 +4,37 @@ import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
-export default function FormCategoria({
+export default function FormProveedor({
     title,
     showModal,
     setShowModal,
-    onCategoriaCreated,
+    onProveedorCreated,
     editMode = false,
-    categoriaToEdit = null,
+    proveedorToEdit = null,
     onClose
 }) {
     const { data, setData, reset, processing } = useForm({
-        nombre: '',
-        descripcion: ''
+        nombre: ''
     });
 
     useEffect(() => {
-        if (editMode && categoriaToEdit) {
+        if (editMode && proveedorToEdit) {
             setData({
-                nombre: categoriaToEdit.nombre || '',
-                descripcion: categoriaToEdit.descripcion || ''
+                nombre: proveedorToEdit.nombre || ''
             });
         } else {
-            reset();
+            reset(); 
         }
-    }, [editMode, categoriaToEdit, showModal]);
+    }, [editMode, proveedorToEdit, showModal]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const request = editMode
-            ? axios.post(route('categorias.updateCategoria', categoriaToEdit.id), data)
-            : axios.post(route('categoria.storeCategoria'), data);
+        const url = editMode
+            ? route('proveedor.updateProveedor', proveedorToEdit.id)
+            : route('proveedor.store');
 
-        request
+        axios.post(url, data)
             .then((response) => {
                 Swal.fire({
                     icon: 'success',
@@ -46,7 +44,7 @@ export default function FormCategoria({
                 });
                 reset();
                 setShowModal(false);
-                onCategoriaCreated();
+                onProveedorCreated();
                 onClose?.();
             })
             .catch(err => {
@@ -82,11 +80,11 @@ export default function FormCategoria({
                 setShowModal(false);
                 onClose?.();
             }}
-            aria-labelledby="modal-categoria"
+            aria-labelledby="modal-proveedor"
             className='m-0'
         >
             <Modal.Header closeButton className='px-2 py-1'>
-                <Modal.Title id="modal-categoria" style={{ fontSize: '16px' }}>
+                <Modal.Title id="modal-proveedor" style={{ fontSize: '16px' }}>
                     {title}
                 </Modal.Title>
             </Modal.Header>
@@ -100,19 +98,8 @@ export default function FormCategoria({
                             id="nombre"
                             value={data.nombre}
                             onChange={(e) => setData('nombre', e.target.value)}
-                            placeholder="Nombre de la categoría"
+                            placeholder="Nombre del proveedor"
                         />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="descripcion" className="form-label">Descripción</label>
-                        <textarea
-                            className="form-control"
-                            id="descripcion"
-                            rows="3"
-                            value={data.descripcion}
-                            onChange={(e) => setData('descripcion', e.target.value)}
-                            placeholder="Descripción de la categoría"
-                        ></textarea>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" onClick={() => {

@@ -4,43 +4,35 @@ import Nav from "@/Components/Partials/Nav";
 import Sidebar from "@/Components/Partials/Sidebar";
 import { Head } from '@inertiajs/react';
 import { Button, Card, FormControl } from 'react-bootstrap';
-import FormCategoria from './Modal/FormCategoria';
+import FormProveedor from './Modal/FormProveedor';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default function Index({ auth }) {
     const [showModal, setShowModal] = useState(false);
-    const [categorias, setCategorias] = useState([]);
+    const [proveedores, setProveedores] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [perPage, setPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalRows, setTotalRows] = useState(0);
     const [editMode, setEditMode] = useState(false);
-    const [categoriaToEdit, setCategoriaToEdit] = useState(null);
+    const [proveedorToEdit, setProveedorToEdit] = useState(null);
 
-    const fetchCategorias = async () => {
+    // Obtener los proveedores
+    const fetchProveedores = async () => {
         try {
-            const response = await axios.get(route('categorias.all'), {
-                params: {
-                    page: currentPage,
-                    per_page: perPage,
-                },
-            });
-            setCategorias(response.data.data);
-            setTotalRows(response.data.total);
+            const response = await axios.get(route('proveedores.all'));
+            setProveedores(response.data.data);
         } catch (error) {
-            console.error('Error al cargar las categorías:', error);
+            console.error('Error al cargar los proveedores:', error);
         }
     };
 
     useEffect(() => {
-        fetchCategorias();
-    }, [currentPage, perPage]);
+        fetchProveedores();
+    }, []);
 
-    const filteredCategorias = categorias.filter(categoria =>
-        categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        categoria.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const filteredProveedores = proveedores.filter(proveedor =>
+        (proveedor.nombre || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const columns = [
@@ -52,11 +44,6 @@ export default function Index({ auth }) {
         {
             name: 'Nombre',
             selector: row => row.nombre,
-            sortable: true,
-        },
-        {
-            name: 'Descripción',
-            selector: row => row.descripcion,
             sortable: true,
         },
         {
@@ -77,9 +64,9 @@ export default function Index({ auth }) {
         },
     ];
 
-    const handleEdit = (categoria) => {
+    const handleEdit = (proveedor) => {
         setEditMode(true);
-        setCategoriaToEdit(categoria);
+        setProveedorToEdit(proveedor);
         setShowModal(true);
     };
 
@@ -95,19 +82,19 @@ export default function Index({ auth }) {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(route('categoria.delete', id))
+                axios.delete(route('proveedor.deleteProveedor', id))
                     .then((response) => {
                         Swal.fire(
                             'Eliminado!',
-                            response.data.success || 'La categoría ha sido eliminada.',
+                            response.data.success || 'El proveedor ha sido eliminado.',
                             'success'
                         );
-                        fetchCategorias();
+                        fetchProveedores();
                     })
                     .catch((err) => {
                         Swal.fire(
                             'Error',
-                            err.response?.data?.error || 'Hubo un problema al eliminar la categoría.',
+                            err.response?.data?.error || 'Hubo un problema al eliminar el proveedor.',
                             'error'
                         );
                     });
@@ -118,29 +105,29 @@ export default function Index({ auth }) {
     const handleModalClose = () => {
         setShowModal(false);
         setEditMode(false);
-        setCategoriaToEdit(null);
+        setProveedorToEdit(null);
     };
 
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
-            <Head title="Categorías" />
-            <FormCategoria
-                title={editMode ? "Editar Categoría" : "Registrar nueva categoría"}
+            <Head title="Proveedores" />
+            <FormProveedor
+                title={editMode ? "Editar Proveedor" : "Registrar nuevo proveedor"}
                 showModal={showModal}
                 setShowModal={setShowModal}
-                onCategoriaCreated={fetchCategorias}
+                onProveedorCreated={fetchProveedores}
                 onClose={handleModalClose}
                 editMode={editMode}
-                categoriaToEdit={categoriaToEdit}
+                proveedorToEdit={proveedorToEdit}
             />
             <Card>
                 <Card.Header>
                     <Button onClick={() => {
                         setEditMode(false);
-                        setCategoriaToEdit(null);
+                        setProveedorToEdit(null);
                         setShowModal(true);
                     }} variant='outline-success' size='sm'>
-                        <i className="bi bi-plus-circle"></i> Nueva categoría
+                        <i className="bi bi-plus-circle"></i> Nuevo proveedor
                     </Button>
                     <FormControl
                         type="text"
@@ -153,16 +140,8 @@ export default function Index({ auth }) {
                 <Card.Body>
                     <DataTable
                         columns={columns}
-                        data={filteredCategorias}
+                        data={filteredProveedores}
                         pagination
-                        paginationPerPage={perPage}
-                        paginationRowsPerPageOptions={[5, 10, 25, 50]}
-                        paginationTotalRows={totalRows}
-                        onChangeRowsPerPage={newPerPage => {
-                            setPerPage(newPerPage);
-                            setCurrentPage(1);
-                        }}
-                        onChangePage={page => setCurrentPage(page)}
                         responsive
                         highlightOnHover
                     />

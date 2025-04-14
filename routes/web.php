@@ -7,6 +7,8 @@ use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Sucursales\SucursalController; 
 use App\Http\Controllers\UserController;
+
+use App\Http\Controllers\Proveedor\ProveedorController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,9 +34,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
     Route::post('/storeCategoria', [CategoriaController::class, 'storeCategoria'])->name('categoria.storeCategoria');
     Route::get('/obtener-categorias', [CategoriaController::class, 'getCategorias'])->name('categorias.all');
+    Route::post('/update/categoria/{id}', [CategoriaController::class, 'updateCategoria'])->name('categorias.updateCategoria');
     Route::delete('/delete/categoria/{id}', [CategoriaController::class, 'deleteCategoria'])->name('categoria.delete');
 
-    // Empresas
+
+    /**Parte para proveedores */
+    Route::get('/proveedores', [ProveedorController::class, 'index'])->name('proveedores.index');
+    Route::get('/obtener-proveedores', [ProveedorController::class, 'getProveedores'])->name('proveedores.all');
+    Route::post('/store/proveedor', [ProveedorController::class, 'storeProveedor'])->name('proveedor.store');
+    Route::post('/update/proveedor/{id}', [ProveedorController::class, 'updateProveedor'])->name('proveedor.updateProveedor');
+    Route::delete('/proveedor/delete/{id}', [ProveedorController::class, 'deleteProveedor'])->name('proveedor.deleteProveedor');
+
+    /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
     Route::post('/storeEmpresa', [EmpresaController::class, 'store'])->name('empresa.store');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update'])->name('empresa.update');
