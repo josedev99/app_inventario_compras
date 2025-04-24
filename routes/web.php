@@ -4,6 +4,7 @@ use App\Http\Controllers\Categorias\CategoriaController;
 use App\Http\Controllers\Compras\ComprasController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\inventario\InventarioController;
 use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Sucursales\SucursalController; 
@@ -85,6 +86,13 @@ Route::prefix('producto')->middleware('auth')->group(function () {
     Route::get('/obtener-productos', [ProductoController::class, 'getProducosAll'])->name('producto.all');
     Route::post('/actualizar-producto', [ProductoController::class, 'update'])->name('producto.update');
     Route::post('/eliminar', [ProductoController::class, 'destroy'])->name('producto.destroy');
+});
+/**
+ * Rutas para el módulo de inventario
+ */
+Route::prefix('inventario')->middleware('auth')->group(function () {
+    Route::get('/', [InventarioController::class, 'index'])->name('inventario.index');
+    Route::get('/listar', [InventarioController::class, 'getStockInv'])->name('inventario.listar');
 });
 /**
  * Routas para usuarios
