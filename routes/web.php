@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Categorias\CategoriaController;
+use App\Http\Controllers\Compras\ComprasController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Producto\ProductoController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Proveedor\ProveedorController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use PHPUnit\Framework\MockObject\Rule\AnyParameters;
 
 // Ruta principal (Home)
 Route::get('/', [HomeController::class, 'index'])
@@ -45,12 +47,28 @@ Route::middleware('auth')->group(function () {
     Route::post('/update/proveedor/{id}', [ProveedorController::class, 'updateProveedor'])->name('proveedor.updateProveedor');
     Route::delete('/proveedor/delete/{id}', [ProveedorController::class, 'deleteProveedor'])->name('proveedor.deleteProveedor');
 
+    /**
+     * parte para compras
+     */
+    Route::get('/compras', [ComprasController::class, 'index'])->name('compras.index');
+    Route::get('/obtener/compras/data', [ComprasController::class, 'getDataCompras'])->name('compras.getDataCompras');
+    Route::post('/store/compra', [ComprasController::class, 'storeCompra'])->name('compras.storeCompra');
+    Route::delete('/delete/compra/{id}', [ComprasController::class, 'deleteCompra'])->name('compras.deleteCompra');
+    Route::get('/agregar/detalles/compras/{id}', [ComprasController::class, 'adddetallesdeCompra'])->name('compras.adddetallesdeCompra');
+    Route::post('/store/detalle/compra', [ComprasController::class, 'stroreDetalleCompra'])->name('compras.stroreDetalleCompra');
+    Route::get('/view/detalles/compras/{id}', [ComprasController::class, 'viewDetailsCompras'])->name('compras.viewDetailsCompras');
+    Route::get('/generar/pdf/detalle/compras/{id}', [ComprasController::class, 'generarReportePdfDetalleCompras'])->name('compras.generarReportePdfDetalleCompras');
+    Route::get('/generar/excel/compras/detalles/{id}', [ComprasController::class, 'generarReporteExcel'])->name('compras.generarReporteExcel');
+
     /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
     Route::post('/storeEmpresa', [EmpresaController::class, 'store'])->name('empresa.store');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update'])->name('empresa.update');
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('empresa.destroy');
-    // Sucursales: Esta ruta se usará para la creación de sucursales desde el modal
+
+    /**
+     * parte para sucursales
+     */
     Route::get('/sucursales', [SucursalController::class, 'index']);
     Route::post('/sucursales', [SucursalController::class, 'store'])->name('sucursal.store');
     Route::get('/sucursales/create', [SucursalController::class, 'create'])->name('sucursal.create');

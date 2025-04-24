@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('detalle_compras', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('compra_id')->unsigned();
-            $table->decimal('costo_unitario', 2);
+            $table->decimal('costo_unitario', 10,2);
             $table->integer('cantidad');
-            $table->decimal('total', 2);
+            $table->decimal('total', 10, 2);
             $table->integer('producto_id')->unsigned();
             $table->timestamps();
 

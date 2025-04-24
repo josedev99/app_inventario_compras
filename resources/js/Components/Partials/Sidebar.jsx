@@ -116,9 +116,9 @@ function Sidebar() {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="components/buttons.html">
+                                            <Link href={route('compras.index')}>
                                                 <span className="sub-item">Ordenes de compra</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -143,7 +143,7 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
-                            
+
                             {/* Empresas */}
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarCompanies">

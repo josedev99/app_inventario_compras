@@ -3,7 +3,8 @@
 namespace App\Models\Compras;
 
 use App\Models\Empresa\Empresa;
-use App\Models\Sursales\Sucursal;
+use App\Models\Proveedores\Proveedor;
+use App\Models\Sucursales\Sucursal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,11 +30,35 @@ class Compra extends Model
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function sucursales(){
+    public function sucursales()
+    {
         return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany(DetalleCompra::class, 'compra_id');
+    }
+
+    public function proveedores()
+    {
+        return $this->belongsTo(Proveedor::class, 'proveedor_id');
+    }
+
+    public static function getData()
+    {
+        $data = Compra::join('empresas as m', 'm.id', '=', 'compras.empresa_id')
+            ->join('sucursals as s', 's.id', '=', 'compras.sucursal_id')
+            ->join('users as u', 'u.id', '=', 'compras.user_id')
+            ->join('proveedors as p', 'p.id', '=', 'compras.proveedor_id')
+            ->select('compras.*', 'm.nombre as empresa', 's.nombre as sucursal', 'u.nombre as usuario', 'p.nombre as proveedor')
+            ->orderBy('compras.id', 'desc')->get();
+
+        return $data;
     }
 }

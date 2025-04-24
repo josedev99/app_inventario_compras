@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('historial_movimientos', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cantidad');
-            $table->decimal('precio_unitario', 2);
-            $table->decimal('precio_venta', 2);
+            $table->decimal('precio_unitario', 10,2);
+            $table->decimal('precio_venta', 10,2);
             $table->enum('tipo_movimiento', ['ENTRADA', 'SALIDA'])->default('ENTRADA');
             $table->integer('producto_id')->unsigned();
             $table->integer('empresa_id')->unsigned();

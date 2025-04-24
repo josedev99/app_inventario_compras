@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('inventarios', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cantidad');
-            $table->decimal('precio_venta', 2);
+            $table->decimal('precio_venta', 10,2);
             $table->integer('producto_id')->unsigned();
             $table->integer('empresa_id')->unsigned();
             $table->integer('sucursal_id')->unsigned();
