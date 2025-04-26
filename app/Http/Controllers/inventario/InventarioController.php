@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\inventario;
 
 use App\Http\Controllers\Controller;
+use App\Models\Inventarios\Inventario;
 use App\Models\Productos\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,5 +55,60 @@ class InventarioController extends Controller
                 }
             })
             ->make(true);
+    }
+
+    //Realizar la busqueda de productos mediante codigo de compra
+    public function getProductCompra(Request $request)
+    {
+        $empresaId = Auth::user()->empresa_id;
+        $codigo = $request->input('codigo');
+
+        $productos = DB::select("select dc.cantidad,dc.producto_id,p.codigo,concat(p.nombre, ' ',p.umedida) as descripcion from compras as c inner join detalle_compras as dc on c.id=dc.compra_id inner join productos as p on dc.producto_id=p.id where c.empresa_id = ? and c.codigo = ?",[$empresaId,$codigo]);
+        return response()->json($productos);
+    }
+
+    public function saveIngreso(Request $request)
+    {
+        $empresaId = Auth::user()->empresa_id;
+        try {
+            DB::beginTransaction();
+            $productos = json_decode($request->input('productos'), true);
+
+            foreach ($productos as $producto) {
+                $productoId = $producto['producto_id'];
+                $cantidad = $producto['cantidad'];
+                $precio = 0;
+
+                // Verificar si el producto ya existe en el inventario
+                $existsInv = Inventario::where('producto_id', $productoId)->where('empresa_id', $empresaId)->first();
+
+                if ($existsInv) {
+                    // Actualizar la cantidad existente
+                    $existsInv->increment('cantidad', $cantidad);
+                    $existsInv->update(['precio_venta' => $precio]);
+                    $existsInv->save();
+                } else {
+                    Inventario::create([
+                        'cantidad' => $cantidad,
+                        'precio_venta' => $precio,
+                        'producto_id' => $productoId,
+                        'empresa_id' => $empresaId,
+                        'sucursal_id' => 1, // Cambiar por el ID de la sucursal correspondiente
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ingreso registrado correctamente',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al registrar el ingreso: ' . $e->getMessage(),
+            ], 500);
+        }
+        
     }
 }

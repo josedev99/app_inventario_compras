@@ -147,7 +147,7 @@ export default function Index({ auth, productos }) {
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Inventario" />
-            <FormIngModal title="Ingreso de productoStocks a inventario" setReloadDt={setReloadDt} productos={productos} showModal={showModal} setShowModal={setShowModal} />
+            <FormIngModal title="Ingreso de productoStocks a inventario" setReloadDt={setReloadDt} dataProducto={productos} showModal={showModal} setShowModal={setShowModal} />
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
                     <Button onClick={() => {
