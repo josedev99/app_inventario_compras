@@ -45,7 +45,7 @@ class ComprasController extends Controller
     {
         try {
 
-            $codigoCompra = strtoupper('OC-' . Str::random(8));
+            $codigoCompra = strtoupper('OC-' . Str::random(5));
 
             $compra = Compra::create([
                 'fecha_compra' => $request->fecha_compra,
@@ -181,7 +181,7 @@ class ComprasController extends Controller
                 'message' => 'Hubo un problema al intentar ver la compra.'
             ], 400);
         }
-        
+
         $pdf = Pdf::loadView('pdf.comprasPdfDetalle', compact('compras'));
 
         return $pdf->stream('Compras_' . $compras->id . '.pdf');
