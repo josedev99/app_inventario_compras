@@ -137,6 +137,11 @@ function Sidebar() {
                                 <div className="collapse" id="sidebarBodega">
                                     <ul className="nav nav-collapse">
                                         <li>
+                                            <a href="#">
+                                                <span className="sub-item">Nuevo pedido</span>
+                                            </a>
+                                        </li>
+                                        <li>
                                             <Link href={route('inventario.index')}>
                                                 <span className="sub-item">Inventario</span>
                                             </Link>
@@ -153,17 +158,7 @@ function Sidebar() {
                                         </li>
                                         <li>
                                             <a href="#">
-                                                <span className="sub-item">Nuevo pedido</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <span className="sub-item">Historial entradas</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <span className="sub-item">Historial salidas</span>
+                                                <span className="sub-item">Historial movimientos</span>
                                             </a>
                                         </li>
                                     </ul>
