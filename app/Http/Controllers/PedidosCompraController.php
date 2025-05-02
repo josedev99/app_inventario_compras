@@ -71,7 +71,7 @@ class PedidosCompraController extends Controller
 
     protected function getCode($prefijo = ''){
         $empresaId = Auth::user()->empresa_id;
-        $pedido = Pedido::where('empresa_id', $empresaId)->select('codigo')->first();
+        $pedido = Pedido::where('empresa_id', $empresaId)->select('codigo')->orderBy('id','desc')->first();
         $codigo = '';
         $year = substr(date('Y'),2,4);
         $month = date('m');
@@ -95,11 +95,11 @@ class PedidosCompraController extends Controller
             ->select(
                 'p.id',
                 'p.codigo',
-                'p.created_at as fecha',
+                DB::raw('DATE_FORMAT(p.created_at,"%d/%m/%Y") as fecha'),
                 'p.nombre',
                 'p.estado',
                 DB::raw('sum(dp.cantidad) as cantidad')
-            );
+            )->orderBy('p.id','desc');
 
         return DataTables::of($stocks)
             ->addIndexColumn()

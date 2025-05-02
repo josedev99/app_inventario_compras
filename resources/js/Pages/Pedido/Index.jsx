@@ -80,6 +80,10 @@ export default function Index({ auth, dataProductos }) {
         })
     };
 
+    const printPdf = (id) => {
+        console.log(id);
+    }
+
     const handleDelete = id => {
         let productFind = productos.find((producto)=> parseInt(producto.id) === parseInt(id))
         Swal.fire({
@@ -136,10 +140,13 @@ export default function Index({ auth, dataProductos }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" size="sm" onClick={() => showDetallePedido(row.id)}>
+                    <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => printPdf(row.id)}>
+                        <i className="bi bi-filetype-pdf"></i>
+                    </Button>{' '}
+                    <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
                         <i className="bi bi-eye"></i>
                     </Button>{' '}
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
+                    <Button variant="outline-danger" size="sm" title='Eliminar pedido' onClick={() => handleDelete(row.id)}>
                         <i className="bi bi-trash"></i>
                     </Button>
                 </div>
