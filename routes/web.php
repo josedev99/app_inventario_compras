@@ -5,6 +5,7 @@ use App\Http\Controllers\Compras\ComprasController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\inventario\InventarioController;
+use App\Http\Controllers\PedidosCompraController;
 use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Sucursales\SucursalController; 
@@ -86,6 +87,16 @@ Route::prefix('producto')->middleware('auth')->group(function () {
     Route::get('/obtener-productos', [ProductoController::class, 'getProducosAll'])->name('producto.all');
     Route::post('/actualizar-producto', [ProductoController::class, 'update'])->name('producto.update');
     Route::post('/eliminar', [ProductoController::class, 'destroy'])->name('producto.destroy');
+});
+/**
+ * Rutas para el módulo de inventario
+ */
+Route::prefix('pedidos')->middleware('auth')->group(function () {
+    Route::get('/', [PedidosCompraController::class, 'index'])->name('pedido.index');
+    Route::post('/guardar', [PedidosCompraController::class, 'save'])->name('pedido.save');
+    Route::get('/listar', [PedidosCompraController::class, 'listarPedidos'])->name('pedido.listar');
+    //Obtener los detalles del pedido
+    Route::post('/detalles', [PedidosCompraController::class, 'getDetalle'])->name('pedido.obtener');
 });
 /**
  * Rutas para el módulo de inventario
