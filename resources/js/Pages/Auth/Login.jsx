@@ -22,29 +22,37 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('login'));
     };
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
-            <section className='section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4'>
-                <div className='container-fluid'>
-                    <div className='row justify-content-center'>
-                        <div className='col-lg-4 col-md-6 d-flex align-items-center justify-content-center'>
-                            <div className='card p-4 shadow-lg w-100'>
-                                {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+            <Head title="Iniciar sesión" />
+            <section className="min-vh-100 d-flex align-items-center justify-content-center bg-light bg-gradient" style={{ background: 'linear-gradient(to right, #f8f9fa, #e9ecef)' }}>
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-md-8 col-lg-5">
+                            <div className="card shadow-lg border-0 rounded-4 p-4">
+                                <div className="text-center mb-4">
+                                    <img src="/assets/img/kaiadmin/ol.png" alt="Logo" width="180" />
+                                </div>
 
-                                <form onSubmit={submit} className='w-100'>
-                                    <div className='col-12 mb-3'>
-                                        <InputLabel htmlFor="email" value="Email" />
+                                {status && (
+                                    <div className="alert alert-success text-center py-2">{status}</div>
+                                )}
+
+                                <h4 className="text-center mb-3 fw-bold text-primary">Bienvenido de nuevo</h4>
+                                <p className="text-center text-muted mb-4">Inicia sesión para continuar</p>
+
+                                <form onSubmit={submit}>
+                                    <div className="mb-3">
+                                        <InputLabel htmlFor="email" value="Correo electrónico" />
                                         <TextInput
                                             id="email"
                                             type="email"
                                             name="email"
                                             value={data.email}
-                                            className="form-control"
+                                            className="form-control form-control-lg"
                                             autoComplete="username"
                                             isFocused={true}
                                             onChange={(e) => setData('email', e.target.value)}
@@ -52,38 +60,53 @@ export default function Login({ status, canResetPassword }) {
                                         <InputError message={errors.email} className="mt-2" />
                                     </div>
 
-                                    <div className='col-12 mb-3'>
-                                        <InputLabel htmlFor="password" value="Password" />
+                                    <div className="mb-3">
+                                        <InputLabel htmlFor="password" value="Contraseña" />
                                         <TextInput
                                             id="password"
                                             type="password"
                                             name="password"
                                             value={data.password}
-                                            className="form-control"
+                                            className="form-control form-control-lg"
                                             autoComplete="current-password"
                                             onChange={(e) => setData('password', e.target.value)}
                                         />
                                         <InputError message={errors.password} className="mt-2" />
                                     </div>
 
-                                    <div className='col-12 mb-3'>
-                                        <label className="d-flex align-items-center">
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <label className="d-flex align-items-center mb-0">
                                             <Checkbox
                                                 name="remember"
                                                 checked={data.remember}
                                                 onChange={(e) => setData('remember', e.target.checked)}
                                             />
-                                            <span className="ms-2 text-sm text-gray-600">Remember me</span>
+                                            <span className="ms-2 text-sm text-muted">Recordarme</span>
                                         </label>
+
+                                        {canResetPassword && (
+                                            <Link
+                                                href={route('password.request')}
+                                                className="text-decoration-none text-primary small"
+                                            >
+                                                ¿Olvidaste tu contraseña?
+                                            </Link>
+                                        )}
                                     </div>
 
-                                    <div className="d-flex justify-content-center mt-4">
-                                        <PrimaryButton className="btn btn-success btn-sm w-100" disabled={processing}>
-                                            Log in
+                                    <div className="d-grid mt-4">
+                                        <PrimaryButton
+                                            className="btn btn-primary btn-lg rounded-pill shadow-sm"
+                                            disabled={processing}
+                                        >
+                                            Iniciar sesión
                                         </PrimaryButton>
                                     </div>
                                 </form>
                             </div>
+                            <p className="text-center text-muted mt-4 small">
+                                &copy; {new Date().getFullYear()} Tu Empresa. Todos los derechos reservados.
+                            </p>
                         </div>
                     </div>
                 </div>

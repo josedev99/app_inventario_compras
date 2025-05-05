@@ -16,7 +16,7 @@ export default function Index({ auth }) {
     const [editMode, setEditMode] = useState(false);
     const [proveedorToEdit, setProveedorToEdit] = useState(null);
 
-    // Obtener los proveedores
+    /* Obtener los proveedores */
     const fetchProveedores = async () => {
         try {
             const response = await axios.get(route('proveedores.all'));
@@ -108,6 +108,19 @@ export default function Index({ auth }) {
         setProveedorToEdit(null);
     };
 
+    const customStyles = {
+        headRow: {
+            style: {
+                backgroundColor: '#343a40',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '0.4rem',
+            },
+        },
+    };
+
+
+
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Proveedores" />
@@ -144,6 +157,7 @@ export default function Index({ auth }) {
                         pagination
                         responsive
                         highlightOnHover
+                        customStyles={customStyles}
                     />
                 </Card.Body>
             </Card>

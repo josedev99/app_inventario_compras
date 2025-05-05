@@ -138,6 +138,17 @@ export default function Index({ auth }) {
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const customStyles = {
+        headRow: {
+            style: {
+                backgroundColor: '#343a40',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '0.4rem',
+            },
+        },
+    };
+
     const columns = [
         {
             name: 'ID',
@@ -216,6 +227,7 @@ export default function Index({ auth }) {
                             onChangePage={page => setCurrentPage(page)}
                             highlightOnHover
                             responsive
+                            customStyles={customStyles}
                         />
                     )}
                 </Card.Body>

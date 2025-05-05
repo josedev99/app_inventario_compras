@@ -115,6 +115,17 @@ export default function Index({ auth }) {
         setRoleToEdit(null);
     };
 
+    const customStyles = {
+        headRow: {
+            style: {
+                backgroundColor: '#343a40',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '0.4rem',
+            },
+        },
+    };
+
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Roles" />
@@ -159,6 +170,7 @@ export default function Index({ auth }) {
                         onChangePage={page => setCurrentPage(page)}
                         responsive
                         highlightOnHover
+                        customStyles={customStyles}
                     />
                 </Card.Body>
             </Card>

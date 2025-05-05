@@ -1,4 +1,4 @@
-import { Link, usePage  } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 function Sidebar() {
 
@@ -16,10 +16,10 @@ function Sidebar() {
                     <div className="logo-header" data-background-color="dark">
                         <a href="index.html" className="logo">
                             <img
-                                src="assets/img/kaiadmin/logo_light.svg"
+                                src="assets/img/kaiadmin/ol.png"
                                 alt="navbar brand"
                                 className="navbar-brand"
-                                height={20}
+                                width={150}
                             />
                         </a>
                         <div className="nav-toggle">
@@ -48,60 +48,60 @@ function Sidebar() {
                                 <div className="collapse" id="dashboard">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="../demo1/index.html">
-                                                <span className="sub-item">Dashboard 1</span>
-                                            </a>
+                                            <Link href={route('home.index')}>
+                                                <span className="sub-item">Dashboard</span>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
                             {can('modulo_finanzas') && (
-                            <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarFinanzas">
-                                    <i className="bi bi-coin fs-4" style={{ color: '#ced4da' }} />
-                                    <p>Finanzas</p>
-                                    <span className="caret" />
-                                </a>
-                                <div className="collapse" id="sidebarFinanzas">
-                                    <ul className="nav nav-collapse">
-                                        <li>
-                                            <Link href={route('proveedores.index')}>
-                                                <span className="sub-item">Proveedores</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('compras.index')}>
-                                                <span className="sub-item">Compras</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('user.index')}>
-                                                <span className="sub-item">Usuarios</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('roles.index')}>
-                                                <span className="sub-item">Roles</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('permisos.index')}>
-                                                <span className="sub-item">Permisos</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('asignar.index')}>
-                                                <span className="sub-item">Asignar</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('empresas.index')}>
-                                                <span className="sub-item">Empresas</span>
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                                <li className="nav-item">
+                                    <a data-bs-toggle="collapse" href="#sidebarFinanzas">
+                                        <i className="bi bi-coin fs-4" style={{ color: '#ced4da' }} />
+                                        <p>Finanzas</p>
+                                        <span className="caret" />
+                                    </a>
+                                    <div className="collapse" id="sidebarFinanzas">
+                                        <ul className="nav nav-collapse">
+                                            <li>
+                                                <Link href={route('proveedores.index')}>
+                                                    <span className="sub-item">Proveedores</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('compras.index')}>
+                                                    <span className="sub-item">Compras</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('user.index')}>
+                                                    <span className="sub-item">Usuarios</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('roles.index')}>
+                                                    <span className="sub-item">Roles</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('permisos.index')}>
+                                                    <span className="sub-item">Permisos</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('asignar.index')}>
+                                                    <span className="sub-item">Asignar</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('empresas.index')}>
+                                                    <span className="sub-item">Empresas</span>
+                                                </Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
                             )}
 
 
