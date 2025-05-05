@@ -83,15 +83,6 @@ export default function Login({ status, canResetPassword }) {
                                             />
                                             <span className="ms-2 text-sm text-muted">Recordarme</span>
                                         </label>
-
-                                        {canResetPassword && (
-                                            <Link
-                                                href={route('password.request')}
-                                                className="text-decoration-none text-primary small"
-                                            >
-                                                ¿Olvidaste tu contraseña?
-                                            </Link>
-                                        )}
                                     </div>
 
                                     <div className="d-grid mt-4">
