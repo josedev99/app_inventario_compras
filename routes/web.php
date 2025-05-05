@@ -11,6 +11,8 @@ use App\Http\Controllers\Sucursales\SucursalController;
 use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Proveedor\ProveedorController;
+use App\Http\Controllers\Seguridad\PermisoController;
+use App\Http\Controllers\Seguridad\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -75,6 +77,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/sucursales/create', [SucursalController::class, 'create'])->name('sucursal.create');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
+
+
+    /**Parte para roles */
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/get/data', [RoleController::class, 'getRoles'])->name('roles.getRoles');
+    Route::post('/store/role', [RoleController::class, 'StoreRole'])->name('roles.add');
+    Route::post('/update/role/{id}', [RoleController::class, 'updateRoles'])->name('roles.update');
+    Route::delete('/delete/role/{id}', [RoleController::class, 'deleteRole'])->name('roles.deleteRole');
+
+    /**Parte para permisos */
+    Route::get('/permisos', [PermisoController::class, 'index'])->name('permisos.index');
+    Route::get('/permisos/index/data', [PermisoController::class, 'getPermisos'])->name('permisos.getPermisos');
+    Route::post('/store/permisos', [PermisoController::class, 'storePermission'])->name('permisos.storePermission');
+    Route::post('/update/permiso/{id}', [PermisoController::class, 'updatePermiso'])->name('permisos.updatePermiso');
+    Route::delete('/delete/permiso/{id}', [PermisoController::class, 'deletePermiso'])->name('permisos.deletePermiso');
 });
 
 /**

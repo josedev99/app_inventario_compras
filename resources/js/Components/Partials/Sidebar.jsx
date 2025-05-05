@@ -73,14 +73,14 @@ function Sidebar() {
                                             </Link>
                                         </li>
                                         <li>
-                                            <a href="#">
+                                            <Link href={route('roles.index')}>
                                                 <span className="sub-item">Roles</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li>
-                                            <a href="#">
+                                            <Link href={route('permisos.index')}>
                                                 <span className="sub-item">Permisos</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li>
                                             <a href="#">
@@ -100,7 +100,7 @@ function Sidebar() {
                             {/* Proveeduria */}
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarProviders">
-                                    <i className="bi bi-inboxes fs-4"  style={{ color: '#ced4da' }} />
+                                    <i className="bi bi-inboxes fs-4" style={{ color: '#ced4da' }} />
                                     <p>Proveeduria</p>
                                     <span className="caret" />
                                 </a>
@@ -130,7 +130,7 @@ function Sidebar() {
 
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarBodega">
-                                    <i class="bi bi-box-seam fs-4"  style={{ color: '#ced4da' }} />
+                                    <i class="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
                                     <p>Bodega</p>
                                     <span className="caret" />
                                 </a>
