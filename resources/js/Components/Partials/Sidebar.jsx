@@ -1,6 +1,12 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage  } from '@inertiajs/react';
 
 function Sidebar() {
+
+    const { auth } = usePage().props;
+    const permissions = auth.permissions || [];
+
+    const can = (permissionName) => permissions.includes(permissionName)
+
     return (
         <>
             {/* Sidebar */}
@@ -49,6 +55,7 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
+                            {can('modulo_finanzas') && (
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarFinanzas">
                                     <i className="bi bi-coin fs-4" style={{ color: '#ced4da' }} />
@@ -95,6 +102,7 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
+                            )}
 
 
                             {/* Proveeduria */}
