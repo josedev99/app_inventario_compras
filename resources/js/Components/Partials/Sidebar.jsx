@@ -83,9 +83,9 @@ function Sidebar() {
                                             </Link>
                                         </li>
                                         <li>
-                                            <a href="#">
+                                            <Link href={route('asignar.index')}>
                                                 <span className="sub-item">Asignar</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li>
                                             <Link href={route('empresas.index')}>
