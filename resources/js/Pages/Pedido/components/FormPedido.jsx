@@ -6,7 +6,7 @@ import Select from 'react-select';
 import { useEffect } from 'react';
 import "./formPedido.css";
 
-export default function FormPedido({ title, showModal, setShowModal, productos = [], setReloadDt }) {
+export default function FormPedido({ title, showModal, setShowModal, productos = [], setReloadDt, setShowModalProduct, newProductoId = 0, setProductoId }) {
     const { data, reset, setData, processing } = useForm({
         nombre: '',
         cantidad: 1,
@@ -18,7 +18,6 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
     const handleAddProduct = () => {
         if (data.producto_id) {
             let index = productosPedido.findIndex(p => parseInt(p.id) === parseInt(data.producto_id));
-            console.log(index);
             if (index !== -1) {
                 const nuevosProductos = [...productosPedido];
                 const productoActualizado = { ...nuevosProductos[index] };
@@ -32,9 +31,19 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
             }
 
             data.producto_id = 0;
+            setProductoId(0);
             data.cantidad = 1;
         }
     }
+
+    useEffect(()=>{
+        if(newProductoId !== 0){
+            data.producto_id = newProductoId;
+        }else{
+            data.producto_id = 0;
+        }
+    },[newProductoId]);
+
     const deleteItem = (index) => {
         const newProductos = productosPedido.filter((_, i) => i !== index);
         setProductosPedido(newProductos);
@@ -42,43 +51,42 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
     const handleSubmit = (e) => {
         e.preventDefault();
         //validaciones
-        if(data.nombre.trim() === ""){
+        if (data.nombre.trim() === "") {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'El nombre del pedido es obligatorio.'
-            });return;
+            }); return;
         }
-        if(productosPedido.length === 0){
+        if (productosPedido.length === 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Lista de productos vacio.'
-            });return;
+            }); return;
         }
         data.productos = JSON.stringify(productosPedido);
         axios.post(route('pedido.save'), data)
-        .then((response)=>{
-            if(response.data.status === "success"){
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Éxito',
-                    text: response.data.message
-                });
-                reset();
-                setShowModal(false);
-                setReloadDt(true);
-            }else{
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.data.message
-                });
-            }
-            console.log(response);
-        }).catch((err)=>{
-            console.log(err);
-        })
+            .then((response) => {
+                if (response.data.status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: response.data.message
+                    });
+                    reset();
+                    setShowModal(false);
+                    setReloadDt(true);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.data.message
+                    });
+                }
+            }).catch((err) => {
+                console.log(err);
+            })
     }
     return (
         <>
@@ -108,32 +116,39 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
                                     <div className="col-sm-12 col-md-8">
                                         <div className="form-group mb-1 p-1">
                                             <label className='m-0' htmlFor="categoria">Seleccionar producto</label>
-                                            <Select
-                                                value={data.producto_id ?
-                                                    { value: data.producto_id, label: productos.find(producto => producto.id === data.producto_id)?.descripcion }
-                                                    : null}
-                                                onChange={(selectedOption) => setData('producto_id', selectedOption ? selectedOption.value : '')} // Asegúrate de actualizar correctamente
-                                                options={productos.map(producto => {
-                                                    return {
-                                                        value: producto.id,
-                                                        label: producto.descripcion
-                                                    }
-                                                })}
-                                                className="basic-single"
-                                                classNamePrefix="Seleccionar"
-                                                isClearable
-                                                isSearchable
-                                            />
+                                            <div className="d-flex align-items-center">
+                                                <div className="flex-grow-1">
+                                                    <Select
+                                                        value={data.producto_id ?
+                                                            { value: data.producto_id, label: productos.find(producto => producto.id === data.producto_id)?.descripcion }
+                                                            : null}
+                                                        onChange={(selectedOption) => setData('producto_id', selectedOption ? selectedOption.value : '')}
+                                                        options={productos.map(producto => ({
+                                                            value: producto.id,
+                                                            label: producto.descripcion
+                                                        }))}
+                                                        className="basic-single"
+                                                        classNamePrefix="Seleccionar"
+                                                        isClearable
+                                                        isSearchable
+                                                    />
+                                                </div>
+                                                <button onClick={(e) => setShowModalProduct(true)} title='Agregar nuevo producto' className="btn btn-outline-success btn-sm" type="button" style={{height: '38px'}}>
+                                                    <i className="bi bi-plus-circle"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="col-sm-12 col-md-3">
+                                    <div className="col-sm-12 col-md-4">
                                         <div className="form-group mb-1 p-1">
                                             <label className='m-0' htmlFor="costo_unit">Cantidad</label>
-                                            <input type="number" step={'1'} min={'1'} max={'10000'} className='form-control' value={data.cantidad} onChange={(e) => setData('cantidad', e.target.value)} />
+                                            <div className="d-flex align-items-center gap-4">
+                                                <div className="flex-grow-1">
+                                                    <input type="number" step={'1'} min={'1'} max={'10000'} className='form-control' value={data.cantidad} onChange={(e) => setData('cantidad', e.target.value)} />
+                                                </div>
+                                                <button type={'button'} onClick={(e) => handleAddProduct()} className='btn btn-outline-success btn-sm' style={{height: '38px'}}><i class="bi bi-cart-plus-fill"></i></button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-sm-12 col-md-1 d-flex justify-content-start align-items-end">
-                                        <button type={'button'} onClick={(e) => handleAddProduct()} className='btn btn-outline-success btn-sm mb-3'><i className="bi bi-plus-circle"></i></button>
                                     </div>
                                     <div className="col-sm-12 col-md-12">
                                         <div className="table-custom-container">
@@ -153,26 +168,26 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
                                                     <tbody>
                                                         {
                                                             productosPedido.length > 0 ?
-                                                            productosPedido.map((item, index) => (
-                                                                <tr key={index}>
-                                                                    <td style={{textAlign: 'center'}}>{index + 1}</td>
-                                                                    <td style={{textAlign: 'center'}}>{item.codigo}</td>
-                                                                    <td>{item.Umedida}</td>
-                                                                    <td>{item.descripcion.split(' - ')[1]}</td>
-                                                                    <td style={{textAlign: 'center'}}>{item.cantidad}</td>
-                                                                    <td style={{ textAlign: 'center' }}>
-                                                                        <div className="action-btn" onClick={() => deleteItem(index)} title="Eliminar">
-                                                                            <i className="bi bi-trash"></i>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            ))
-                                                            :
-                                                            (
-                                                                <tr>
-                                                                    <td colSpan={6} style={{textAlign: 'center'}}>Sin productos agregados</td>
-                                                                </tr>
-                                                            )
+                                                                productosPedido.map((item, index) => (
+                                                                    <tr key={index}>
+                                                                        <td style={{ textAlign: 'center' }}>{index + 1}</td>
+                                                                        <td style={{ textAlign: 'center' }}>{item.codigo}</td>
+                                                                        <td>{item.Umedida}</td>
+                                                                        <td>{item.descripcion.split(' - ')[1]}</td>
+                                                                        <td style={{ textAlign: 'center' }}>{item.cantidad}</td>
+                                                                        <td style={{ textAlign: 'center' }}>
+                                                                            <div className="action-btn" onClick={() => deleteItem(index)} title="Eliminar">
+                                                                                <i className="bi bi-trash"></i>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))
+                                                                :
+                                                                (
+                                                                    <tr>
+                                                                        <td colSpan={6} style={{ textAlign: 'center' }}>Sin productos agregados</td>
+                                                                    </tr>
+                                                                )
                                                         }
                                                     </tbody>
                                                 </table>

@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categorias\Categoria;
 use App\Models\DetPedido;
+use App\Models\Empresa\Empresa;
 use App\Models\Pedido;
 use App\Models\Productos\Producto;
+use App\Models\Sucursales\Sucursal;
+use App\Models\User;
+use PDF;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,11 +22,9 @@ class PedidosCompraController extends Controller
     public function index()
     {
         $empresaId = Auth::user()->empresa_id;
-        $dataProductos = Producto::where('empresa_id', $empresaId)
-            ->select('id','codigo', DB::raw('CONCAT(codigo, " - ", nombre , " - ", Umedida) as descripcion'), 'Umedida')
-            ->orderBy('id')
-            ->get();
-        return Inertia::render('Pedido/Index', compact('dataProductos'));
+        //New linea
+        $categorias = Categoria::select('id','nombre')->get();
+        return Inertia::render('Pedido/Index', compact('categorias'));
     }
 
     public function save(Request $request){
@@ -123,5 +126,25 @@ class PedidosCompraController extends Controller
         $detalle_pedido = DB::select("select dp.id,dp.cantidad,p.codigo,p.nombre,p.Umedida from det_pedidos as dp inner join productos as p on dp.producto_id=p.id where dp.pedido_id = ? and dp.empresa_id = ?",[$id,$empresaId]);
 
         return response()->json($detalle_pedido);
+    }
+
+    //Generar documento pdf
+    public function showPdf($param_id){
+        $userId = Auth::user()->id;
+        $empresaId = Auth::user()->empresa_id;
+        $pedido_id = base64_decode($param_id);
+
+        $pedido = Pedido::where('id', $pedido_id)->where('empresa_id', $empresaId)->first();
+
+        $sucursal = Sucursal::where('empresa_id', $empresaId)->select('nombre','logo')->first();
+        $empresa = Empresa::where('id', $empresaId)->first();
+
+        $user = User::where('id',$userId)->first();
+
+        $detalle_pedido = DB::select("select dp.id,dp.cantidad,p.codigo,p.nombre,p.Umedida from det_pedidos as dp inner join productos as p on dp.producto_id=p.id where dp.pedido_id = ? and dp.empresa_id = ?",[$pedido_id,$empresaId]);
+
+        $pdf = PDF::loadView('pdf.pedidoCompra', compact('detalle_pedido','pedido','sucursal','empresa', 'user'));
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf->stream(date('d-m-Y'). "_pedido_".$pedido['codigo'].".pdf");
     }
 }

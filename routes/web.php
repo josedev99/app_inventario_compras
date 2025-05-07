@@ -122,6 +122,10 @@ Route::prefix('pedidos')->middleware('auth')->group(function () {
     Route::get('/listar', [PedidosCompraController::class, 'listarPedidos'])->name('pedido.listar');
     //Obtener los detalles del pedido
     Route::post('/detalles', [PedidosCompraController::class, 'getDetalle'])->name('pedido.obtener');
+    //Obtener productos de pedidos
+    Route::get('obtener-productos', [ProductoController::class,'getProductsPedidos'])->name('pedidos.productos.obtener');
+    //show pdf pedido
+    Route::get('/documento/pdf/{id}', [PedidosCompraController::class, 'showPdf'])->name('pedido.show.pdf');
 });
 /**
  * Rutas para el módulo de inventario

@@ -9,8 +9,9 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import FormPedido from './components/FormPedido';
 import DetallePedido from './components/DetallePedido';
+import FormProducto from './components/FormProducto';
 
-export default function Index({ auth, dataProductos }) {
+export default function Index({ auth, categorias }) {
     const [productos, setProductos] = useState([]);
     const [producto, setProducto] = useState({});
     const [totalRows, setTotalRows] = useState(0);
@@ -23,7 +24,11 @@ export default function Index({ auth, dataProductos }) {
 
     const [pedidos,setPedidos] = useState([]);
     const [showModalDet, setShowModalDet] = useState(false);
+    const [showModalProduct, setShowModalProduct] = useState(false);
     const [productosPedido, setProductosPedido] = useState([]);
+    //Manejar el producto que se ingreso
+    const [refreshProduct,setRefreshProduct] = useState(false);
+    const [newProductoId, setProductoId] = useState(0);
 
     const fetchPedidos = async (page = 1, perPage = 10, search = '') => {
         const start = (page - 1) * perPage;
@@ -45,10 +50,20 @@ export default function Index({ auth, dataProductos }) {
         }
     };
 
+    const fetchProductos = async() => {
+        let response = await axios.get(route('pedidos.productos.obtener'));
+        setProductos(response.data);
+        console.log(response.data);
+    }
+
+    useEffect(()=>{
+        fetchProductos();
+        setRefreshProduct(false);
+    },[refreshProduct]);
+
     useEffect(() => {
         fetchPedidos();
         setReloadDt(false);
-        setProductos(dataProductos);
     }, [reloadDt]);
 
     const handlePageChange = page => {
@@ -80,8 +95,8 @@ export default function Index({ auth, dataProductos }) {
         })
     };
 
-    const printPdf = (id) => {
-        console.log(id);
+    const showPDF = (id) => {
+        window.open(route('pedido.show.pdf', btoa(id)), '_blank');
     }
 
     const handleDelete = id => {
@@ -140,15 +155,12 @@ export default function Index({ auth, dataProductos }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => printPdf(row.id)}>
+                    <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
                         <i className="bi bi-filetype-pdf"></i>
                     </Button>{' '}
                     <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
                         <i className="bi bi-eye"></i>
                     </Button>{' '}
-                    <Button variant="outline-danger" size="sm" title='Eliminar pedido' onClick={() => handleDelete(row.id)}>
-                        <i className="bi bi-trash"></i>
-                    </Button>
                 </div>
             ),
             ignoreRowClick: true,
@@ -171,8 +183,11 @@ export default function Index({ auth, dataProductos }) {
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Pedidos" />
-            <FormPedido showModal={showModal} setReloadDt={setReloadDt} setShowModal={setShowModal} title={"Nuevo pedido"} productos={productos} />
+            <FormPedido showModal={showModal} setReloadDt={setReloadDt} setShowModal={setShowModal} title={"Nuevo pedido"} productos={productos} setShowModalProduct={setShowModalProduct} newProductoId={newProductoId} setProductoId={setProductoId} />
+
             <DetallePedido showModalDet={showModalDet} setShowModalDet={setShowModalDet} title={"Detalle del pedido"} productosPedido={productosPedido} />
+
+            <FormProducto title="Registrar nuevo producto" showModalProduct={showModalProduct} setShowModalProduct={setShowModalProduct} categorias={categorias} setRefreshProduct={setRefreshProduct} setProductoId={setProductoId} />
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
                     <Button onClick={() => {

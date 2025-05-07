@@ -26,7 +26,7 @@ class ProductRequest extends FormRequest
             ],
             'nombre' => 'required|string|max:255',
             'uMedida' => 'required|string|max:50',
-            'costoUnit' => 'required|numeric|min:0|max:10000',
+            'costoUnit' => 'nullable|numeric|min:0|max:10000',
             'categoria_id' => 'required',
         ];
     }

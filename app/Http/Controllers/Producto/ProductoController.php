@@ -24,11 +24,14 @@ class ProductoController extends Controller
         $userId = Auth::user()->id;
         $empresaId = Auth::user()->empresa_id;
         $sucursalId = Auth::user()->sucursal_id;
-        //En desarrollo
+        
+        //costo
+        $costo = $request->filled('costoUnit') ? $request['costoUnit'] : 0;
+        
         $producto = Producto::create([
             'nombre' => $request['nombre'],
             'Umedida' => $request['uMedida'],
-            'costo' => $request['costoUnit'],
+            'costo' => $costo,
             'codigo' => $request['codigo'],
             'empresa_id' => $empresaId,
             'sucursal_id' => $sucursalId,
@@ -144,5 +147,16 @@ class ProductoController extends Controller
             'status' => 'error',
             'message' => 'Ha ocurrido un error al intentar eliminar el producto.'
         ]);
+    }
+
+    //Obtener productos para listar en modulo de pedidos
+    public function getProductsPedidos(){
+        $empresaId = Auth::user()->empresa_id;
+        $dataProductos = Producto::where('empresa_id', $empresaId)
+            ->select('id','codigo', DB::raw('CONCAT(codigo, " - ", nombre , " - ", Umedida) as descripcion'), 'Umedida')
+            ->orderBy('id','desc')
+            ->get();
+
+        return response()->json($dataProductos);
     }
 }
