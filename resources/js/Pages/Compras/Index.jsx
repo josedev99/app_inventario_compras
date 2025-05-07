@@ -33,6 +33,17 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
         (compra.proveedor || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const customStyles = {
+        headRow: {
+            style: {
+                backgroundColor: '#343a40',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '0.4rem',
+            },
+        },
+    };
+
     const columns = [
         {
             name: '#',
@@ -201,6 +212,7 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
                         pagination
                         responsive
                         highlightOnHover
+                        customStyles={customStyles}
                     />
                 </Card.Body>
             </Card>

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('passwordShow',250);
+            $table->string('profile', 50, ['', ''])->default('');
+            $table->enum('status', ['Active', 'Locked'])->default('Active');
             $table->string('categoria',50);
             $table->unsignedBigInteger('empresa_id')->nullable();
             $table->unsignedBigInteger('sucursal_id')->nullable();

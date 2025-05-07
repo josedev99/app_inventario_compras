@@ -1,3 +1,5 @@
+import { router } from '@inertiajs/react';
+
 function Nav() {
     return (
         <>
@@ -320,7 +322,14 @@ function Nav() {
                                             Account Setting
                                         </a>
                                         <div className="dropdown-divider" />
-                                        <a className="dropdown-item" href="#">
+                                        <a
+                                            href="#"
+                                            className="dropdown-item"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                router.post(route('logout'));
+                                            }}
+                                        >
                                             Logout
                                         </a>
                                     </li>

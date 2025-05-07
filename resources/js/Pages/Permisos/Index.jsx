@@ -4,35 +4,42 @@ import Nav from "@/Components/Partials/Nav";
 import Sidebar from "@/Components/Partials/Sidebar";
 import { Head } from '@inertiajs/react';
 import { Button, Card, FormControl } from 'react-bootstrap';
-import FormProveedor from './Modal/FormProveedor';
+import FormPermiso from './Modal/FormPermiso';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default function Index({ auth }) {
     const [showModal, setShowModal] = useState(false);
-    const [proveedores, setProveedores] = useState([]);
+    const [permisos, setPermisos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRows, setTotalRows] = useState(0);
     const [editMode, setEditMode] = useState(false);
-    const [proveedorToEdit, setProveedorToEdit] = useState(null);
+    const [permisoToEdit, setPermisoEdit] = useState(null);
 
-    /* Obtener los proveedores */
-    const fetchProveedores = async () => {
+    const fetchPermisos = async () => {
         try {
-            const response = await axios.get(route('proveedores.all'));
-            setProveedores(response.data.data);
+            const response = await axios.get(route('permisos.getPermisos'), {
+                params: {
+                    page: currentPage,
+                    per_page: perPage,
+                },
+            });
+            setPermisos(response.data.data);
+            setTotalRows(response.data.total);
         } catch (error) {
-            console.error('Error al cargar los proveedores:', error);
+            console.error('Error al cargar los permisos:', error);
         }
     };
 
     useEffect(() => {
-        fetchProveedores();
-    }, []);
+        fetchPermisos();
+    }, [currentPage, perPage]);
 
-
-    const filteredProveedores = proveedores.filter(proveedor =>
-        (proveedor.nombre || '').toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredPermisos = permisos.filter(permiso =>
+        permiso.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const columns = [
@@ -43,7 +50,7 @@ export default function Index({ auth }) {
         },
         {
             name: 'Nombre',
-            selector: row => row.nombre,
+            selector: row => row.name,
             sortable: true,
         },
         {
@@ -64,9 +71,9 @@ export default function Index({ auth }) {
         },
     ];
 
-    const handleEdit = (proveedor) => {
+    const handleEdit = (permiso) => {
         setEditMode(true);
-        setProveedorToEdit(proveedor);
+        setPermisoEdit(permiso);
         setShowModal(true);
     };
 
@@ -82,19 +89,19 @@ export default function Index({ auth }) {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(route('proveedor.deleteProveedor', id))
+                axios.delete(route('permisos.deletePermiso', id))
                     .then((response) => {
                         Swal.fire(
                             'Eliminado!',
-                            response.data.success || 'El proveedor ha sido eliminado.',
+                            response.data.success || 'el permiso ha sido eliminado.',
                             'success'
                         );
-                        fetchProveedores();
+                        fetchPermisos();
                     })
                     .catch((err) => {
                         Swal.fire(
                             'Error',
-                            err.response?.data?.error || 'Hubo un problema al eliminar el proveedor.',
+                            err.response?.data?.error || 'Hubo un problema al eliminar el permiso.',
                             'error'
                         );
                     });
@@ -105,7 +112,7 @@ export default function Index({ auth }) {
     const handleModalClose = () => {
         setShowModal(false);
         setEditMode(false);
-        setProveedorToEdit(null);
+        setPermisoEdit(null);
     };
 
     const customStyles = {
@@ -119,28 +126,26 @@ export default function Index({ auth }) {
         },
     };
 
-
-
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
-            <Head title="Proveedores" />
-            <FormProveedor
-                title={editMode ? "Editar Proveedor" : "Registrar nuevo proveedor"}
+            <Head title="Permisos" />
+            <FormPermiso
+                title={editMode ? "Editar permiso" : "Registrar nuevo permiso"}
                 showModal={showModal}
                 setShowModal={setShowModal}
-                onProveedorCreated={fetchProveedores}
+                onPermisoCreated={fetchPermisos}
                 onClose={handleModalClose}
                 editMode={editMode}
-                proveedorToEdit={proveedorToEdit}
+                permisoToEdit={permisoToEdit}
             />
             <Card>
                 <Card.Header>
                     <Button onClick={() => {
                         setEditMode(false);
-                        setProveedorToEdit(null);
+                        setPermisoEdit(null);
                         setShowModal(true);
                     }} variant='outline-success' size='sm'>
-                        <i className="bi bi-plus-circle"></i> Nuevo proveedor
+                        <i className="bi bi-plus-circle"></i> Nuevo permiso
                     </Button>
                     <FormControl
                         type="text"
@@ -153,8 +158,16 @@ export default function Index({ auth }) {
                 <Card.Body>
                     <DataTable
                         columns={columns}
-                        data={filteredProveedores}
+                        data={filteredPermisos}
                         pagination
+                        paginationPerPage={perPage}
+                        paginationRowsPerPageOptions={[5, 10, 25, 50]}
+                        paginationTotalRows={totalRows}
+                        onChangeRowsPerPage={newPerPage => {
+                            setPerPage(newPerPage);
+                            setCurrentPage(1);
+                        }}
+                        onChangePage={page => setCurrentPage(page)}
                         responsive
                         highlightOnHover
                         customStyles={customStyles}
