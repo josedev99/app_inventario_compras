@@ -8,18 +8,19 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import FormUser from './Components/FormUser';
 
-export default function Index({ auth, dataEmpresas,dataSucursales }) {
+export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
     const [users, setUsers] = useState([]);
     const [user, setUser] = useState({});
     const [empresas, setEmpresas] = useState([]);
-    const [sucursales,setSucursales] = useState([]);
+    const [sucursales, setSucursales] = useState([]);
+    const [rolesState, setRoles] = useState([]);
     const [totalRows, setTotalRows] = useState(0);
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [reloadDt,setReloadDt] = useState(false);
-    const [editing,setEditing] = useState(false);
+    const [reloadDt, setReloadDt] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     const fetchUsers = async (page = 1, perPage = 10, search = '') => {
         const start = (page - 1) * perPage;
@@ -45,6 +46,7 @@ export default function Index({ auth, dataEmpresas,dataSucursales }) {
         fetchUsers(currentPage, perPage, searchTerm);
         setEmpresas(dataEmpresas);
         setSucursales(dataSucursales);
+        setRoles(roles);
         setReloadDt(false);
     }, [reloadDt]);
 
@@ -64,7 +66,7 @@ export default function Index({ auth, dataEmpresas,dataSucursales }) {
     };
 
     const handleEdit = id => {
-        let userFind = users.find((item)=>parseInt(item.id) === parseInt(id));
+        let userFind = users.find((item) => parseInt(item.id) === parseInt(id));
         setUser(userFind);
         setShowModal(true);
         setEditing(true);
@@ -117,9 +119,9 @@ export default function Index({ auth, dataEmpresas,dataSucursales }) {
             <Head title="Usuarios" />
             {
                 editing ?
-                <FormUser title="Registrar nuevo usuario" user={user} showModal={showModal} setShowModal={setShowModal} editing={editing} setReloadDt={setReloadDt} empresas={empresas} sucursales={sucursales} />
-                :
-                <FormUser title="Registrar nuevo usuario" showModal={showModal} setShowModal={setShowModal} editing={editing} setReloadDt={setReloadDt} empresas={empresas} sucursales={sucursales} />
+                    <FormUser title="Registrar nuevo usuario" user={user} showModal={showModal} setShowModal={setShowModal} editing={editing} setReloadDt={setReloadDt} empresas={empresas} sucursales={sucursales} roles={rolesState} />
+                    :
+                    <FormUser title="Registrar nuevo usuario" showModal={showModal} setShowModal={setShowModal} editing={editing} setReloadDt={setReloadDt} empresas={empresas} sucursales={sucursales} roles={rolesState} />
             }
             <Card>
                 <Card.Header className="d-flex justify-content-between align-items-center">

@@ -98,39 +98,12 @@ class ComprasController extends Controller
         ]);
 
         foreach ($request->detalles as $detalle) {
-            $precioVenta = $detalle['precio_venta'] ?? $detalle['costo_unitario'];
-
             DetalleCompra::create([
                 'compra_id' => $request->compra_id,
                 'producto_id' => $detalle['producto_id'],
                 'costo_unitario' => $detalle['costo_unitario'],
                 'cantidad' => $detalle['cantidad'],
                 'total' => $detalle['total'],
-            ]);
-
-            $inventario = Inventario::where('producto_id', $detalle['producto_id'])->first();
-            if ($inventario) {
-                $inventario->cantidad += $detalle['cantidad'];
-                $inventario->precio_venta = $precioVenta;
-                $inventario->save();
-            } else {
-                Inventario::create([
-                    'producto_id' => $detalle['producto_id'],
-                    'cantidad' => $detalle['cantidad'],
-                    'precio_venta' => $precioVenta,
-                    'empresa_id' => $detalle['empresa_id'],
-                    'sucursal_id' => $detalle['sucursal_id'],
-                ]);
-            }
-
-            HistorialMovimiento::create([
-                'producto_id' => $detalle['producto_id'],
-                'tipo_movimiento' => 'entrada',
-                'empresa_id' => $detalle['empresa_id'],
-                'sucursal_id' => $detalle['sucursal_id'],
-                'cantidad' => $detalle['cantidad'],
-                'precio_unitario' => $detalle['costo_unitario'],
-                'precio_venta' => $precioVenta,
             ]);
         }
 

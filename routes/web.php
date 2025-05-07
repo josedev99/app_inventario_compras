@@ -8,10 +8,13 @@ use App\Http\Controllers\inventario\InventarioController;
 use App\Http\Controllers\PedidosCompraController;
 use App\Http\Controllers\Producto\ProductoController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Sucursales\SucursalController; 
+use App\Http\Controllers\Sucursales\SucursalController;
 use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Proveedor\ProveedorController;
+use App\Http\Controllers\Seguridad\AsignarController;
+use App\Http\Controllers\Seguridad\PermisoController;
+use App\Http\Controllers\Seguridad\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -76,6 +79,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/sucursales/create', [SucursalController::class, 'create'])->name('sucursal.create');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
+
+
+    /**Parte para roles */
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/get/data', [RoleController::class, 'getRoles'])->name('roles.getRoles');
+    Route::post('/store/role', [RoleController::class, 'StoreRole'])->name('roles.add');
+    Route::post('/update/role/{id}', [RoleController::class, 'updateRoles'])->name('roles.update');
+    Route::delete('/delete/role/{id}', [RoleController::class, 'deleteRole'])->name('roles.deleteRole');
+
+    /**Parte para permisos */
+    Route::get('/permisos', [PermisoController::class, 'index'])->name('permisos.index');
+    Route::get('/permisos/index/data', [PermisoController::class, 'getPermisos'])->name('permisos.getPermisos');
+    Route::post('/store/permisos', [PermisoController::class, 'storePermission'])->name('permisos.storePermission');
+    Route::post('/update/permiso/{id}', [PermisoController::class, 'updatePermiso'])->name('permisos.updatePermiso');
+    Route::delete('/delete/permiso/{id}', [PermisoController::class, 'deletePermiso'])->name('permisos.deletePermiso');
+
+    /**asignacion de permisos y roles */
+    Route::get('/asignar', [AsignarController::class, 'index'])->name('asignar.index');
+    Route::get('/asignar/getData', [AsignarController::class, 'getDataIndexAsignar'])->name('asignar.getDataIndexAsignar');
+    Route::post('/store/asignar', [AsignarController::class, 'storeAsignarPermisosRoles'])->name('asignar.storeAsignarPermisosRoles');
+    Route::post('/asiganr/todo', [AsignarController::class, 'AsignarTodo'])->name('asignar.AsignarTodo');
+    Route::post('/revocar/todo', [AsignarController::class, 'RevocarTodo'])->name('asignar.RevocarTodo');
 });
 
 /**
@@ -109,10 +134,10 @@ Route::prefix('inventario')->middleware('auth')->group(function () {
 });
 /**
  * Routas para usuarios
-*/
+ */
 Route::prefix('usuarios')->middleware('auth')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/obtener-usuarios', [UserController::class, 'getUsersAll'])->name('usuario.all');
     Route::post('/guardar', [UserController::class, 'save'])->name('user.save');
 });
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
