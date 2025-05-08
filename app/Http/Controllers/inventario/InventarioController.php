@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\inventario;
 
 use App\Http\Controllers\Controller;
+use App\Models\Inventarios\HistorialMovimiento;
 use App\Models\Inventarios\Inventario;
 use App\Models\Productos\Producto;
 use Illuminate\Http\Request;
@@ -21,6 +22,15 @@ class InventarioController extends Controller
             ->orderBy('nombre')
             ->get();
         return Inertia::render('Inventario/Index', compact('productos'));
+    }
+
+    public function indexIngreso(){
+        $empresaId = Auth::user()->empresa_id;
+        $productos = Producto::where('empresa_id', $empresaId)
+            ->select('id','codigo', DB::raw('CONCAT(codigo, " - ", nombre , " ", Umedida) as descripcion'))
+            ->orderBy('id','desc')
+            ->get();
+        return Inertia::render('Inventario/Ingreso', compact('productos'));
     }
 
     public function getStockInv(Request $request)
@@ -57,6 +67,40 @@ class InventarioController extends Controller
             ->make(true);
     }
 
+    //Listar movimientos
+    public function getEntradaStock(Request $request){
+        $empresaId = Auth::user()->empresa_id;
+
+        $historialIngreso = DB::table('historial_movimientos as hm')
+            ->join('productos as p', function($join) {
+                $join->on('hm.producto_id', '=', 'p.id')
+                    ->on('hm.empresa_id', '=', 'p.empresa_id');
+            })
+            ->where('hm.empresa_id', $empresaId)
+            ->orderBy('hm.id','desc')
+            ->select(
+                'hm.id',
+                DB::raw('DATE_FORMAT(hm.created_at,"%d/%m/%Y") as fecha'),
+                'p.codigo',
+                'p.nombre as descripcion',
+                'p.Umedida',
+                'hm.cantidad'
+            );
+
+        return DataTables::of($historialIngreso)
+            ->addIndexColumn()
+            ->filter(function ($query) use ($request) {
+                if ($search = $request->input('search.value')) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('p.codigo', 'like', "%{$search}%")
+                        ->orWhere('p.nombre', 'like', "%{$search}%")
+                        ->orWhere('p.Umedida', 'like', "%{$search}%");
+                    });
+                }
+            })
+            ->make(true);
+    }
+
     //Realizar la busqueda de productos mediante codigo de compra
     public function getProductCompra(Request $request)
     {
@@ -70,12 +114,13 @@ class InventarioController extends Controller
     public function saveIngreso(Request $request)
     {
         $empresaId = Auth::user()->empresa_id;
+        $sucursalId = Auth::user()->sucursal_id;
         try {
             DB::beginTransaction();
             $productos = json_decode($request->input('productos'), true);
 
             foreach ($productos as $producto) {
-                $productoId = $producto['producto_id'];
+                $productoId = $producto['id'];
                 $cantidad = $producto['cantidad'];
                 $precio = 0;
 
@@ -96,6 +141,16 @@ class InventarioController extends Controller
                         'sucursal_id' => 1, // Cambiar por el ID de la sucursal correspondiente
                     ]);
                 }
+                //Guardar historial
+                HistorialMovimiento::create([
+                    'cantidad' => $cantidad,
+                    'precio_unitario' => 0.00,
+                    'precio_venta' => 0.00,
+                    'tipo_movimiento' => 'ENTRADA',
+                    'producto_id' => $productoId,
+                    'empresa_id' => $empresaId,
+                    'sucursal_id' => $sucursalId,
+                ]);
             }
             DB::commit();
             return response()->json([

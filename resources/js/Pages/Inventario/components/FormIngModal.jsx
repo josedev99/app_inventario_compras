@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 
 export default function FormIngModal({ title, showModal, setShowModal,setReloadDt, dataProducto = [] }) {
-    const { data, post, patch, errors, reset, setData, processing } = useForm({
+    const { data, setData, processing } = useForm({
             codigo_oc: '',
             cantidad: 1,
             producto_id: 0
@@ -165,10 +165,14 @@ export default function FormIngModal({ title, showModal, setShowModal,setReloadD
                                 <div className="col-sm-12 col-md-2">
                                     <div className="form-group mb-1 p-1">
                                         <label className='m-0' htmlFor="codigo">Código OC</label>
-                                        <input type="text" className='form-control' value={data.codigo_oc} onChange={(e) => setData('codigo_oc', e.target.value)} />
+                                        <div className="d-flex align-items-center gap-1">
+                                            <div className="flex-grow-1">
+                                                <input type="text" className='form-control' value={data.codigo_oc} onChange={(e) => setData('codigo_oc', e.target.value)} />
+                                            </div>
+                                            <button type={'button'} title='Buscar productos por código de compra' onClick={(e)=>handleEventSearch()} className='btn btn-outline-success btn-sm' style={{height: '38px'}}><i className="bi bi-search" style={{fontSize: '16px'}}></i></button>
+                                        </div>
                                     </div>
                                 </div>
-                                <button type={'button'} onClick={(e)=>handleEventSearch()} className='btn btn-outline-success btn-sm mb-3'><i className="bi bi-search"></i></button>
                             </div>
                             <div className="card-body p-1">
                                 <div className="row">
@@ -193,14 +197,16 @@ export default function FormIngModal({ title, showModal, setShowModal,setReloadD
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-sm-12 col-md-3">
+                                    <div className="col-sm-12 col-md-4">
                                         <div className="form-group mb-1 p-1">
                                             <label className='m-0' htmlFor="costo_unit">Cantidad</label>
-                                            <input type="number" step={'1'} min={'1'} max={'10000'} className='form-control' value={data.cantidad} onChange={(e) => setData('cantidad', e.target.value)} />
+                                            <div className="d-flex align-items-center gap-4">
+                                                <div className="flex-grow-1">
+                                                    <input type="number" step={'1'} min={'1'} max={'10000'} className='form-control' value= {data.cantidad} onChange={(e) => setData('cantidad', e.target.value)} />
+                                                </div>
+                                                <button type={'button'} title='Agregar producto a la lista' onClick={(e)=>handleAddProduct()} className='btn btn-outline-success btn-sm' style={{height: '38px'}}><i className="bi bi-plus-circle" style={{fontSize: '16px'}}></i></button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-sm-12 col-md-1 d-flex justify-content-start align-items-end">
-                                        <button type={'button'} onClick={(e)=>handleAddProduct()} className='btn btn-outline-success btn-sm mb-3'><i className="bi bi-plus-circle"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +237,7 @@ export default function FormIngModal({ title, showModal, setShowModal,setReloadD
                                                     <td className='p-1 text-center'>{producto.descripcion}</td>
                                                     <td className='p-1 text-center'>{producto.cantidad}</td>
                                                     <td className='p-1 text-center'>
-                                                        <button type={'button'} onClick={() => {
+                                                        <button type={'button'} title='Remover producto de la lista a ingresar' onClick={() => {
                                                             setProductIngInv(productIngInv.filter((_, i) => i !== index));
                                                         }} className='btn btn-outline-danger btn-sm'><i className="bi bi-trash"></i></button>
                                                     </td>

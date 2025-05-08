@@ -134,7 +134,11 @@ Route::prefix('inventario')->middleware('auth')->group(function () {
     Route::get('/', [InventarioController::class, 'index'])->name('inventario.index');
     Route::get('/listar', [InventarioController::class, 'getStockInv'])->name('inventario.listar');
     Route::post('/listar-productos-compra', [InventarioController::class, 'getProductCompra'])->name('producto.search.compra');
+    //Ingresos a inventario
+    Route::get('/ingresos', [InventarioController::class, 'indexIngreso'])->name('inv.ingreso.index');
     Route::post('/registrar-ingreso', [InventarioController::class, 'saveIngreso'])->name('inventario.saveIngreso');
+    //Listar ingresos
+    Route::get('/listar-ingresos', [InventarioController::class, 'getEntradaStock'])->name('inventario.listar.entradas');
 });
 /**
  * Routas para usuarios
