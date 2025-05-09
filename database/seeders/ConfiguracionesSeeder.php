@@ -79,6 +79,16 @@ class ConfiguracionesSeeder extends Seeder
         //asignar permisos
         Permission::create(['name' => 'asignar_view']);
 
+        //empresas
+        Permission::create(['name' => 'empresa_view']);
+        Permission::create(['name' => 'empresa_create']);
+        Permission::create(['name' => 'empresa_edit']);
+        Permission::create(['name' => 'empresa_delete']);
+
+        //sucursales
+        Permission::create(['name' => 'sucursal_view']);
+        Permission::create(['name' => 'sucursal_create']);
+
         Empresa::create([
             'nombre' => 'GRUPO GUERRERO',
             'nit' => '00009999',
@@ -128,7 +138,13 @@ class ConfiguracionesSeeder extends Seeder
             'permisos_create',
             'permisos_edit',
             'permisos_delete',
-            'asignar_view'
+            'asignar_view',
+            'empresa_view',
+            'empresa_create',
+            'empresa_edit',
+            'empresa_delete',
+            'sucursal_view',
+            'sucursal_create',
         ]);
 
 

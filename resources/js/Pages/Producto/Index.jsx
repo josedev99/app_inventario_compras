@@ -61,14 +61,15 @@ export default function Index({ auth, categorias }) {
     };
 
     const handleEdit = id => {
-        let productoFind = productos.find((item)=>parseInt(item.id) === parseInt(id));
+        let productoFind = productos.find((item) => parseInt(item.id) === parseInt(id));
         setProducto(productoFind);
         setShowModal(true);
         setEditing(true);
     };
 
     const handleDelete = id => {
-        let productFind = productos.find((producto)=> parseInt(producto.id) === parseInt(id))
+        let productFind = productos.find((producto) => parseInt(producto.id) === parseInt(id));
+
         Swal.fire({
             title: "¿Estás seguro?",
             text: `Esta acción eliminará el producto: "${productFind.nombre}".`,
@@ -78,39 +79,40 @@ export default function Index({ auth, categorias }) {
             cancelButtonColor: "#d33",
             confirmButtonText: "Sí, eliminar",
             cancelButtonText: "Cancelar"
-          }).then((result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
-              axios.post(route('producto.destroy'), { id })
-                .then((response) => {
-                  if (response.data.status) {
-                    Swal.fire({
-                      icon: 'success',
-                      title: '¡Producto eliminado!',
-                      text: response.data.message,
-                      confirmButtonText: 'Aceptar'
+                axios.post(route('producto.destroy'), { id })
+                    .then((response) => {
+                        if (response.data.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.data.message,
+                                confirmButtonText: 'Aceptar'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Producto eliminado!',
+                                text: response.data.message,
+                                confirmButtonText: 'Aceptar'
+                            });
+                            setReloadDt(true);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error al intentar eliminar el producto:', error);
+                        Swal.fire({
+                            title: '¡Error inesperado!',
+                            text: 'Ocurrió un problema al intentar eliminar el producto. Por favor, intenta nuevamente.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
                     });
-                    setReloadDt(true);
-                  } else {
-                    Swal.fire({
-                      title: '¡Error!',
-                      text: response.data.message,
-                      icon: 'error',
-                      confirmButtonText: 'Aceptar'
-                    });
-                  }
-                })
-                .catch((error) => {
-                  console.error('Error al intentar eliminar el producto:', error);
-                  Swal.fire({
-                    title: '¡Error inesperado!',
-                    text: 'Ocurrió un problema al intentar eliminar el producto. Por favor, intenta nuevamente.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                  });
-                });
             }
-          });
+        });
     };
+
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
@@ -153,9 +155,9 @@ export default function Index({ auth, categorias }) {
             <Head title="Productos" />
             {
                 editing ?
-                <FormProduct title="Registrar nuevo producto" producto={producto} editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
-                : 
-                <FormProduct title="Registrar nuevo producto" editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
+                    <FormProduct title="Registrar nuevo producto" producto={producto} editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
+                    :
+                    <FormProduct title="Registrar nuevo producto" editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
             }
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
