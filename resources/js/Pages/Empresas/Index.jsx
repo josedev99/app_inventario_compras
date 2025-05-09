@@ -165,7 +165,7 @@ function Index({ auth, empresas, paginacion }) {
             <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
                     <button className="btn btn-outline-success" onClick={openModal}>
-                        <i className="bi bi-plus-circle"> Nueva Empresa</i>
+                        <i className="bi bi-plus-circle"></i>
                     </button>
                 </div>
                 

@@ -76,6 +76,9 @@ class ConfiguracionesSeeder extends Seeder
         Permission::create(['name' => 'permisos_edit']);
         Permission::create(['name' => 'permisos_delete']);
 
+        //asignar permisos
+        Permission::create(['name' => 'asignar_view']);
+
         Empresa::create([
             'nombre' => 'GRUPO GUERRERO',
             'nit' => '00009999',
@@ -125,6 +128,7 @@ class ConfiguracionesSeeder extends Seeder
             'permisos_create',
             'permisos_edit',
             'permisos_delete',
+            'asignar_view'
         ]);
 
 
