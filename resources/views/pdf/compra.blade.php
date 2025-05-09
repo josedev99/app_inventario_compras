@@ -72,16 +72,10 @@
         </div>
         <div>
             @php
-                $logo = get_logo_sucursal($compras->id);
-
-                if ($logo && file_exists($logo)) {
-                    $type = pathinfo($logo, PATHINFO_EXTENSION);
-                    $data = file_get_contents($logo);
-                    $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                } else {
-                    $logoBase64 = null;
-                }
+                $logoBase64 = get_logo_sucursal($compras->id);
             @endphp
+
+
 
             @if ($logoBase64)
                 <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;">
@@ -89,6 +83,7 @@
                 <p>Logo no disponible</p>
             @endif
         </div>
+
     </div>
 
     <div class="info">
