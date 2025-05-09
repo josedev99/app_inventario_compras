@@ -22,7 +22,7 @@ use PHPUnit\Framework\MockObject\Rule\AnyParameters;
 
 // Ruta principal (Home)
 Route::get('/', [HomeController::class, 'index'])
-    ->middleware('auth')
+    ->middleware(['auth', 'estado'])
     ->name('home.index');
 
 // Dashboard
@@ -108,7 +108,7 @@ Route::middleware(['auth', 'estado'])->group(function () {
 /**
  * Rutas para el módulo de productos
  */
-Route::prefix('producto')->middleware('auth')->group(function () {
+Route::prefix('producto')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/', [ProductoController::class, 'index'])->name('producto.index');
     Route::post('/save', [ProductoController::class, 'save'])->name('producto.save');
     Route::get('/obtener-productos', [ProductoController::class, 'getProducosAll'])->name('producto.all');
@@ -118,7 +118,7 @@ Route::prefix('producto')->middleware('auth')->group(function () {
 /**
  * Rutas para el módulo de inventario
  */
-Route::prefix('pedidos')->middleware('auth')->group(function () {
+Route::prefix('pedidos')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/', [PedidosCompraController::class, 'index'])->name('pedido.index');
     Route::post('/guardar', [PedidosCompraController::class, 'save'])->name('pedido.save');
     Route::get('/listar', [PedidosCompraController::class, 'listarPedidos'])->name('pedido.listar');
@@ -132,7 +132,7 @@ Route::prefix('pedidos')->middleware('auth')->group(function () {
 /**
  * Rutas para el módulo de inventario
  */
-Route::prefix('inventario')->middleware('auth')->group(function () {
+Route::prefix('inventario')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/', [InventarioController::class, 'index'])->name('inventario.index');
     Route::get('/listar', [InventarioController::class, 'getStockInv'])->name('inventario.listar');
     Route::post('/listar-productos-compra', [InventarioController::class, 'getProductCompra'])->name('producto.search.compra');
