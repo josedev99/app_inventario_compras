@@ -21,7 +21,7 @@ const Error403 = () => {
 
     return (
         <div className="full-screen-container">
-            <img src="assets/img/kaiadmin/grupo.png" alt="Error 403" className="error-image" />
+            <img src="assets/img/kaiadmin/nooo.png" alt="Error 403" className="error-image" />
             <h1>403</h1>
             <p className="message">
                 Antes de continuar, consulte con su administrador para obtener acceso al sistema.
