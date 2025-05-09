@@ -145,6 +145,8 @@ Route::prefix('usuarios')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/obtener-usuarios', [UserController::class, 'getUsersAll'])->name('usuario.all');
     Route::post('/guardar', [UserController::class, 'save'])->name('user.save');
+    Route::post('/update/user/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('/user/delete/{id}', [UserController::class, 'deleteUser'])->name('user.delete');
 });
 
 Route::get('/notaccess', function () {

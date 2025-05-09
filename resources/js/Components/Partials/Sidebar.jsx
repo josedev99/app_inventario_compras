@@ -156,7 +156,7 @@ function Sidebar() {
                                         </li>
                                         <li>
                                             <a href="#">
-                                                <span className="sub-item">Entrdas</span>
+                                                <span className="sub-item">Entradas</span>
                                             </a>
                                         </li>
                                         <li>

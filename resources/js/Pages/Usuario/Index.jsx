@@ -7,6 +7,7 @@ import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import FormUser from './Components/FormUser';
+import Swal from 'sweetalert2';
 
 export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
     const [users, setUsers] = useState([]);
@@ -72,8 +73,36 @@ export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
         setEditing(true);
     };
 
-    const handleDelete = id => {
-        console.log("Eliminar usuario con ID:", id);
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('user.delete', id))
+                    .then((response) => {
+                        Swal.fire(
+                            'Eliminado!',
+                            response.data.success || 'El usuario ha sido eliminado.',
+                            'success'
+                        );
+                        fetchUsers();
+                    })
+                    .catch((err) => {
+                        Swal.fire(
+                            'Error',
+                            err.response?.data?.error || 'Hubo un problema al eliminar el usuario.',
+                            'error'
+                        );
+                    });
+            }
+        });
     };
 
     const columns = [
