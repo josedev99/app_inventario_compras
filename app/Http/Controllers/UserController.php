@@ -42,6 +42,8 @@ class UserController extends Controller
                 'u.telefono',
                 'u.usuario',
                 'u.categoria',
+                'u.profile',
+                'u.status',
                 'u.empresa_id',
                 'u.sucursal_id',
                 'u.email',
@@ -77,6 +79,8 @@ class UserController extends Controller
                             ->orWhere('u.usuario', 'like', "%{$search}%")
                             ->orWhere('u.telefono', 'like', "%{$search}%")
                             ->orWhere('u.categoria', 'like', "%{$search}%")
+                            ->orWhere('u.profile', 'like', "%{$search}%")
+                            ->orWhere('u.status', 'like', "%{$search}%")
                             ->orWhere('e.nombre', 'like', "%{$search}%")
                             ->orWhere('s.nombre', 'like', "%{$search}%");
                     });

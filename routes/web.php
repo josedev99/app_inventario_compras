@@ -28,10 +28,12 @@ Route::get('/', [HomeController::class, 'index'])
 // Dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'estado'])->name('dashboard');
+
+
 
 // Rutas que requieren autenticación
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'estado'])->group(function () {
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -139,9 +141,15 @@ Route::prefix('inventario')->middleware('auth')->group(function () {
 /**
  * Routas para usuarios
  */
-Route::prefix('usuarios')->middleware('auth')->group(function () {
+Route::prefix('usuarios')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/obtener-usuarios', [UserController::class, 'getUsersAll'])->name('usuario.all');
     Route::post('/guardar', [UserController::class, 'save'])->name('user.save');
 });
+
+Route::get('/notaccess', function () {
+    return Inertia::render('Auth/Access');
+});
+
+
 require __DIR__ . '/auth.php';

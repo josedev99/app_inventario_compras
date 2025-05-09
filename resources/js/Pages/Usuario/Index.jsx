@@ -80,10 +80,11 @@ export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
         { name: 'Nombre', selector: row => row.nombre, sortable: true, width: '15%', center: true },
         { name: 'Teléfono', selector: row => row.telefono, sortable: true, width: '10%', center: true },
+        { name: 'Perfil', selector: row => row.profile, sortable: true, width: '10%', center: true },
+        { name: 'Estado', selector: row => row.status, sortable: true, width: '10%', center: true },
         { name: 'Usuario', selector: row => row.usuario, sortable: true, width: '10%', center: true },
         { name: 'Categoría', selector: row => row.categoria, sortable: true, width: '10%', center: true },
         { name: 'Empresa', selector: row => row.empresa, sortable: true, width: '15%', center: true },
-        { name: 'Sucursal', selector: row => row.sucursal, sortable: true, width: '15%', center: true },
         {
             name: 'Acciones',
             cell: row => (

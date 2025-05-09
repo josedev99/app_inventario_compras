@@ -16,10 +16,10 @@ function Sidebar() {
                     <div className="logo-header" data-background-color="dark">
                         <a href="index.html" className="logo">
                             <img
-                                src="assets/img/kaiadmin/ol.png"
+                                src="assets/img/kaiadmin/grupo.png"
                                 alt="navbar brand"
                                 className="navbar-brand"
-                                width={150}
+                                width={200}
                             />
                         </a>
                         <div className="nav-toggle">
