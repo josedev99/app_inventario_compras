@@ -22,13 +22,13 @@ use PHPUnit\Framework\MockObject\Rule\AnyParameters;
 
 // Ruta principal (Home)
 Route::get('/', [HomeController::class, 'index'])
-    ->middleware(['auth', 'estado'])
+    ->middleware(['auth', 'estado', 'permission:modulo_finanzas'])
     ->name('home.index');
 
 // Dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', 'estado'])->name('dashboard');
+})->middleware(['auth', 'verified', 'estado', 'permission:modulo_finanzas'])->name('dashboard');
 
 
 

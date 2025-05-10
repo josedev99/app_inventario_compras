@@ -55,6 +55,8 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
+
+
                             {can('modulo_finanzas') && (
                                 <li className="nav-item">
                                     <a data-bs-toggle="collapse" href="#sidebarFinanzas">
@@ -65,39 +67,53 @@ function Sidebar() {
                                     <div className="collapse" id="sidebarFinanzas">
                                         <ul className="nav nav-collapse">
                                             <li>
-                                                <Link href={route('proveedores.index')}>
-                                                    <span className="sub-item">Proveedores</span>
-                                                </Link>
+                                                {can('proveedor_view') && (
+                                                    <Link href={route('proveedores.index')}>
+                                                        <span className="sub-item">Proveedores</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('compras.index')}>
-                                                    <span className="sub-item">Compras</span>
-                                                </Link>
+                                                {can('compras_view') && (
+                                                    <Link href={route('compras.index')}>
+                                                        <span className="sub-item">Compras</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('user.index')}>
-                                                    <span className="sub-item">Usuarios</span>
-                                                </Link>
+                                                {can('usuario_view') && (
+                                                    <Link href={route('user.index')}>
+                                                        <span className="sub-item">Usuarios</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('roles.index')}>
-                                                    <span className="sub-item">Roles</span>
-                                                </Link>
+                                                {can('role_view') && (
+                                                    <Link href={route('roles.index')}>
+                                                        <span className="sub-item">Roles</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('permisos.index')}>
-                                                    <span className="sub-item">Permisos</span>
-                                                </Link>
+                                                {can('permisos_view') && (
+                                                    <Link href={route('permisos.index')}>
+                                                        <span className="sub-item">Permisos</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('asignar.index')}>
-                                                    <span className="sub-item">Asignar</span>
-                                                </Link>
+                                                {can('asignar_view') && (
+                                                    <Link href={route('asignar.index')}>
+                                                        <span className="sub-item">Asignar</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('empresas.index')}>
-                                                    <span className="sub-item">Empresas</span>
-                                                </Link>
+                                                {can('empresa_view') && (
+                                                    <Link href={route('empresas.index')}>
+                                                        <span className="sub-item">Empresas</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                         </ul>
                                     </div>
@@ -120,17 +136,23 @@ function Sidebar() {
                                             </a>
                                         </li>
                                         <li>
-                                            <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
+                                            {can('productos_view') && (
+                                                <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
+                                            )}
                                         </li>
                                         <li>
-                                            <Link href={route('proveedores.index')}>
-                                                <span className="sub-item">Proveedores</span>
-                                            </Link>
+                                            {can('proveedor_view') && (
+                                                <Link href={route('proveedores.index')}>
+                                                    <span className="sub-item">Proveedores</span>
+                                                </Link>
+                                            )}
                                         </li>
                                         <li>
-                                            <Link href={route('categorias.index')}>
-                                                <span className="sub-item">Categorías</span>
-                                            </Link>
+                                            {can('category_view') && (
+                                                <Link href={route('categorias.index')}>
+                                                    <span className="sub-item">Categorías</span>
+                                                </Link>
+                                            )}
                                         </li>
                                     </ul>
                                 </div>
