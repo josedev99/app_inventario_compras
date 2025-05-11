@@ -132,6 +132,13 @@ function Sidebar() {
                                             )}
                                         </li>
                                         <li>
+                                            {can('compras_view') && (
+                                                <Link href={route('compras.index')}>
+                                                    <span className="sub-item">Ordenes de compra</span>
+                                                </Link>
+                                            )}
+                                        </li>
+                                        <li>
                                             {can('productos_view') && (
                                                 <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
                                             )}
