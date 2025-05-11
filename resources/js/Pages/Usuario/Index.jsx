@@ -7,8 +7,13 @@ import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import FormUser from './Components/FormUser';
+import Swal from 'sweetalert2';
 
 export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
+
+    const permissions = auth.permissions || [];
+    const can = (permissionName) => permissions.includes(permissionName);
+
     const [users, setUsers] = useState([]);
     const [user, setUser] = useState({});
     const [empresas, setEmpresas] = useState([]);
@@ -72,28 +77,61 @@ export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
         setEditing(true);
     };
 
-    const handleDelete = id => {
-        console.log("Eliminar usuario con ID:", id);
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('user.delete', id))
+                    .then((response) => {
+                        Swal.fire(
+                            'Eliminado!',
+                            response.data.success || 'El usuario ha sido eliminado.',
+                            'success'
+                        );
+                        fetchUsers();
+                    })
+                    .catch((err) => {
+                        Swal.fire(
+                            'Error',
+                            err.response?.data?.error || 'Hubo un problema al eliminar el usuario.',
+                            'error'
+                        );
+                    });
+            }
+        });
     };
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
         { name: 'Nombre', selector: row => row.nombre, sortable: true, width: '15%', center: true },
         { name: 'Teléfono', selector: row => row.telefono, sortable: true, width: '10%', center: true },
+        { name: 'Perfil', selector: row => row.profile, sortable: true, width: '10%', center: true },
+        { name: 'Estado', selector: row => row.status, sortable: true, width: '10%', center: true },
         { name: 'Usuario', selector: row => row.usuario, sortable: true, width: '10%', center: true },
         { name: 'Categoría', selector: row => row.categoria, sortable: true, width: '10%', center: true },
         { name: 'Empresa', selector: row => row.empresa, sortable: true, width: '15%', center: true },
-        { name: 'Sucursal', selector: row => row.sucursal, sortable: true, width: '15%', center: true },
         {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
-                        <i className="bi bi-pencil-square"></i>
-                    </Button>{' '}
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
-                        <i className="bi bi-trash"></i>
-                    </Button>
+                    {can('usuario_edit') && (
+                        <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
+                            <i className="bi bi-pencil-square"></i>
+                        </Button>
+                    )}{' '}
+                    {can('usuario_delete') && (
+                        <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
+                            <i className="bi bi-trash"></i>
+                        </Button>
+                    )}
                 </div>
             ),
             ignoreRowClick: true,
@@ -125,13 +163,14 @@ export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
             }
             <Card>
                 <Card.Header className="d-flex justify-content-between align-items-center">
-                    <Button variant='outline-success' size='sm' onClick={() => {
-                        setShowModal(true);
-                        setEditing(false);
-                    }}>
-                        <i className="bi bi-plus-circle"></i> Nuevo usuario
-                    </Button>
-
+                    {can('usuario_create') && (
+                        <Button variant='outline-success' size='sm' onClick={() => {
+                            setShowModal(true);
+                            setEditing(false);
+                        }}>
+                            <i className="bi bi-plus-circle"></i> Nuevo usuario
+                        </Button>
+                    )}
                     <input
                         type="text"
                         className="form-control form-control-sm w-25"

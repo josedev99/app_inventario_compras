@@ -22,14 +22,14 @@ class AppServiceProvider extends ServiceProvider
     {
         require_once app_path('Helpers/globalLogo.php');
         Inertia::share([
+            'appLogo' => asset('assets/img/kaiadmin/grupo.png'),
             'auth' => function () {
                 $user = auth()->user();
-        
                 return [
                     'user' => $user,
                     'permissions' => optional($user)->getAllPermissions()?->pluck('name') ?? [],
                 ];
             },
-        ]);        
+        ]);
     }
 }

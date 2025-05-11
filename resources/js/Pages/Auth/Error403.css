@@ -1,0 +1,75 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #ffffff;
+    font-family: 'Arial', sans-serif;
+}
+
+.full-screen-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+.error-image {
+    width: 350px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: grayscale(100%);
+}
+
+h1 {
+    font-size: 3.5rem;
+    color: #343a40;
+    margin-bottom: 15px;
+}
+
+.message {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-top: 20px;
+    font-weight: 300;
+}
+
+.btn-custom .btn {
+    font-size: 1rem;
+    padding: 10px 30px;
+    margin: 10px;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.8rem;
+    }
+
+    .message {
+        font-size: 0.95rem;
+    }
+
+    .btn-custom .btn {
+        font-size: 0.9rem;
+        padding: 8px 20px;
+    }
+
+    .error-image {
+        width: 250px;
+    }
+}

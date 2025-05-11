@@ -17,6 +17,7 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
         empresa_id: user?.empresa_id || '',
         sucursal_id: user?.sucursal_id || '',
         profile: user?.profile || '', // Aseguramos que el perfil se pase correctamente
+        status: user?.status || '',
     });
 
     const [sucursalesEmpresa, setSucursalesEmpresa] = useState([]);
@@ -34,6 +35,7 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                 empresa_id: user.empresa_id || '',
                 sucursal_id: user.sucursal_id || '',
                 profile: user.profile || '', // Aseguramos que el perfil se pase correctamente
+                status: user.status || '',
             };
 
             if (JSON.stringify(data) !== JSON.stringify(nuevoData)) {
@@ -62,7 +64,7 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
             return;
         }
 
-        // Crear nuevo usuario
+        // Crear nuevo usuario si no existe user.id
         axios.post(route('user.save'), data)
             .then((response) => {
                 if (response.data.status) {
@@ -84,22 +86,79 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                 }
             })
             .catch(err => {
-                let errors = err.response?.data?.errors;
-                for (let [key, error] of Object.entries(errors)) {
+                const errors = err.response?.data?.errors; // Asegurarse de que errors esté definido
+
+                if (errors) {
+                    for (let [key, error] of Object.entries(errors)) {
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: error[0],
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                        return;
+                    }
+                } else {
                     Swal.fire({
-                        title: '¡Error!',
-                        text: error[0],
+                        title: '¡Error inesperado!',
+                        text: 'Ocurrió un error desconocido. Por favor, intenta nuevamente.',
                         icon: 'error',
                         confirmButtonText: 'Aceptar'
                     });
-                    return;
                 }
             });
     };
 
     const update = (id) => {
-        // Aquí iría tu lógica de actualización (axios.patch o similar)
+        axios.post(route('user.update', { id }), data)
+            .then((response) => {
+                if (response.data.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Actualización exitosa',
+                        text: response.data.message
+                    });
+                    reset();
+                    setShowModal(false);
+                    setReloadDt(true);
+                } else {
+                    Swal.fire({
+                        title: '¡Error!',
+                        text: response.data.message,
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            })
+            .catch(err => {
+                const errors = err.response?.data?.errors;
+
+                if (errors) {
+                    for (let [key, error] of Object.entries(errors)) {
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: error[0],
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                        return;
+                    }
+                } else {
+                    Swal.fire({
+                        title: '¡Error inesperado!',
+                        text: 'Ocurrió un error desconocido. Por favor, intenta nuevamente.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
     };
+
+
+    const statusOptions = [
+        { value: 'Active', label: 'Activo' },
+        { value: 'Locked', label: 'Bloqueado' },
+    ];
 
     return (
         <Modal size="lg" show={showModal} backdrop="static" keyboard={false} onHide={() => setShowModal(false)} aria-labelledby="example-modal-sizes-title-lg" className='m-0'>
@@ -187,6 +246,21 @@ export default function FormUser({ title, showModal, setShowModal, user = {}, em
                                             classNamePrefix="Seleccionar"
                                             isClearable
                                             isSearchable
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="col-sm-12 col-md-6">
+                                    <div className="form-group mb-1 p-1">
+                                        <label className='m-0' htmlFor="status">Estado</label>
+                                        <Select
+                                            value={statusOptions.find(option => option.value === data.status) || null}
+                                            onChange={(option) => setData('status', option ? option.value : '')}
+                                            className="basic-single"
+                                            classNamePrefix="Seleccionar"
+                                            isClearable
+                                            isSearchable
+                                            options={statusOptions}
                                         />
                                     </div>
                                 </div>

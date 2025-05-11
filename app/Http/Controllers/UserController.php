@@ -42,6 +42,8 @@ class UserController extends Controller
                 'u.telefono',
                 'u.usuario',
                 'u.categoria',
+                'u.profile',
+                'u.status',
                 'u.empresa_id',
                 'u.sucursal_id',
                 'u.email',
@@ -49,24 +51,6 @@ class UserController extends Controller
                 DB::raw("COALESCE(e.nombre, '-') as empresa"),
                 DB::raw("COALESCE(s.nombre, '-') as sucursal")
             );
-        /**$usersArray = [];
-
-        foreach ($users as $user) {
-            $usersArray[] = [
-                'id' => $user->id,
-                'nombre' => $user->nombre,
-                'direccion' => $user->direccion,
-                'telefono' => $user->telefono,
-                'usuario' => $user->usuario,
-                'categoria' => $user->categoria,
-                'empresa_id' => $user->empresa_id,
-                'sucursal_id' => $user->sucursal_id,
-                'email' => $user->email,
-                'password' => Crypt::decrypt($user->passwordShow),
-                'empresa' => $user->empresa,
-                'sucursal' => $user->sucursal,
-            ];
-        }**/
 
         return DataTables::of($users)
             ->addIndexColumn()
@@ -77,6 +61,8 @@ class UserController extends Controller
                             ->orWhere('u.usuario', 'like', "%{$search}%")
                             ->orWhere('u.telefono', 'like', "%{$search}%")
                             ->orWhere('u.categoria', 'like', "%{$search}%")
+                            ->orWhere('u.profile', 'like', "%{$search}%")
+                            ->orWhere('u.status', 'like', "%{$search}%")
                             ->orWhere('e.nombre', 'like', "%{$search}%")
                             ->orWhere('s.nombre', 'like', "%{$search}%");
                     });
@@ -90,7 +76,7 @@ class UserController extends Controller
         if ($data->input('profile') === 'ROOT') {
             return response()->json(['error' => 'Solo debe existir un usuario ROOT'], 405);
         }
-        
+
 
         $user = User::create([
             'nombre'        => trim($data['nombre']),
@@ -110,5 +96,59 @@ class UserController extends Controller
         $user->syncRoles($data->input('profile'));
 
         return response()->json(['status' => 'success', 'message' => 'Usuario creado con éxito']);
+    }
+
+    public function update(StoreUserRequest $data, $id)
+    {
+        $user = User::findOrFail($id);
+
+        /* Validar que no se actualice a ROOT si ya existe otro ROOT */
+        if ($data->input('profile') === 'ROOT' && User::where('profile', 'ROOT')->where('id', '!=', $id)->exists()) {
+            return response()->json(['error' => 'Solo debe existir un usuario ROOT'], 405);
+        }
+
+        $user->update([
+            'nombre'        => trim($data['nombre']),
+            'direccion'     => trim($data['direccion']),
+            'telefono'      => $data['telefono'],
+            'email'         => $data['email'],
+            'usuario'       => $data['usuario'],
+            'categoria'     => $data['categoria'],
+            'empresa_id'    => $data['empresa_id'],
+            'sucursal_id'   => $data['sucursal_id'],
+            'profile'       => $data['profile'],
+            'status'        => $data['status'],
+        ]);
+
+        /* Solo actualizar la contraseña si se envía */
+        if ($data->filled('password')) {
+            $user->update([
+                'password'      => Hash::make($data['password']),
+                'passwordShow'  => encrypt($data['password']),
+            ]);
+        }
+
+        $user->syncRoles($data->input('profile'));
+
+        return response()->json(['status' => 'success', 'message' => 'Usuario actualizado con éxito']);
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'No se puede eliminar el usuario del sistema.'], 405);
+        } elseif ($user->profile == 'ROOT') {
+            return response()->json(['error' => 'No se puede eliminar el usuario root'], 405);
+        } elseif (Auth::id() == $user->id) {
+            return response()->json(['error' => 'No puedes eliminar el usuario autenticado'], 405);
+        }
+
+        $user->delete();
+
+        if ($user) {
+            return response()->json(['status' => 'success', 'message' => 'Usuario actualizado con éxito']);
+        }
     }
 }

@@ -1,12 +1,11 @@
 <?php
 
 use App\Models\Compras\Compra;
-use App\Models\Sucursales\Sucursal;
 
 if (! function_exists('get_logo_sucursal')) {
 
     /**
-     * Obtiene la ruta local del logo de la sucursal asociada a una compra.
+     * Obtiene la imagen en base64 del logo de la sucursal asociada a una compra.
      *
      * @param int $compraId
      * @return string|null
@@ -18,11 +17,30 @@ if (! function_exists('get_logo_sucursal')) {
 
         /* Si la compra existe y tiene una sucursal asociada */
         if ($compra && $compra->sucursales) {
-            /* Retornamos la ruta local del logo en storage */
-            return public_path('storage/' . $compra->sucursales->logo);
+            $logo = $compra->sucursales->logo;
+
+            // Verifica si el logo tiene ya la ruta completa o solo el nombre del archivo
+            $logoPath = public_path('assets/img/logosSucursales/' . basename($logo));
+
+            /* Si el archivo existe, convertirlo a base64 */
+            if (file_exists($logoPath)) {
+                // Obtenemos el tipo de archivo (extensión)
+                $type = pathinfo($logoPath, PATHINFO_EXTENSION);
+                
+                // Leer el archivo y codificarlo en base64
+                $data = file_get_contents($logoPath);
+                
+                // Retornar la cadena base64 para la imagen
+                return 'data:image/' . $type . ';base64,' . base64_encode($data);
+            } else {
+                // Si no se encuentra el archivo, retornar un mensaje de error
+                return 'Archivo logo no encontrado en la ruta ' . $logoPath;
+            }
         }
 
-        /* Si no se encuentra el logo, retornar null */
+        /* Si no se encuentra la sucursal o el logo, retornar null */
         return null;
     }
 }
+
+

@@ -10,6 +10,10 @@ import EmpresaList from "./EmpresaList/EmpresaList";
 
 
 function Index({ auth, empresas, paginacion }) {
+
+    const permissions = auth.permissions || [];
+    const can = (permissionName) => permissions.includes(permissionName);
+
     const [showModal, setShowModal] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [empresaId, setEmpresaId] = useState(null);
@@ -147,7 +151,7 @@ function Index({ auth, empresas, paginacion }) {
     const handleShowSucursalModal = async (empresa) => {
         openSucursalModal(empresa); // Abrimos el modal
         setSucursalData(empresa);   // Guardamos los datos de la empresa seleccionada
-    
+
         try {
             const response = await fetch(`/sucursales?empresa_id=${empresa.id}`);
             const data = await response.json();
@@ -156,7 +160,7 @@ function Index({ auth, empresas, paginacion }) {
             console.error("Error al obtener las sucursales:", error);
         }
     };
-    
+
 
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
@@ -164,17 +168,22 @@ function Index({ auth, empresas, paginacion }) {
 
             <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                    <button className="btn btn-outline-success" onClick={openModal}>
-                        <i className="bi bi-plus-circle"> Nueva Empresa</i>
-                    </button>
+                    {can('empresa_create') && (
+                        <button className="btn btn-outline-success" onClick={openModal}>
+                            <i className="bi bi-plus-circle"></i>
+                        </button>
+                    )}
                 </div>
-                
+
                 <div className="card-body">
                     <EmpresaList
                         empresas={empresas}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
-                        onShowSucursalModal={handleShowSucursalModal} // Pasamos la función aquí
+                        onShowSucursalModal={handleShowSucursalModal}
+                        canEdit={can('empresa_edit')}
+                        canDelete={can('empresa_delete')}
+                        canSucursalcreate={can('sucursal_create')}
                     />
 
                     {/* Paginación */}
@@ -225,7 +234,7 @@ function Index({ auth, empresas, paginacion }) {
             <FormSucursalModal
                 show={showSucursalModal}
                 onClose={closeSucursalModal}
-                onSubmit={() => {} /* Implementa la lógica para manejar la sucursal */}
+                onSubmit={() => { } /* Implementa la lógica para manejar la sucursal */}
                 sucursalData={sucursalData}
             />
         </AuthenticatedLayout>

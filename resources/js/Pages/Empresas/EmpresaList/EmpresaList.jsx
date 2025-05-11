@@ -1,6 +1,6 @@
 // resources/js/Pages/Empresas/EmpresaList.jsx
 
-function EmpresaList({ empresas, onEdit, onDelete, onShowModal, onShowSucursalModal }) {
+function EmpresaList({ empresas, onEdit, onDelete, onShowModal, onShowSucursalModal, canEdit, canDelete, canSucursalcreate }) {
     return (
         <table className="table table-hover">
             <thead>
@@ -17,15 +17,23 @@ function EmpresaList({ empresas, onEdit, onDelete, onShowModal, onShowSucursalMo
                         <td>{empresa.nrc}</td>
                         <td>{empresa.giro}</td>
                         <td>
-                            <button className="btn btn-success btn-sm me-1" onClick={() => onEdit(empresa)}>
-                                <i className="bi bi-pencil-square"></i>
-                            </button>
-                            <button className="btn btn-danger btn-sm me-1" onClick={() => onDelete(empresa.id)}>
-                                <i className="bi bi-trash"></i>
-                            </button>
-                            <button className="btn btn-primary btn-sm me-3" onClick={() => onShowSucursalModal(empresa)}>
-                                <i className="bi bi-building"></i> Crear Sucursal
-                            </button>
+                            {canEdit && (
+                                <button className="btn btn-success btn-sm me-1" onClick={() => onEdit(empresa)}>
+                                    <i className="bi bi-pencil-square"></i>
+                                </button>
+                            )}
+
+                            {canDelete && (
+                                <button className="btn btn-danger btn-sm me-1" onClick={() => onDelete(empresa.id)}>
+                                    <i className="bi bi-trash"></i>
+                                </button>
+                            )}
+
+                            {canSucursalcreate && (
+                                <button className="btn btn-primary btn-sm me-3" onClick={() => onShowSucursalModal(empresa)}>
+                                    <i className="bi bi-building"></i> Crear Sucursal
+                                </button>
+                            )}
                         </td>
                     </tr>
                 ))}

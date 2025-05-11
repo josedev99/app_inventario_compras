@@ -4,8 +4,9 @@ function Sidebar() {
 
     const { auth } = usePage().props;
     const permissions = auth.permissions || [];
-
-    const can = (permissionName) => permissions.includes(permissionName)
+    const can = (permissionName) => permissions.includes(permissionName);
+    const { appLogo } = usePage().props;
+    const logoUrl = appLogo;
 
     return (
         <>
@@ -14,14 +15,14 @@ function Sidebar() {
                 <div className="sidebar-logo">
                     {/* Logo Header */}
                     <div className="logo-header" data-background-color="dark">
-                        <a href="index.html" className="logo">
+                        <Link href={route('home.index')} className="logo">
                             <img
-                                src="assets/img/kaiadmin/ol.png"
+                                src={logoUrl}
                                 alt="navbar brand"
                                 className="navbar-brand"
-                                width={150}
+                                width={200}
                             />
-                        </a>
+                        </Link>
                         <div className="nav-toggle">
                             <button className="btn btn-toggle toggle-sidebar">
                                 <i className="gg-menu-right" />
@@ -39,13 +40,14 @@ function Sidebar() {
                 <div className="sidebar-wrapper scrollbar scrollbar-inner">
                     <div className="sidebar-content">
                         <ul className="nav nav-secondary">
+
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#dashboard" aria-expanded="false">
-                                    <i className="bi bi-speedometer fs-4" style={{ color: '#ced4da' }} />
-                                    <p>Inicio</p>
+                                <a data-bs-toggle="collapse" href="#sidebarHomedash">
+                                    <i className="bi bi-house fs-4" style={{ color: '#ced4da' }} />
+                                    <p>Home</p>
                                     <span className="caret" />
                                 </a>
-                                <div className="collapse" id="dashboard">
+                                <div className="collapse" id="sidebarHomedash">
                                     <ul className="nav nav-collapse">
                                         <li>
                                             <Link href={route('home.index')}>
@@ -55,6 +57,7 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
+
                             {can('modulo_finanzas') && (
                                 <li className="nav-item">
                                     <a data-bs-toggle="collapse" href="#sidebarFinanzas">
@@ -65,39 +68,46 @@ function Sidebar() {
                                     <div className="collapse" id="sidebarFinanzas">
                                         <ul className="nav nav-collapse">
                                             <li>
-                                                <Link href={route('proveedores.index')}>
-                                                    <span className="sub-item">Proveedores</span>
-                                                </Link>
+                                                {can('proveedor_view') && (
+                                                    <Link href={route('proveedores.index')}>
+                                                        <span className="sub-item">Proveedores</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('compras.index')}>
-                                                    <span className="sub-item">Compras</span>
-                                                </Link>
+                                                {can('usuario_view') && (
+                                                    <Link href={route('user.index')}>
+                                                        <span className="sub-item">Usuarios</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('user.index')}>
-                                                    <span className="sub-item">Usuarios</span>
-                                                </Link>
+                                                {can('role_view') && (
+                                                    <Link href={route('roles.index')}>
+                                                        <span className="sub-item">Roles</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('roles.index')}>
-                                                    <span className="sub-item">Roles</span>
-                                                </Link>
+                                                {can('permisos_view') && (
+                                                    <Link href={route('permisos.index')}>
+                                                        <span className="sub-item">Permisos</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('permisos.index')}>
-                                                    <span className="sub-item">Permisos</span>
-                                                </Link>
+                                                {can('asignar_view') && (
+                                                    <Link href={route('asignar.index')}>
+                                                        <span className="sub-item">Asignar</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                             <li>
-                                                <Link href={route('asignar.index')}>
-                                                    <span className="sub-item">Asignar</span>
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link href={route('empresas.index')}>
-                                                    <span className="sub-item">Empresas</span>
-                                                </Link>
+                                                {can('empresa_view') && (
+                                                    <Link href={route('empresas.index')}>
+                                                        <span className="sub-item">Empresas</span>
+                                                    </Link>
+                                                )}
                                             </li>
                                         </ul>
                                     </div>
@@ -115,22 +125,37 @@ function Sidebar() {
                                 <div className="collapse" id="sidebarProviders">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="#">
-                                                <span className="sub-item">Pedidos</span>
-                                            </a>
+                                            {can('compras_view') && (
+                                                <Link href={route('compras.index')}>
+                                                    <span className="sub-item">Solicitud de compra</span>
+                                                </Link>
+                                            )}
                                         </li>
                                         <li>
-                                            <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
+                                            {can('compras_view') && (
+                                                <Link href={route('compras.index')}>
+                                                    <span className="sub-item">Ordenes de compra</span>
+                                                </Link>
+                                            )}
                                         </li>
                                         <li>
-                                            <Link href={route('proveedores.index')}>
-                                                <span className="sub-item">Proveedores</span>
-                                            </Link>
+                                            {can('productos_view') && (
+                                                <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
+                                            )}
                                         </li>
                                         <li>
-                                            <Link href={route('categorias.index')}>
-                                                <span className="sub-item">Categorías</span>
-                                            </Link>
+                                            {can('proveedor_view') && (
+                                                <Link href={route('proveedores.index')}>
+                                                    <span className="sub-item">Proveedores</span>
+                                                </Link>
+                                            )}
+                                        </li>
+                                        <li>
+                                            {can('category_view') && (
+                                                <Link href={route('categorias.index')}>
+                                                    <span className="sub-item">Categorías</span>
+                                                </Link>
+                                            )}
                                         </li>
                                     </ul>
                                 </div>
@@ -138,7 +163,7 @@ function Sidebar() {
 
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarBodega">
-                                    <i class="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
+                                    <i className="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
                                     <p>Bodega</p>
                                     <span className="caret" />
                                 </a>
@@ -156,7 +181,7 @@ function Sidebar() {
                                         </li>
                                         <li>
                                             <Link href={route('inv.ingreso.index')}>
-                                                <span className="sub-item">Entrdas</span>
+                                                <span className="sub-item">Entradas</span>
                                             </Link>
                                         </li>
                                         <li>
