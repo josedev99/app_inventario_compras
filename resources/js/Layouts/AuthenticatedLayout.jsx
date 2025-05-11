@@ -3,10 +3,12 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
-export default function Authenticated({ user,sidebar, header, children }) {
+export default function Authenticated({ user, sidebar, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const { appLogo } = usePage().props;
+    const logoUrl = appLogo;
 
     return (
         <div className="wrapper">
@@ -18,14 +20,14 @@ export default function Authenticated({ user,sidebar, header, children }) {
                     <div className="main-header-logo">
                         {/* Logo Header */}
                         <div className="logo-header" data-background-color="dark">
-                            <a href="index.html" className="logo">
+                            <Link href={route('home.index')} className="logo">
                                 <img
-                                    src="assets/img/kaiadmin/logo_light.svg"
+                                    src={logoUrl}
                                     alt="navbar brand"
                                     className="navbar-brand"
-                                    height={20}
+                                    height={210}
                                 />
-                            </a>
+                            </Link>
                             <div className="nav-toggle">
                                 <button className="btn btn-toggle toggle-sidebar">
                                     <i className="gg-menu-right" />

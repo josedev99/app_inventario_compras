@@ -4,8 +4,9 @@ function Sidebar() {
 
     const { auth } = usePage().props;
     const permissions = auth.permissions || [];
-
-    const can = (permissionName) => permissions.includes(permissionName)
+    const can = (permissionName) => permissions.includes(permissionName);
+    const { appLogo } = usePage().props;
+    const logoUrl = appLogo;
 
     return (
         <>
@@ -16,7 +17,7 @@ function Sidebar() {
                     <div className="logo-header" data-background-color="dark">
                         <a href="index.html" className="logo">
                             <img
-                                src="assets/img/kaiadmin/grupo.png"
+                                src={logoUrl}
                                 alt="navbar brand"
                                 className="navbar-brand"
                                 width={200}
