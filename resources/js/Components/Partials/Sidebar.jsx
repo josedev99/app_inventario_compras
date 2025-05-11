@@ -15,14 +15,14 @@ function Sidebar() {
                 <div className="sidebar-logo">
                     {/* Logo Header */}
                     <div className="logo-header" data-background-color="dark">
-                        <a href="index.html" className="logo">
+                        <Link href={route('home.index')} className="logo">
                             <img
                                 src={logoUrl}
                                 alt="navbar brand"
                                 className="navbar-brand"
                                 width={200}
                             />
-                        </a>
+                        </Link>
                         <div className="nav-toggle">
                             <button className="btn btn-toggle toggle-sidebar">
                                 <i className="gg-menu-right" />
@@ -40,13 +40,14 @@ function Sidebar() {
                 <div className="sidebar-wrapper scrollbar scrollbar-inner">
                     <div className="sidebar-content">
                         <ul className="nav nav-secondary">
+
                             <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#dashboard" aria-expanded="false">
-                                    <i className="bi bi-speedometer fs-4" style={{ color: '#ced4da' }} />
-                                    <p>Inicio</p>
+                                <a data-bs-toggle="collapse" href="#sidebarHomedash">
+                                    <i className="bi bi-house fs-4" style={{ color: '#ced4da' }} />
+                                    <p>Home</p>
                                     <span className="caret" />
                                 </a>
-                                <div className="collapse" id="dashboard">
+                                <div className="collapse" id="sidebarHomedash">
                                     <ul className="nav nav-collapse">
                                         <li>
                                             <Link href={route('home.index')}>
@@ -56,7 +57,6 @@ function Sidebar() {
                                     </ul>
                                 </div>
                             </li>
-
 
                             {can('modulo_finanzas') && (
                                 <li className="nav-item">
