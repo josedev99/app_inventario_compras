@@ -154,6 +154,9 @@ const ViewDetails = ({ auth, compras }) => {
                             <Button variant="success" size="sm" onClick={handleGenerateExcel}>
                                 Generar Excel <i className="bi bi-file-earmark-excel-fill ms-1"></i>
                             </Button>
+                            <Button variant="danger" size="sm" onClick={handleGeneratePDF}>
+                                Enviar a Finanzas <i className="bi bi-file-earmark-pdf-fill ms-1"></i>
+                            </Button>
                             <Link
                                 href={route('compras.index')}
                                 title="Regresar"

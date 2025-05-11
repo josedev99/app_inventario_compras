@@ -75,13 +75,6 @@ function Sidebar() {
                                                 )}
                                             </li>
                                             <li>
-                                                {can('compras_view') && (
-                                                    <Link href={route('compras.index')}>
-                                                        <span className="sub-item">Compras</span>
-                                                    </Link>
-                                                )}
-                                            </li>
-                                            <li>
                                                 {can('usuario_view') && (
                                                     <Link href={route('user.index')}>
                                                         <span className="sub-item">Usuarios</span>
@@ -132,9 +125,11 @@ function Sidebar() {
                                 <div className="collapse" id="sidebarProviders">
                                     <ul className="nav nav-collapse">
                                         <li>
-                                            <a href="#">
-                                                <span className="sub-item">Pedidos</span>
-                                            </a>
+                                            {can('compras_view') && (
+                                                <Link href={route('compras.index')}>
+                                                    <span className="sub-item">Solicitud de compra</span>
+                                                </Link>
+                                            )}
                                         </li>
                                         <li>
                                             {can('productos_view') && (
@@ -161,7 +156,7 @@ function Sidebar() {
 
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarBodega">
-                                    <i class="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
+                                    <i className="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
                                     <p>Bodega</p>
                                     <span className="caret" />
                                 </a>

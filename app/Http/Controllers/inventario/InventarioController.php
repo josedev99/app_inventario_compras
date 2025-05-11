@@ -76,7 +76,7 @@ class InventarioController extends Controller
 
             foreach ($productos as $producto) {
 
-                $productoId = $producto['producto_id'] ?? $producto['id'] ?? null;
+                $productoId = $producto['producto_id'];
                 $cantidad = $producto['cantidad'];
                 $precio = 0;
 

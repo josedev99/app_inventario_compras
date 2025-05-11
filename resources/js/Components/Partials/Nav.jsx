@@ -122,10 +122,10 @@ function Nav() {
                                     </div>
                                 </li>
                                 <li>
-                                    <a className="see-all" href="javascript:void(0);">
+                                    {/* <a className="see-all" href="javascript:void(0);">
                                         See all messages
                                         <i className="bi bi-envelope" />
-                                    </a>
+                                    </a> */}
                                 </li>
                             </ul>
                         </li>
@@ -192,10 +192,10 @@ function Nav() {
                                     </div>
                                 </li>
                                 <li>
-                                    <a className="see-all" href="javascript:void(0);">
+                                    {/* <a className="see-all" href="javascript:void(0);">
                                         See all notifications
                                         <i className="bi bi-arrow-90deg-right" />
-                                    </a>
+                                    </a> */}
                                 </li>
                             </ul>
                         </li>
