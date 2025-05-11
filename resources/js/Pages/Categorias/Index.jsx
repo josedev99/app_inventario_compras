@@ -10,6 +10,12 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default function Index({ auth }) {
+
+    const permissions = auth.permissions || [];
+
+    const can = (permissionName) => permissions.includes(permissionName);
+
+
     const [showModal, setShowModal] = useState(false);
     const [categorias, setCategorias] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -63,12 +69,17 @@ export default function Index({ auth }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(row)}>
-                        <i className="bi bi-pencil-square"></i>
-                    </Button>
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)} className="ms-1">
-                        <i className="bi bi-trash"></i>
-                    </Button>
+                    {can('category_edit') && (
+                        <Button variant="outline-info" size="sm" onClick={() => handleEdit(row)}>
+                            <i className="bi bi-pencil-square"></i>
+                        </Button>
+                    )}
+
+                    {can('category_delete') && (
+                        <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)} className="ms-1">
+                            <i className="bi bi-trash"></i>
+                        </Button>
+                    )}
                 </div>
             ),
             ignoreRowClick: true,
@@ -135,13 +146,15 @@ export default function Index({ auth }) {
             />
             <Card>
                 <Card.Header>
-                    <Button onClick={() => {
-                        setEditMode(false);
-                        setCategoriaToEdit(null);
-                        setShowModal(true);
-                    }} variant='outline-success' size='sm'>
-                        <i className="bi bi-plus-circle"></i> Nueva categoría
-                    </Button>
+                    {can('category_create') && (
+                        <Button onClick={() => {
+                            setEditMode(false);
+                            setCategoriaToEdit(null);
+                            setShowModal(true);
+                        }} variant='outline-success' size='sm'>
+                            <i className="bi bi-plus-circle"></i> Nueva categoría
+                        </Button>
+                    )}
                     <FormControl
                         type="text"
                         placeholder="Buscar..."

@@ -10,6 +10,10 @@ import FormProduct from './Modal/FormProduct';
 import Swal from 'sweetalert2';
 
 export default function Index({ auth, categorias }) {
+
+    const permissions = auth.permissions || [];
+    const can = (permissionName) => permissions.includes(permissionName);
+
     const [productos, setProductos] = useState([]);
     const [producto, setProducto] = useState({});
     const [totalRows, setTotalRows] = useState(0);
@@ -125,12 +129,16 @@ export default function Index({ auth, categorias }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
-                        <i className="bi bi-pencil-square"></i>
-                    </Button>{' '}
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
-                        <i className="bi bi-trash"></i>
-                    </Button>
+                    {can('productos_edit') && (
+                        <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
+                            <i className="bi bi-pencil-square"></i>
+                        </Button>
+                    )}{' '}
+                    {can('productos_delete') && (
+                        <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
+                            <i className="bi bi-trash"></i>
+                        </Button>
+                    )}
                 </div>
             ),
             ignoreRowClick: true,
@@ -161,12 +169,14 @@ export default function Index({ auth, categorias }) {
             }
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
-                    <Button onClick={() => {
-                        setShowModal(true);
-                        setEditing(false);
-                    }} variant='outline-success' size='sm'>
-                        <i className="bi bi-plus-circle"></i> Nuevo producto
-                    </Button>
+                    {can('productos_create') && (
+                        <Button onClick={() => {
+                            setShowModal(true);
+                            setEditing(false);
+                        }} variant='outline-success' size='sm'>
+                            <i className="bi bi-plus-circle"></i> Nuevo producto
+                        </Button>
+                    )}
                     <input
                         type="text"
                         className="form-control form-control-sm w-25"

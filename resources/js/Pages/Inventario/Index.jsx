@@ -10,6 +10,10 @@ import Swal from 'sweetalert2';
 import FormIngModal from './components/FormIngModal';
 
 export default function Index({ auth, productos }) {
+
+    const permissions = auth.permissions || [];
+    const can = (permissionName) => permissions.includes(permissionName);
+
     const [productoStocks, setproductoStocks] = useState([]);
     const [totalRows, setTotalRows] = useState(0);
     const [perPage, setPerPage] = useState(10);
@@ -59,12 +63,12 @@ export default function Index({ auth, productos }) {
     };
 
     const handleEdit = id => {
-        let productoFind = productoStocks.find((item)=>parseInt(item.id) === parseInt(id));
+        let productoFind = productoStocks.find((item) => parseInt(item.id) === parseInt(id));
         setShowModal(true);
     };
 
     const handleDelete = id => {
-        let productFind = productoStocks.find((producto)=> parseInt(producto.id) === parseInt(id))
+        let productFind = productoStocks.find((producto) => parseInt(producto.id) === parseInt(id))
         Swal.fire({
             title: "¿Estás seguro?",
             text: `Esta acción eliminará el producto: "${productFind.nombre}".`,
@@ -74,38 +78,38 @@ export default function Index({ auth, productos }) {
             cancelButtonColor: "#d33",
             confirmButtonText: "Sí, eliminar",
             cancelButtonText: "Cancelar"
-          }).then((result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
-              axios.post(route('producto.destroy'), { id })
-                .then((response) => {
-                  if (response.data.status) {
-                    Swal.fire({
-                      icon: 'success',
-                      title: '¡Producto eliminado!',
-                      text: response.data.message,
-                      confirmButtonText: 'Aceptar'
+                axios.post(route('producto.destroy'), { id })
+                    .then((response) => {
+                        if (response.data.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Producto eliminado!',
+                                text: response.data.message,
+                                confirmButtonText: 'Aceptar'
+                            });
+                            setReloadDt(true);
+                        } else {
+                            Swal.fire({
+                                title: '¡Error!',
+                                text: response.data.message,
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error al intentar eliminar el producto:', error);
+                        Swal.fire({
+                            title: '¡Error inesperado!',
+                            text: 'Ocurrió un problema al intentar eliminar el producto. Por favor, intenta nuevamente.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
                     });
-                    setReloadDt(true);
-                  } else {
-                    Swal.fire({
-                      title: '¡Error!',
-                      text: response.data.message,
-                      icon: 'error',
-                      confirmButtonText: 'Aceptar'
-                    });
-                  }
-                })
-                .catch((error) => {
-                  console.error('Error al intentar eliminar el producto:', error);
-                  Swal.fire({
-                    title: '¡Error inesperado!',
-                    text: 'Ocurrió un problema al intentar eliminar el producto. Por favor, intenta nuevamente.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                  });
-                });
             }
-          });
+        });
     };
 
     const columns = [
@@ -119,12 +123,15 @@ export default function Index({ auth, productos }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
-                        <i className="bi bi-pencil-square"></i>
-                    </Button>{' '}
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
-                        <i className="bi bi-trash"></i>
-                    </Button>
+                    {can('inventarios_edit') && (
+                        <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
+                            <i className="bi bi-pencil-square"></i>
+                        </Button>)}{' '}
+                    {can('inventarios_delete') && (
+                        <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
+                            <i className="bi bi-trash"></i>
+                        </Button>
+                    )}
                 </div>
             ),
             ignoreRowClick: true,
@@ -150,11 +157,13 @@ export default function Index({ auth, productos }) {
             <FormIngModal title="Ingreso de productoStocks a inventario" setReloadDt={setReloadDt} dataProducto={productos} showModal={showModal} setShowModal={setShowModal} />
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
-                    <Button onClick={() => {
-                        setShowModal(true);
-                    }} variant='outline-success' size='sm'>
-                        <i className="bi bi-plus-circle"></i> Ingreso
-                    </Button>
+                    {can('inventarios_create') && (
+                        <Button onClick={() => {
+                            setShowModal(true);
+                        }} variant='outline-success' size='sm'>
+                            <i className="bi bi-plus-circle"></i> Ingreso
+                        </Button>
+                    )}
                     <input
                         type="text"
                         className="form-control form-control-sm w-25"

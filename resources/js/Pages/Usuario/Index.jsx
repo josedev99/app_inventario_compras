@@ -10,6 +10,10 @@ import FormUser from './Components/FormUser';
 import Swal from 'sweetalert2';
 
 export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
+
+    const permissions = auth.permissions || [];
+    const can = (permissionName) => permissions.includes(permissionName);
+
     const [users, setUsers] = useState([]);
     const [user, setUser] = useState({});
     const [empresas, setEmpresas] = useState([]);
@@ -118,12 +122,16 @@ export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
-                        <i className="bi bi-pencil-square"></i>
-                    </Button>{' '}
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
-                        <i className="bi bi-trash"></i>
-                    </Button>
+                    {can('usuario_edit') && (
+                        <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
+                            <i className="bi bi-pencil-square"></i>
+                        </Button>
+                    )}{' '}
+                    {can('usuario_delete') && (
+                        <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
+                            <i className="bi bi-trash"></i>
+                        </Button>
+                    )}
                 </div>
             ),
             ignoreRowClick: true,
@@ -155,13 +163,14 @@ export default function Index({ auth, dataEmpresas, dataSucursales, roles }) {
             }
             <Card>
                 <Card.Header className="d-flex justify-content-between align-items-center">
-                    <Button variant='outline-success' size='sm' onClick={() => {
-                        setShowModal(true);
-                        setEditing(false);
-                    }}>
-                        <i className="bi bi-plus-circle"></i> Nuevo usuario
-                    </Button>
-
+                    {can('usuario_create') && (
+                        <Button variant='outline-success' size='sm' onClick={() => {
+                            setShowModal(true);
+                            setEditing(false);
+                        }}>
+                            <i className="bi bi-plus-circle"></i> Nuevo usuario
+                        </Button>
+                    )}
                     <input
                         type="text"
                         className="form-control form-control-sm w-25"

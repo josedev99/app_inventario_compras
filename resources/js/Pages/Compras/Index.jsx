@@ -10,6 +10,10 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default function Index({ auth, proveedores, empresas, sucursales }) {
+
+    const permissions = auth.permissions || [];
+    const can = (permissionName) => permissions.includes(permissionName);
+
     const [showModal, setShowModal] = useState(false);
     const [compras, setCompras] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -80,10 +84,51 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
             cell: row => (
                 <div className="d-flex align-items-center">
                     {row.estado !== 'PAGADO' ? (
-                        <Link
-                            href={route('compras.adddetallesdeCompra', row.id)}
-                            title="Agregar detalles de compra"
-                            className="btn btn-outline-dark d-flex align-items-center justify-content-center"
+                        can('compras_detallesadd') && (
+                            <Link
+                                href={route('compras.adddetallesdeCompra', row.id)}
+                                title="Agregar detalles de compra"
+                                className="btn btn-outline-dark d-flex align-items-center justify-content-center"
+                                style={{
+                                    fontSize: '15px',
+                                    height: '32px',
+                                    width: '32px',
+                                    padding: '0',
+                                    lineHeight: '0',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <i className="bi bi-journal-plus" style={{ fontSize: '15px' }}></i>
+                            </Link>
+                        )
+                    ) : (
+                        can('compras_viewdetails') && (
+                            <Link
+                                href={route('compras.viewDetailsCompras', row.id)}
+                                title="Ver detalles"
+                                className="btn btn-outline-warning d-flex align-items-center justify-content-center"
+                                style={{
+                                    fontSize: '15px',
+                                    height: '32px',
+                                    padding: '0 10px',
+                                    lineHeight: '0',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <i className="bi bi-journal-album" style={{ fontSize: '15px' }}></i>
+                            </Link>
+                        )
+                    )}
+
+                    {can('compras_delete') && (
+                        <Button
+                            variant="outline-danger"
+                            onClick={() => handleDelete(row.id)}
+                            className="ms-1 d-flex align-items-center justify-content-center"
                             style={{
                                 fontSize: '15px',
                                 height: '32px',
@@ -95,44 +140,9 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
                                 alignItems: 'center'
                             }}
                         >
-                            <i className="bi bi-journal-plus" style={{ fontSize: '15px' }}></i>
-                        </Link>
-                    ) : (
-                        <Link
-                            href={route('compras.viewDetailsCompras', row.id)}
-                            title="Ver detalles"
-                            className="btn btn-outline-warning d-flex align-items-center justify-content-center"
-                            style={{
-                                fontSize: '15px',
-                                height: '32px',
-                                padding: '0 10px',
-                                lineHeight: '0',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
-                        >
-                            <i className="bi bi-journal-album" style={{ fontSize: '15px' }}></i>
-                        </Link>
+                            <i className="bi bi-trash" style={{ fontSize: '15px' }}></i>
+                        </Button>
                     )}
-
-                    <Button
-                        variant="outline-danger"
-                        onClick={() => handleDelete(row.id)}
-                        className="ms-1 d-flex align-items-center justify-content-center"
-                        style={{
-                            fontSize: '15px',
-                            height: '32px',
-                            width: '32px',
-                            padding: '0',
-                            lineHeight: '0',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <i className="bi bi-trash" style={{ fontSize: '15px' }}></i>
-                    </Button>
                 </div>
             ),
             ignoreRowClick: true,
@@ -194,9 +204,11 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
             />
             <Card>
                 <Card.Header>
-                    <Button onClick={() => setShowModal(true)} variant='outline-success' size='sm'>
-                        <i className="bi bi-plus-circle"></i> Nueva compra
-                    </Button>
+                    {can('compras_create') && (
+                        <Button onClick={() => setShowModal(true)} variant='outline-success' size='sm'>
+                            <i className="bi bi-plus-circle"></i> Nueva compra
+                        </Button>
+                    )}
                     <FormControl
                         type="text"
                         placeholder="Buscar..."

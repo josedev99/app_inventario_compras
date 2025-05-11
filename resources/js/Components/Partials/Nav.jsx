@@ -1,6 +1,11 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 function Nav() {
+
+    const { auth } = usePage().props;
+
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user?.name || 'User')}&background=0D8ABC&color=fff&size=50`;
+
     return (
         <>
             {/* Navbar Header */}
@@ -273,15 +278,11 @@ function Nav() {
                             >
                                 <div className="avatar-sm">
                                     <img
-                                        src="assets/img/profile.jpg"
+                                        src={avatarUrl}
                                         alt="..."
                                         className="avatar-img rounded-circle"
                                     />
                                 </div>
-                                <span className="profile-username">
-                                    <span className="op-7">Hola,</span>
-                                    <span className="fw-bold">Hizrian</span>
-                                </span>
                             </a>
                             <ul className="dropdown-menu dropdown-user animated fadeIn">
                                 <div className="dropdown-user-scroll scrollbar-outer">
@@ -289,14 +290,14 @@ function Nav() {
                                         <div className="user-box">
                                             <div className="avatar-lg">
                                                 <img
-                                                    src="assets/img/profile.jpg"
+                                                    src={avatarUrl}
                                                     alt="image profile"
                                                     className="avatar-img rounded"
                                                 />
                                             </div>
                                             <div className="u-text">
-                                                <h4>Hizrian</h4>
-                                                <p className="text-muted">hello@example.com</p>
+                                                <h4>{auth?.user?.nombre}</h4>
+                                                <p className="text-muted">{auth?.user?.email}</p>
                                                 <a
                                                     href="profile.html"
                                                     className="btn btn-xs btn-secondary btn-sm"

@@ -147,12 +147,17 @@ class ConfiguracionesSeeder extends Seeder
         //inventarios
         Permission::create(['name' => 'inventarios_view']);
         Permission::create(['name' => 'inventarios_create']);
+        Permission::create(['name' => 'inventarios_edit']);
+        Permission::create(['name' => 'inventarios_delete']);
         Permission::create(['name' => 'inventarios_entrdas']);
         Permission::create(['name' => 'inventarios_salidas']);
         Permission::create(['name' => 'inventarios_movimentos']);
 
         //pedidos
+        Permission::create(['name' => 'pedido_view']);
         Permission::create(['name' => 'nuevo_pedido']);
+        Permission::create(['name' => 'pedido_pdf']);
+        Permission::create(['name' => 'pedido_details']);
 
         Empresa::create([
             'nombre' => 'GRUPO GUERRERO',
