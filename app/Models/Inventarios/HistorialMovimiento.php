@@ -15,6 +15,7 @@ class HistorialMovimiento extends Model
     protected $table = 'historial_movimientos';
 
     protected $fillable = [
+        'codigo',
         'cantidad',
         'precio_unitario',
         'precio_venta',
@@ -22,6 +23,7 @@ class HistorialMovimiento extends Model
         'producto_id',
         'empresa_id',
         'sucursal_id',
+        'usuario_id'
     ];
 
     public function productos()

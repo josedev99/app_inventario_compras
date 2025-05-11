@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\inventario;
 
 use App\Http\Controllers\Controller;
+use App\Models\Empresa\Empresa;
 use App\Models\Inventarios\HistorialMovimiento;
 use App\Models\Inventarios\Inventario;
 use App\Models\Productos\Producto;
+use App\Models\Sucursales\Sucursal;
+use App\Models\User;
+use App\Services\GenerateCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class InventarioController extends Controller
 {
@@ -68,23 +73,23 @@ class InventarioController extends Controller
     }
 
     //Listar movimientos
-    public function getEntradaStock(Request $request){
+    public function getEntradaMov(Request $request){
         $empresaId = Auth::user()->empresa_id;
 
         $historialIngreso = DB::table('historial_movimientos as hm')
-            ->join('productos as p', function($join) {
-                $join->on('hm.producto_id', '=', 'p.id')
-                    ->on('hm.empresa_id', '=', 'p.empresa_id');
+            ->join('users as u', function($join) {
+                $join->on('hm.usuario_id', '=', 'u.id')
+                    ->on('hm.empresa_id', '=', 'u.empresa_id');
             })
             ->where('hm.empresa_id', $empresaId)
             ->orderBy('hm.id','desc')
+            ->groupBy('hm.codigo')
             ->select(
                 'hm.id',
                 DB::raw('DATE_FORMAT(hm.created_at,"%d/%m/%Y") as fecha'),
-                'p.codigo',
-                'p.nombre as descripcion',
-                'p.Umedida',
-                'hm.cantidad'
+                'hm.codigo',
+                DB::raw("SUM(hm.cantidad) as cantidad"),
+                'u.nombre'
             );
 
         return DataTables::of($historialIngreso)
@@ -92,13 +97,23 @@ class InventarioController extends Controller
             ->filter(function ($query) use ($request) {
                 if ($search = $request->input('search.value')) {
                     $query->where(function ($q) use ($search) {
-                        $q->where('p.codigo', 'like', "%{$search}%")
-                        ->orWhere('p.nombre', 'like', "%{$search}%")
-                        ->orWhere('p.Umedida', 'like', "%{$search}%");
+                        $q->where('codigo', 'like', "%{$search}%")
+                        ->orWhere('fecha', 'like', "%{$search}%")
+                        ->orWhere('nombre', 'like', "%{$search}%");
                     });
                 }
             })
             ->make(true);
+    }
+
+    //Obtener el historial de ingreso
+    public function getDetalleMov(){
+        $empresaId = Auth::user()->empresa_id;
+        $codigo = request()->get('codigo');
+        
+        $detalle = DB::select("select hm.id,hm.cantidad,p.codigo,p.nombre,p.Umedida from historial_movimientos as hm inner join productos as p on hm.producto_id=p.id where hm.codigo = ? and hm.empresa_id = ?",[$codigo,$empresaId]);
+
+        return response()->json($detalle);
     }
 
     //Realizar la busqueda de productos mediante codigo de compra
@@ -115,9 +130,12 @@ class InventarioController extends Controller
     {
         $empresaId = Auth::user()->empresa_id;
         $sucursalId = Auth::user()->sucursal_id;
+        $usuario_id = Auth::user()->id;
         try {
             DB::beginTransaction();
             $productos = json_decode($request->input('productos'), true);
+
+            $code_mov = GenerateCode::generarMov("MOV");
 
             foreach ($productos as $producto) {
                 $productoId = $producto['id'];
@@ -143,6 +161,7 @@ class InventarioController extends Controller
                 }
                 //Guardar historial
                 HistorialMovimiento::create([
+                    'codigo' => $code_mov,
                     'cantidad' => $cantidad,
                     'precio_unitario' => 0.00,
                     'precio_venta' => 0.00,
@@ -150,6 +169,7 @@ class InventarioController extends Controller
                     'producto_id' => $productoId,
                     'empresa_id' => $empresaId,
                     'sucursal_id' => $sucursalId,
+                    'usuario_id' => $usuario_id
                 ]);
             }
             DB::commit();
@@ -165,5 +185,28 @@ class InventarioController extends Controller
             ], 500);
         }
         
+    }
+    //Generar documento PDF para ingreso a inventario
+    public function genPdfMovIngreso($codigo){
+        $userId = Auth::user()->id;
+        $empresaId = Auth::user()->empresa_id;
+        $codigo_mov = base64_decode($codigo);
+
+        $sucursal = Sucursal::where('empresa_id', $empresaId)->select('nombre','logo')->first();
+        $empresa = Empresa::where('id', $empresaId)->first();
+
+        $user = User::where('id',$userId)->first();
+
+        $detalle_mov = DB::select("select hm.id,DATE_FORMAT(hm.created_at,'%d/%m/%Y') as fecha,hm.cantidad,p.codigo,p.nombre,p.Umedida from historial_movimientos as hm inner join productos as p on hm.producto_id=p.id where hm.codigo = ? and hm.empresa_id = ?",[$codigo_mov,$empresaId]);
+
+        if(count($detalle_mov) > 0){
+            $fecha_mov = $detalle_mov[0]->fecha;
+        }else{
+            $fecha_mov = '';
+        }
+
+        $pdf = PDF::loadView('pdf.movIngresoInv', compact('detalle_mov','sucursal','empresa', 'user','fecha_mov','codigo_mov'));
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf->stream(date('d-m-Y'). "_ingreso_".$codigo_mov.".pdf");
     }
 }
