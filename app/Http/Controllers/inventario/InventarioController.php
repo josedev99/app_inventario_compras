@@ -17,7 +17,7 @@ class InventarioController extends Controller
     {
         $empresaId = Auth::user()->empresa_id;
         $productos = Producto::where('empresa_id', $empresaId)
-            ->select('id','codigo', DB::raw('CONCAT(codigo, " - ", nombre , " ", Umedida) as descripcion'))
+            ->select('id', 'codigo', DB::raw('CONCAT(codigo, " - ", nombre , " ", Umedida) as descripcion'))
             ->orderBy('nombre')
             ->get();
         return Inertia::render('Inventario/Index', compact('productos'));
@@ -28,7 +28,7 @@ class InventarioController extends Controller
         $empresaId = Auth::user()->empresa_id;
 
         $stocks = DB::table('inventarios as e')
-            ->join('productos as p', function($join) {
+            ->join('productos as p', function ($join) {
                 $join->on('e.producto_id', '=', 'p.id')
                     ->on('e.empresa_id', '=', 'p.empresa_id');
             })
@@ -49,8 +49,8 @@ class InventarioController extends Controller
                 if ($search = $request->input('search.value')) {
                     $query->where(function ($q) use ($search) {
                         $q->where('p.codigo', 'like', "%{$search}%")
-                        ->orWhere('p.nombre', 'like', "%{$search}%")
-                        ->orWhere('p.Umedida', 'like', "%{$search}%");
+                            ->orWhere('p.nombre', 'like', "%{$search}%")
+                            ->orWhere('p.Umedida', 'like', "%{$search}%");
                     });
                 }
             })
@@ -63,7 +63,7 @@ class InventarioController extends Controller
         $empresaId = Auth::user()->empresa_id;
         $codigo = $request->input('codigo');
 
-        $productos = DB::select("select dc.cantidad,dc.producto_id,p.codigo,concat(p.nombre, ' ',p.umedida) as descripcion from compras as c inner join detalle_compras as dc on c.id=dc.compra_id inner join productos as p on dc.producto_id=p.id where c.estado = 'PAGADO' and c.empresa_id = ? and c.codigo = ?",[$empresaId,$codigo]);
+        $productos = DB::select("select dc.cantidad,dc.producto_id,p.codigo,concat(p.nombre, ' ',p.umedida) as descripcion from compras as c inner join detalle_compras as dc on c.id=dc.compra_id inner join productos as p on dc.producto_id=p.id where c.estado = 'PAGADO' and c.empresa_id = ? and c.codigo = ?", [$empresaId, $codigo]);
         return response()->json($productos);
     }
 
@@ -75,7 +75,8 @@ class InventarioController extends Controller
             $productos = json_decode($request->input('productos'), true);
 
             foreach ($productos as $producto) {
-                $productoId = $producto['producto_id'];
+
+                $productoId = $producto['producto_id'] ?? $producto['id'] ?? null;
                 $cantidad = $producto['cantidad'];
                 $precio = 0;
 
@@ -109,6 +110,5 @@ class InventarioController extends Controller
                 'message' => 'Error al registrar el ingreso: ' . $e->getMessage(),
             ], 500);
         }
-        
     }
 }
