@@ -86,7 +86,7 @@
                     $logoBase64 = get_logo_sucursal($compras->id);
                 @endphp
                 @if ($logoBase64)
-                    {{-- <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;"> --}}
+                    <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;">
                 @else
                     <p>Logo no disponible</p>
                 @endif
