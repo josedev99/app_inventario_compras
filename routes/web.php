@@ -67,6 +67,9 @@ Route::middleware(['auth', 'estado'])->group(function () {
     Route::get('/generar/pdf/detalle/compras/{id}', [ComprasController::class, 'generarReportePdfDetalleCompras'])->name('compras.generarReportePdfDetalleCompras');
     Route::get('/generar/excel/compras/detalles/{id}', [ComprasController::class, 'generarReporteExcel'])->name('compras.generarReporteExcel');
 
+    //Routas para obtener los productos de pedidos
+    Route::get('/compra/obtener/productos/pedidos/{pedido_id}', [PedidosCompraController::class, 'getProductosById'])->name('pedido.obtener.productos.id');
+
     /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
     Route::post('/storeEmpresa', [EmpresaController::class, 'store'])->name('empresa.store');

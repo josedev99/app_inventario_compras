@@ -9,7 +9,7 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-export default function Index({ auth, proveedores, empresas, sucursales }) {
+export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
     const permissions = auth.permissions || [];
     const can = (permissionName) => permissions.includes(permissionName);
@@ -48,6 +48,10 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
         },
     };
 
+    const showPDF = (id) => {
+        window.open(route('compras.generarReportePdfDetalleCompras', btoa(id)), '_blank');
+    }
+
     const columns = [
         {
             name: '#',
@@ -83,46 +87,9 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
             name: 'Acciones',
             cell: row => (
                 <div className="d-flex align-items-center">
-                    {row.estado !== 'PAGADO' ? (
-                        can('compras_detallesadd') && (
-                            <Link
-                                href={route('compras.adddetallesdeCompra', row.id)}
-                                title="Agregar detalles de compra"
-                                className="btn btn-outline-dark d-flex align-items-center justify-content-center"
-                                style={{
-                                    fontSize: '15px',
-                                    height: '32px',
-                                    width: '32px',
-                                    padding: '0',
-                                    lineHeight: '0',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                <i className="bi bi-journal-plus" style={{ fontSize: '15px' }}></i>
-                            </Link>
-                        )
-                    ) : (
-                        can('compras_viewdetails') && (
-                            <Link
-                                href={route('compras.viewDetailsCompras', row.id)}
-                                title="Ver detalles"
-                                className="btn btn-outline-warning d-flex align-items-center justify-content-center"
-                                style={{
-                                    fontSize: '15px',
-                                    height: '32px',
-                                    padding: '0 10px',
-                                    lineHeight: '0',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                <i className="bi bi-journal-album" style={{ fontSize: '15px' }}></i>
-                            </Link>
-                        )
-                    )}
+                    <Button variant="outline-info" title='Imprimir detalles de la compra' size="sm" onClick={() => showPDF(row.id)}>
+                        <i className="bi bi-filetype-pdf"></i>
+                    </Button>{' '}
 
                     {can('compras_delete') && (
                         <Button
@@ -199,7 +166,7 @@ export default function Index({ auth, proveedores, empresas, sucursales }) {
                 onCompraCreated={fetchCompras}
                 onClose={handleModalClose}
                 proveedores={proveedores}
-                empresas={empresas}
+                pedidos={pedidos}
                 sucursales={sucursales}
             />
             <Card>

@@ -147,4 +147,14 @@ class PedidosCompraController extends Controller
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream(date('d-m-Y'). "_pedido_".$pedido['codigo'].".pdf");
     }
+
+    //Method implementado para obtener los productos de pedidos
+    public function getProductosById($pedido_id = 0){
+        $empresaId = Auth::user()->empresa_id;
+        $id = base64_decode($pedido_id);
+        
+        $detalle_pedido = DB::select("select p.id as producto_id,dp.id,dp.cantidad,p.codigo,p.nombre,p.Umedida, 0 as precio_unit from det_pedidos as dp inner join productos as p on dp.producto_id=p.id where dp.pedido_id = ? and dp.empresa_id = ?",[$id,$empresaId]);
+
+        return response()->json($detalle_pedido);
+    }
 }

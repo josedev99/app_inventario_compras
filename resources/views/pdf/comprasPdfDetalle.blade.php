@@ -6,52 +6,58 @@
     <title>Resumen de Compra #{{ $compras->id }}</title>
     <style>
         body {
-            font-family: 'Helvetica', sans-serif;
-            font-size: 11px;
-            margin: 25px;
-            color: #444;
+            font-family: Helvetica,sans-serif;
+            font-size: 12px;
+            color: #333;
+            margin: 15px 20px;
         }
 
-        .title {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #1c1c1c;
-        }
-
-        .logo {
-            width: 120px;
-        }
-
-        .section {
-            margin-bottom: 20px;
-        }
-
-        .section h4 {
-            margin-bottom: 6px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
+        h1, strong {
             color: #2c3e50;
-        }
-
-        .section p {
-            margin: 3px 0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-bottom: 6px;
         }
 
-        th,
-        td {
-            border: 1px solid #999;
-            padding: 6px 8px;
-            text-align: center;
+        th, td {
+            padding: 6px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
         }
 
         th {
-            background-color: #f0f0f0;
+            background-color: #f0efef;
+            color: #2c3e50;
+            padding: 4px;
+            border-bottom: 1px solid #dcdcdc;
+        }
+
+        .no-border td {
+            border: none;
+        }
+
+        .header {
+            margin-bottom: 10px;
+        }
+
+        .header-logo img {
+            width: 80px;
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .header-info {
+            text-align: right;
+            font-size: 12px;
         }
 
         .footer {
@@ -66,46 +72,47 @@
 
 <body>
 
-    <div class="title">Resumen Detallado de Compra #{{ $compras->id }}</div>
 
-    <div>
-        @php
-            $logoBase64 = get_logo_sucursal($compras->id);
-        @endphp
+    <table style="width: 100%;border-collapse:collapse">
 
+        <tr>
+            <td style="width: 33.33"></td>
+            <td style="width: 33.33;text-align:center">
+                <b style="font-size: 14px">{{ $compras->empresas->nombre ?? '-' }}</b> <br>
+                <strong>Bodega:</strong> {{ $compras->sucursales->nombre ?? '-' }}
+                <br><br> <span style="font-size: 13px">ORDE DE COMPRA # {{ $compras->codigo }}</span></td>
+            <td style="width: 33.33; text-align:center">
+                @php
+                    $logoBase64 = get_logo_sucursal($compras->id);
+                @endphp
+                @if ($logoBase64)
+                    {{-- <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;"> --}}
+                @else
+                    <p>Logo no disponible</p>
+                @endif
+            </td>
+        </tr>
 
+    </table>
 
-        @if ($logoBase64)
-            <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;">
-        @else
-            <p>Logo no disponible</p>
-        @endif
-    </div>
-
-
-
-
-
+    <table>
+        <tr>
+            <td style="width: 50%"><strong>Fecha de Compra:</strong> {{ $compras->created_at->format('d/m/Y H:i') }}</td>
+            <td style="width: 50%"><strong>Realizado por:</strong> {{ $compras->users->nombre ?? '-' }}</td>
+        </tr>
+    </table>
 
     <div class="section">
-        <h4>Datos Generales</h4>
-        <p><strong>Proveedor:</strong> {{ $compras->proveedores->nombre ?? '-' }}</p>
-        <p><strong>Empresa:</strong> {{ $compras->empresas->nombre ?? '-' }}</p>
-        <p><strong>Sucursal:</strong> {{ $compras->sucursales->nombre ?? '-' }}</p>
-        <p><strong>Usuario:</strong> {{ $compras->users->nombre ?? '-' }}</p>
-        <p><strong>Fecha de Compra:</strong> {{ $compras->created_at->format('d/m/Y H:i') }}</p>
-    </div>
-
-    <div class="section">
-        <h4>Detalles de Productos</h4>
+        <h4 style="text-align: center">DETALLES</h4>
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Total</th>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Descripción</th>
+                    <th style="text-align: center">Cantidad</th>
+                    <th style="text-align: center">Unidad</th>
+                    <th style="text-align: center">Precio Unitario</th>
+                    <th style="text-align: center">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,16 +120,17 @@
                 @foreach ($compras->detalles as $i => $detalle)
                     @php $total += $detalle->total; @endphp
                     <tr>
-                        <td>{{ $i + 1 }}</td>
+                        <td style="text-align: center">{{ $i + 1 }}</td>
                         <td>{{ $detalle->productos->nombre }}</td>
-                        <td>{{ $detalle->cantidad }}</td>
-                        <td>${{ number_format($detalle->costo_unitario, 2) }}</td>
-                        <td>${{ number_format($detalle->total, 2) }}</td>
+                        <td style="text-align: center">{{ $detalle->cantidad }}</td>
+                        <td style="text-align: center">{{ $detalle->productos->Umedida }}</td>
+                        <td style="text-align: right">${{ number_format($detalle->costo_unitario, 2) }}</td>
+                        <td style="text-align: right">${{ number_format($detalle->total, 2) }}</td>
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="4"><strong>Total General</strong></td>
-                    <td><strong>${{ number_format($total, 2) }}</strong></td>
+                    <td colspan="4" style="text-align: right"><strong>Total: </strong></td>
+                    <td style="text-align: right"><strong>${{ number_format($total, 2) }}</strong></td>
                 </tr>
             </tbody>
         </table>

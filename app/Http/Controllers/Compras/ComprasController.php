@@ -9,12 +9,16 @@ use App\Models\Compras\DetalleCompra;
 use App\Models\Empresa\Empresa;
 use App\Models\Inventarios\HistorialMovimiento;
 use App\Models\Inventarios\Inventario;
+use App\Models\Pedido;
 use App\Models\Productos\Producto;
 use App\Models\Proveedores\Proveedor;
 use App\Models\Sucursales\Sucursal;
-use Barryvdh\DomPDF\Facade\Pdf;
+//use Barryvdh\DomPDF\Facade\Pdf;
+use PDF;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
@@ -26,7 +30,7 @@ class ComprasController extends Controller
     {
         return Inertia::render('Compras/Index', [
             'proveedores' => Proveedor::select('id', 'nombre')->get(),
-            'empresas' => Empresa::select('id', 'nombre')->get(),
+            'pedidos' => Pedido::select('id', 'nombre', DB::raw('DATE_FORMAT(created_at,"%d/%m/%Y") as fecha'))->where('estado','Pendiente')->get(),
             'sucursales' => Sucursal::select('id', 'nombre')->get(),
         ]);
     }
@@ -45,18 +49,35 @@ class ComprasController extends Controller
     {
         try {
 
-            $codigoCompra = strtoupper('OC-' . Str::random(5));
+            $empresa_id = Auth::user()->empresa_id;
 
+            $codigoCompra = $this->genCodeCompra();
+            DB::beginTransaction();
             $compra = Compra::create([
+                'nombre' => $request->nombre,
                 'fecha_compra' => $request->fecha_compra,
                 'proveedor_id' => $request->proveedor_id,
-                'empresa_id' => $request->empresa_id,
+                'empresa_id' => $empresa_id,
                 'sucursal_id' => $request->sucursal_id,
-                'estado' => $request->estado,
+                'estado' => 'Pendiente',
                 'codigo' => $codigoCompra,
                 'user_id' => Auth::user()->id
             ]);
 
+            //Detalle de la compra
+            $detalle_productos = json_decode($request->productos);
+
+            foreach($detalle_productos as $item){
+                $total = $item->precio_unit * $item->cantidad;
+                DetalleCompra::create([
+                    'compra_id' => $compra->id,
+                    'producto_id' => $item->producto_id,
+                    'costo_unitario' => $item->precio_unit,
+                    'cantidad' => $item->cantidad,
+                    'total' => $total,
+                ]);
+            }
+            DB::commit();
             if ($compra) {
                 return response()->json([
                     'status' => 'success',
@@ -70,11 +91,26 @@ class ComprasController extends Controller
                 'message' => 'Hubo un problema al crear la compra.'
             ], 400);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'errors' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function genCodeCompra(){
+        $empresa_id = Auth::user()->empresa_id;
+        $ultimaCompra = Compra::where('empresa_id', $empresa_id)->orderBy('id','desc')->first();
+
+        if($ultimaCompra){
+            $expl_codigo = explode('-', $ultimaCompra['codigo']);
+            $correlativo = (int)$expl_codigo[1] + 1;
+            $codigo = "OC-" . $correlativo;
+        }else{
+            $codigo = "OC-1";
+        }
+        return $codigo;
     }
 
     public function adddetallesdeCompra($id)
@@ -146,7 +182,8 @@ class ComprasController extends Controller
 
     public function generarReportePdfDetalleCompras($id)
     {
-        $compras = Compra::with(['detalles.productos', 'proveedores', 'empresas', 'sucursales', 'users'])->find($id);
+        $decode_id = base64_decode($id);
+        $compras = Compra::with(['detalles.productos', 'proveedores', 'empresas', 'sucursales', 'users'])->find($decode_id);
 
         if (!$compras) {
             return response()->json([
@@ -154,9 +191,8 @@ class ComprasController extends Controller
                 'message' => 'Hubo un problema al intentar ver la compra.'
             ], 400);
         }
-
-        $pdf = Pdf::loadView('pdf.comprasPdfDetalle', compact('compras'));
-
+        $pdf = PDF::loadView('pdf.comprasPdfDetalle', compact('compras'));
+        $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('Compras_' . $compras->id . '.pdf');
     }
 

@@ -1,0 +1,41 @@
+{row.estado !== 'PAGADO' ? (
+                        can('compras_detallesadd') && (
+
+                            <Link
+                                href={route('compras.adddetallesdeCompra', row.id)}
+                                title="Agregar detalles de compra"
+                                className="btn btn-outline-dark d-flex align-items-center justify-content-center"
+                                style={{
+                                    fontSize: '15px',
+                                    height: '32px',
+                                    width: '32px',
+                                    padding: '0',
+                                    lineHeight: '0',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <i className="bi bi-file-earmark-pdf" style={{ fontSize: '15px' }}></i>
+                            </Link>
+                        )
+                    ) : (
+                        can('compras_viewdetails') && (
+                            <Link
+                                href={route('compras.viewDetailsCompras', row.id)}
+                                title="Ver detalles"
+                                className="btn btn-outline-warning d-flex align-items-center justify-content-center"
+                                style={{
+                                    fontSize: '15px',
+                                    height: '32px',
+                                    padding: '0 10px',
+                                    lineHeight: '0',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <i className="bi bi-journal-album" style={{ fontSize: '15px' }}></i>
+                            </Link>
+                        )
+                    )}

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('proveedor_id')->unsigned();
             $table->integer('empresa_id')->unsigned();
             $table->integer('sucursal_id')->unsigned();
-            $table->enum('estado', ['PAGADO', 'PENDIENTE', 'CANCELADO'])->default('PENDIENTE');
+            $table->string('estado',25)->default('PENDIENTE');
             $table->text('codigo');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
