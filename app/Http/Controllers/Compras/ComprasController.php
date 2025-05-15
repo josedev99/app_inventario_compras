@@ -30,7 +30,7 @@ class ComprasController extends Controller
     {
         return Inertia::render('Compras/Index', [
             'proveedores' => Proveedor::select('id', 'nombre')->get(),
-            'pedidos' => Pedido::select('id', 'nombre', DB::raw('DATE_FORMAT(created_at,"%d/%m/%Y") as fecha'))->where('estado','Pendiente')->get(),
+            'pedidos' => Pedido::select('id', 'nombre', DB::raw('DATE_FORMAT(created_at,"%d/%m/%Y") as fecha'))->whereIn('estado',['Pendiente'])->get(),
             'sucursales' => Sucursal::select('id', 'nombre')->get(),
         ]);
     }
@@ -59,33 +59,37 @@ class ComprasController extends Controller
                 'proveedor_id' => $request->proveedor_id,
                 'empresa_id' => $empresa_id,
                 'sucursal_id' => $request->sucursal_id,
-                'estado' => 'Pendiente',
+                'estado' => 'Revisión',
                 'codigo' => $codigoCompra,
+                'pedido_id' => $request->pedido_id,
                 'user_id' => Auth::user()->id
             ]);
 
-            //Detalle de la compra
-            $detalle_productos = json_decode($request->productos);
-
-            foreach($detalle_productos as $item){
-                $total = $item->precio_unit * $item->cantidad;
-                DetalleCompra::create([
-                    'compra_id' => $compra->id,
-                    'producto_id' => $item->producto_id,
-                    'costo_unitario' => $item->precio_unit,
-                    'cantidad' => $item->cantidad,
-                    'total' => $total,
+            if($compra){
+                //Detalle de la compra
+                $detalle_productos = json_decode($request->productos);
+    
+                foreach($detalle_productos as $item){
+                    $total = $item->precio_unit * $item->cantidad;
+                    DetalleCompra::create([
+                        'compra_id' => $compra->id,
+                        'producto_id' => $item->producto_id,
+                        'costo_unitario' => $item->precio_unit,
+                        'cantidad' => $item->cantidad,
+                        'total' => $total,
+                    ]);
+                }
+                //Cambiar estado del pedido
+                Pedido::where('id', $request->pedido_id)->where('empresa_id', $empresa_id)->update([
+                    'estado' => 'En revisión'
                 ]);
-            }
-            DB::commit();
-            if ($compra) {
+                DB::commit();
                 return response()->json([
                     'status' => 'success',
                     'message' => 'La compra se ha creado exitosamente.',
                     'compra' => $compra
                 ]);
             }
-
             return response()->json([
                 'status' => 'error',
                 'message' => 'Hubo un problema al crear la compra.'
@@ -244,5 +248,92 @@ class ComprasController extends Controller
             'status' => 'error',
             'message' => 'Hubo un problema al eliminar la compra.'
         ], 400);
+    }
+
+    //Enviar compra a departamento de finanza
+    public function sendCompraFinanza(Request $request){
+        $empresa_id = Auth::user()->empresa_id;
+        $compra_id = $request->compra_id;
+
+        $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
+
+        if($compra){
+            $compra->estado = 'Pendiente';
+            $compra->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'La compra se ha enviado para finanzas.'
+            ]);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No se ha encontrado la compra.'
+        ]);
+    }
+
+    public function getCompraData(Request $request){
+        $empresa_id = Auth::user()->empresa_id;
+        $compra_id = $request->get('compra_id');
+
+        $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
+        if($compra){
+            $detalleCompra = DB::select("select p.id as producto_id,dc.id,dc.cantidad,p.codigo,p.nombre,p.Umedida, dc.costo_unitario as precio_unit from detalle_compras as dc inner join productos as p on dc.producto_id=p.id where dc.compra_id = ? and p.empresa_id = ?;",[$compra['id'],$empresa_id]);
+
+            $compra->fecha_compra = date('Y-m-d',strtotime($compra['fecha_compra']));
+            $compra->detalle = $detalleCompra;
+
+            return response()->json($compra);
+        }
+        return response()->json([]);
+    }
+    //Update compra
+    public function updateCompra(Request $request){
+        try {
+
+            $empresa_id = Auth::user()->empresa_id;
+
+            $compra_id = $request->get('id');
+            DB::beginTransaction();
+            $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->update([
+                'nombre' => $request->get('nombre'),
+                'fecha_compra' => $request->get('fecha_compra'),
+                'proveedor_id' => $request->get('proveedor_id'),
+                'sucursal_id' => $request->get('sucursal_id'),
+                //'pedido_id' => $request->get('pedido_id')
+            ]);
+
+            if($compra){
+                //Detalle de la compra
+                DetalleCompra::where('compra_id', $compra_id)->delete();
+                $detalle_productos = json_decode($request->get('productos'));
+    
+                foreach($detalle_productos as $item){
+                    $total = $item->precio_unit * $item->cantidad;
+                    DetalleCompra::create([
+                        'compra_id' => $compra_id,
+                        'producto_id' => $item->producto_id,
+                        'costo_unitario' => $item->precio_unit,
+                        'cantidad' => $item->cantidad,
+                        'total' => $total,
+                    ]);
+                }
+                DB::commit();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'La compra se ha actualizado.',
+                    'compra' => $compra
+                ]);
+            }
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hubo un problema al actualizar la compra.'
+            ], 400);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
     }
 }

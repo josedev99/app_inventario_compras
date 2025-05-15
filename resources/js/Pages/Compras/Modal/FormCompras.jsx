@@ -8,15 +8,15 @@ import "./formCompra.css"
 import { useState } from 'react';
 
 export default function FormCompras({
-    title, showModal, setShowModal, compra = {},
+    title, showModal, setShowModal, compra = {}, editing = false, setEditing = '',
     proveedores,pedidos, sucursales, onCompraCreated
 }) {
     const { data, setData, reset, processing } = useForm({
+        id: compra?.id || '',
         nombre: compra?.nombre || '',
         fecha_compra: compra?.fecha_compra || '',
         proveedor_id: compra?.proveedor_id || '',
         sucursal_id: compra?.sucursal_id || '',
-        codigo: compra?.codigo || '', 
         pedido_id: compra?.pedido_id || 0
     });
 
@@ -25,27 +25,39 @@ export default function FormCompras({
     useEffect(() => {
         if (compra && Object.keys(compra).length > 0) {
             const nuevoData = {
+                id: compra?.id || '',
                 nombre: compra.nombre || '', 
                 fecha_compra: compra.fecha_compra || '',
                 proveedor_id: compra.proveedor_id || 0,
-                empresa_id: compra.empresa_id || '',
-                sucursal_id: compra.sucursal_id || '',
-                estado: compra.estado || 'PENDIENTE',
-                codigo: compra.codigo || ''
+                sucursal_id: compra.sucursal_id || 0,
+                pedido_id: compra.pedido_id || 0
             };
 
             /* Solo actualizar si los datos han cambiado */
             setData(nuevoData);
         }
-    }, [compra, setData]);
+        //Editing
+        if(editing){
+            setProductosPedido(compra.detalle ?? []);
+        }else{
+            reset();
+            setProductosPedido([]);
+        }
+    }, [compra, data, editing]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             data.productos = JSON.stringify(productosPedido);
-            const response = await axios.post(route('compras.storeCompra'), data);
+            let response = null;
+            if(data.id && editing){
+                response = await axios.post(route('compras.update'), data);
+            }else{
+                response = await axios.post(route('compras.storeCompra'), data);
+            }
             /* Manejo de respuesta exitosa */
             if (response.data.status === 'success') {
+                setEditing(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Éxito',
@@ -55,6 +67,7 @@ export default function FormCompras({
                 reset();
                 setShowModal(false);
                 if (onCompraCreated) onCompraCreated();
+                setProductosPedido([]);
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -106,9 +119,20 @@ export default function FormCompras({
         setProductosPedido(nuevosProductos);
     };
 
+    const handleCantidadItem = (value,index) => {
+        const nuevosProductos = [...productosPedido];
+        nuevosProductos[index].cantidad = value;
+        setProductosPedido(nuevosProductos);
+    }
+
+    const deleteItem = (index) => {
+        const newProductos = productosPedido.filter((_, i) => i !== index);
+        setProductosPedido(newProductos);
+    }
+
     return (
         <Modal size="xl" show={showModal} onHide={() => setShowModal(false)} backdrop="static">
-            <Modal.Header closeButton>
+            <Modal.Header className='py-1' closeButton>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -203,7 +227,18 @@ export default function FormCompras({
                                                             <td style={{ textAlign: 'center' }}>{item.codigo}</td>
                                                             <td>{item.Umedida}</td>
                                                             <td>{item.nombre}</td>
-                                                            <td style={{ textAlign: 'center' }}>{item.cantidad}</td>
+                                                            <td style={{ textAlign: 'center' }}>
+                                                                <input
+                                                                onChange={(e) => handleCantidadItem(e.target.value, index)}
+                                                                value={item.cantidad || ''}
+                                                                className="form-control"
+                                                                type="number"
+                                                                step={1}
+                                                                min={1}
+                                                                max={10000000}
+                                                                style={{ width: '120px', height: '34px' }}
+                                                                />
+                                                            </td>
                                                             <td style={{ textAlign: 'center' }}>
                                                               <input
                                                                 onChange={(e) => handlePrecioUnit(e.target.value, index)}
@@ -226,7 +261,7 @@ export default function FormCompras({
                                                     :
                                                     (
                                                         <tr>
-                                                            <td colSpan={6} style={{ textAlign: 'center' }}>Cargando...</td>
+                                                            <td colSpan={7} style={{ textAlign: 'center' }}>Sin productos...</td>
                                                         </tr>
                                                     )
                                             }

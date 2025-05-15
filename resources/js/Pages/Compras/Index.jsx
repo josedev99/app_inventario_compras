@@ -17,7 +17,8 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const [showModal, setShowModal] = useState(false);
     const [compras, setCompras] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [editing, setEditing] = useState(false);
+    const [compra,setCompra] = useState({});
 
     const fetchCompras = async () => {
         try {
@@ -50,6 +51,57 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
     const showPDF = (id) => {
         window.open(route('compras.generarReportePdfDetalleCompras', btoa(id)), '_blank');
+    }
+
+    const sendCompraFinanza = (id) => {
+        Swal.fire({
+            title: "¿Confirmar envío?",
+            text: "¿Estás seguro de que deseas enviar esta compra a finanzas?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, enviar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post(route('compras.enviar.finanza'), { compra_id: id })
+                    .then((response) => {
+                        if (response.data.status === "success") {
+                            Swal.fire({
+                                title: "Éxito",
+                                text: response.data.message,
+                                icon: "success"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response.data.message,
+                                icon: "error"
+                            });
+                        }
+                    }).catch((err) => {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Ha ocurrido un error, intente nuevamente mas tarde.",
+                            icon: "error"
+                        });
+                        console.log(err);
+                    })
+            }
+        });
+    }
+
+    //Editar compra
+    const editingCompra = (id) => {
+        setShowModal(true);
+        setEditing(true);
+        axios.post(route('compras.data.obtener'),{compra_id: id})
+        .then((response)=>{
+            setCompra(response.data);
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     const columns = [
@@ -87,29 +139,64 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             name: 'Acciones',
             cell: row => (
                 <div className="d-flex align-items-center">
-                    <Button variant="outline-info" title='Imprimir detalles de la compra' size="sm" onClick={() => showPDF(row.id)}>
-                        <i className="bi bi-filetype-pdf"></i>
-                    </Button>{' '}
-
-                    {can('compras_delete') && (
-                        <Button
-                            variant="outline-danger"
-                            onClick={() => handleDelete(row.id)}
-                            className="ms-1 d-flex align-items-center justify-content-center"
-                            style={{
-                                fontSize: '15px',
-                                height: '32px',
-                                width: '32px',
-                                padding: '0',
-                                lineHeight: '0',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
-                        >
-                            <i className="bi bi-trash" style={{ fontSize: '15px' }}></i>
-                        </Button>
-                    )}
+                    {
+                        row.estado !== "Pendiente" ? (
+                            <>
+                                <Button
+                                    variant="outline-info"
+                                    title="Editar compra"
+                                    size="sm"
+                                    onClick={() => editingCompra(row.id)}
+                                >
+                                    <i className="bi bi-bag-plus"></i>
+                                </Button>{' '}
+                                <Button
+                                    variant="outline-info mx-2"
+                                    title="Enviar compra a finanzas"
+                                    size="sm"
+                                    onClick={() => sendCompraFinanza(row.id)}
+                                >
+                                    <i className="bi bi-check-circle"></i>
+                                </Button>{' '}
+                                <Button
+                                    variant="outline-info"
+                                    title="Imprimir detalles de la compra"
+                                    size="sm"
+                                    onClick={() => showPDF(row.id)}
+                                >
+                                    <i className="bi bi-filetype-pdf"></i>
+                                </Button>{' '}
+                                {can('compras_delete') && (
+                                    <Button
+                                        variant="outline-danger"
+                                        onClick={() => handleDelete(row.id)}
+                                        className="ms-1 d-flex align-items-center justify-content-center"
+                                        style={{
+                                            fontSize: '15px',
+                                            height: '32px',
+                                            width: '32px',
+                                            padding: '0',
+                                            lineHeight: '0',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <i className="bi bi-trash" style={{ fontSize: '15px' }}></i>
+                                    </Button>
+                                )}
+                            </>
+                        ) : (
+                            <Button
+                                variant="outline-info mx-2"
+                                title="Imprimir detalles de la compra"
+                                size="sm"
+                                onClick={() => showPDF(row.id)}
+                            >
+                                <i className="bi bi-filetype-pdf"></i>
+                            </Button>
+                        )
+                    }
                 </div>
             ),
             ignoreRowClick: true,
@@ -159,20 +246,43 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Compras" />
-            <FormCompra
-                title="Registrar nueva compra"
-                showModal={showModal}
-                setShowModal={setShowModal}
-                onCompraCreated={fetchCompras}
-                onClose={handleModalClose}
-                proveedores={proveedores}
-                pedidos={pedidos}
-                sucursales={sucursales}
-            />
+            {
+                editing ? (
+                    <FormCompra
+                        title="Registrar nueva compra"
+                        showModal={showModal}
+                        setShowModal={setShowModal}
+                        onCompraCreated={fetchCompras}
+                        onClose={handleModalClose}
+                        proveedores={proveedores}
+                        pedidos={pedidos}
+                        sucursales={sucursales}
+                        compra={compra}
+                        editing={editing}
+                        setEditing={setEditing}
+                    />
+                ) : (
+                    <FormCompra
+                        title="Editar compra"
+                        showModal={showModal}
+                        setShowModal={setShowModal}
+                        onCompraCreated={fetchCompras}
+                        onClose={handleModalClose}
+                        proveedores={proveedores}
+                        pedidos={pedidos}
+                        sucursales={sucursales}
+                        editing={editing}
+                        setEditing={setEditing}
+                    />
+                )
+            }
             <Card>
                 <Card.Header>
                     {can('compras_create') && (
-                        <Button onClick={() => setShowModal(true)} variant='outline-success' size='sm'>
+                        <Button onClick={() => {
+                            setEditing(false);   
+                            setShowModal(true);
+                        }} variant='outline-success' size='sm'>
                             <i className="bi bi-plus-circle"></i> Nueva compra
                         </Button>
                     )}

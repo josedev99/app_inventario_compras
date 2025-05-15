@@ -23,6 +23,7 @@ class Compra extends Model
         'sucursal_id',
         'estado',
         'codigo',
+        'pedido_id',
         'user_id',
     ];
 

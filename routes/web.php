@@ -69,6 +69,12 @@ Route::middleware(['auth', 'estado'])->group(function () {
 
     //Routas para obtener los productos de pedidos
     Route::get('/compra/obtener/productos/pedidos/{pedido_id}', [PedidosCompraController::class, 'getProductosById'])->name('pedido.obtener.productos.id');
+    //Aprobar compra
+    Route::post('/compra/enviar/finanza', [ComprasController::class, 'sendCompraFinanza'])->name('compras.enviar.finanza');
+    //Obtener datos de la compra
+    Route::post('/compra/obtener/data', [ComprasController::class, 'getCompraData'])->name('compras.data.obtener');
+    //Update compra
+    Route::post('/compra/actualizar', [ComprasController::class, 'updateCompra'])->name('compras.update');
 
     /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
