@@ -30,7 +30,6 @@ export default function Index({ auth, categorias }) {
     const [showModalDet, setShowModalDet] = useState(false);
     const [showModalProduct, setShowModalProduct] = useState(false);
     const [productosPedido, setProductosPedido] = useState([]);
-    //Manejar el producto que se ingreso
     const [refreshProduct, setRefreshProduct] = useState(false);
     const [newProductoId, setProductoId] = useState(0);
 
@@ -49,10 +48,34 @@ export default function Index({ auth, categorias }) {
             setPedidos(response.data.data);
             setTotalRows(response.data.recordsTotal);
             setCurrentPage(page);
+
+            const pedidosAprobados = response.data.data.filter(pedido => pedido.estado === "APROBADO");
+
+            if (pedidosAprobados.length > 0) {
+                pedidosAprobados.sort((a, b) => a.id - b.id);
+                const ultimoPedidoId = pedidosAprobados[0].id.toString();
+
+                const ultimoPedidoMostrado = localStorage.getItem('ultimoPedidoAprobadoMostrado');
+
+                if (ultimoPedidoId !== ultimoPedidoMostrado) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pedido aprobado',
+                        text: 'Hay pedidos aprobados en la lista.',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        localStorage.setItem('ultimoPedidoAprobadoMostrado', ultimoPedidoId);
+                    });
+                }
+            }
+
         } catch (error) {
-            console.error('Error al cargar los usuarios:', error);
+            console.error('Error al cargar los pedidos:', error);
         }
     };
+
+
+
 
     const fetchProductos = async () => {
         let response = await axios.get(route('pedidos.productos.obtener'));

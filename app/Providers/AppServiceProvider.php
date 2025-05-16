@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Compras\Compra;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -30,6 +31,14 @@ class AppServiceProvider extends ServiceProvider
                     'permissions' => optional($user)->getAllPermissions()?->pluck('name') ?? [],
                 ];
             },
+            'compraspendientes' => function () {
+                return Compra::where('estado', 'PENDIENTE')->count();
+            },
+            'comprasFinanzas' => function () {
+                return Compra::where('estado', 'PENDIENTE')
+                    ->where('enviado_a_finanzas', true)
+                    ->count();
+            }
         ]);
     }
 }

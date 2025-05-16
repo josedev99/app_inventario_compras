@@ -30,7 +30,7 @@ class ComprasController extends Controller
     {
         return Inertia::render('Compras/Index', [
             'proveedores' => Proveedor::select('id', 'nombre')->get(),
-            'pedidos' => Pedido::select('id', 'nombre', DB::raw('DATE_FORMAT(created_at,"%d/%m/%Y") as fecha'))->whereIn('estado',['Pendiente'])->get(),
+            'pedidos' => Pedido::select('id', 'nombre', DB::raw('DATE_FORMAT(created_at,"%d/%m/%Y") as fecha'))->whereIn('estado', ['Pendiente'])->get(),
             'sucursales' => Sucursal::select('id', 'nombre')->get(),
         ]);
     }
@@ -65,11 +65,11 @@ class ComprasController extends Controller
                 'user_id' => Auth::user()->id
             ]);
 
-            if($compra){
+            if ($compra) {
                 //Detalle de la compra
                 $detalle_productos = json_decode($request->productos);
-    
-                foreach($detalle_productos as $item){
+
+                foreach ($detalle_productos as $item) {
                     $total = $item->precio_unit * $item->cantidad;
                     DetalleCompra::create([
                         'compra_id' => $compra->id,
@@ -103,15 +103,16 @@ class ComprasController extends Controller
         }
     }
 
-    public function genCodeCompra(){
+    public function genCodeCompra()
+    {
         $empresa_id = Auth::user()->empresa_id;
-        $ultimaCompra = Compra::where('empresa_id', $empresa_id)->orderBy('id','desc')->first();
+        $ultimaCompra = Compra::where('empresa_id', $empresa_id)->orderBy('id', 'desc')->first();
 
-        if($ultimaCompra){
+        if ($ultimaCompra) {
             $expl_codigo = explode('-', $ultimaCompra['codigo']);
             $correlativo = (int)$expl_codigo[1] + 1;
             $codigo = "OC-" . $correlativo;
-        }else{
+        } else {
             $codigo = "OC-1";
         }
         return $codigo;
@@ -251,14 +252,16 @@ class ComprasController extends Controller
     }
 
     //Enviar compra a departamento de finanza
-    public function sendCompraFinanza(Request $request){
+    public function sendCompraFinanza(Request $request)
+    {
         $empresa_id = Auth::user()->empresa_id;
         $compra_id = $request->compra_id;
 
         $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
 
-        if($compra){
+        if ($compra) {
             $compra->estado = 'Pendiente';
+            $compra->enviado_a_finanzas = 1;
             $compra->save();
             return response()->json([
                 'status' => 'success',
@@ -271,15 +274,124 @@ class ComprasController extends Controller
         ]);
     }
 
-    public function getCompraData(Request $request){
+    public function senPedidoBodega(Request $request)
+    {
+        $empresaId = Auth::user()->empresa_id;
+        $compraId = $request->compra_id;
+
+        $compra = Compra::where('id', $compraId)
+            ->where('empresa_id', $empresaId)
+            ->first();
+
+        if (!$compra) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Compra no encontrada.',
+            ], 404);
+        }
+
+        if (!$compra->pedido_id) {
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Esta compra no está asociada a ningún pedido.',
+            ]);
+        }
+
+        $pedido = Pedido::where('id', $compra->pedido_id)
+            ->where('empresa_id', $empresaId)
+            ->first();
+
+        if (!$pedido) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Pedido relacionado no encontrado.',
+            ], 404);
+        }
+
+        $pedido->estado = 'APROBADO';
+        $pedido->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'El estado del pedido ha sido actualizado a APROBADO.',
+        ]);
+    }
+
+
+    //flujo para aprobar en finanzas
+    public function viewComprasFinanzas(Request $request)
+    {
+        return Inertia::render('Compras/IndexFinanzas', [
+            'proveedores' => Proveedor::select('id', 'nombre')->get(),
+            'sucursales' => Sucursal::select('id', 'nombre')->get(),
+            'compra_id' => $request->compra_id,
+        ]);
+    }
+
+
+    //recibimos en finanzas 
+    public function obtenerCompraporFinanzas(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Compra::join('empresas as m', 'm.id', '=', 'compras.empresa_id')
+                ->join('sucursals as s', 's.id', '=', 'compras.sucursal_id')
+                ->join('users as u', 'u.id', '=', 'compras.user_id')
+                ->join('proveedors as p', 'p.id', '=', 'compras.proveedor_id')
+                ->select('compras.*', 'm.nombre as empresa', 's.nombre as sucursal', 'u.nombre as usuario', 'p.nombre as proveedor')
+                ->where('compras.estado', 'PENDIENTE')
+                ->where('compras.enviado_a_finanzas', true);
+
+            if ($request->has('compra_id')) {
+                $query->where('compras.id', $request->input('compra_id'));
+            }
+
+            return DataTables::of($query->get())->toJson();
+        }
+    }
+
+
+    // logica para aprobar la compra
+    public function estadoCompraUpdate(Request $request)
+    {
+
+        $request->validate([
+            'compra_id' => 'required|exists:compras,id',
+            'estado' => 'required|string'
+        ]);
+
+        $empresa_id = Auth::user()->empresa_id;
+        $compra = Compra::where('id', $request->compra_id)
+            ->where('empresa_id', $empresa_id)
+            ->first();
+
+        if (!$compra) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se ha encontrado la compra o no pertenece a tu empresa.'
+            ]);
+        }
+
+        $compra->estado = $request->estado;
+        $compra->enviado_a_finanzas = 0;
+        $compra->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'El estado de la compra ha sido actualizado correctamente.'
+        ]);
+    }
+
+
+    public function getCompraData(Request $request)
+    {
         $empresa_id = Auth::user()->empresa_id;
         $compra_id = $request->get('compra_id');
 
         $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
-        if($compra){
-            $detalleCompra = DB::select("select p.id as producto_id,dc.id,dc.cantidad,p.codigo,p.nombre,p.Umedida, dc.costo_unitario as precio_unit from detalle_compras as dc inner join productos as p on dc.producto_id=p.id where dc.compra_id = ? and p.empresa_id = ?;",[$compra['id'],$empresa_id]);
+        if ($compra) {
+            $detalleCompra = DB::select("select p.id as producto_id,dc.id,dc.cantidad,p.codigo,p.nombre,p.Umedida, dc.costo_unitario as precio_unit from detalle_compras as dc inner join productos as p on dc.producto_id=p.id where dc.compra_id = ? and p.empresa_id = ?;", [$compra['id'], $empresa_id]);
 
-            $compra->fecha_compra = date('Y-m-d',strtotime($compra['fecha_compra']));
+            $compra->fecha_compra = date('Y-m-d', strtotime($compra['fecha_compra']));
             $compra->detalle = $detalleCompra;
 
             return response()->json($compra);
@@ -287,7 +399,8 @@ class ComprasController extends Controller
         return response()->json([]);
     }
     //Update compra
-    public function updateCompra(Request $request){
+    public function updateCompra(Request $request)
+    {
         try {
 
             $empresa_id = Auth::user()->empresa_id;
@@ -302,12 +415,12 @@ class ComprasController extends Controller
                 //'pedido_id' => $request->get('pedido_id')
             ]);
 
-            if($compra){
+            if ($compra) {
                 //Detalle de la compra
                 DetalleCompra::where('compra_id', $compra_id)->delete();
                 $detalle_productos = json_decode($request->get('productos'));
-    
-                foreach($detalle_productos as $item){
+
+                foreach ($detalle_productos as $item) {
                     $total = $item->precio_unit * $item->cantidad;
                     DetalleCompra::create([
                         'compra_id' => $compra_id,

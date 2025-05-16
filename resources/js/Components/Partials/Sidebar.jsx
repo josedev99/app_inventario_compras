@@ -7,6 +7,7 @@ function Sidebar() {
     const can = (permissionName) => permissions.includes(permissionName);
     const { appLogo } = usePage().props;
     const logoUrl = appLogo;
+    const { comprasFinanzas } = usePage().props;
 
     return (
         <>
@@ -67,6 +68,21 @@ function Sidebar() {
                                     </a>
                                     <div className="collapse" id="sidebarFinanzas">
                                         <ul className="nav nav-collapse">
+                                            <li>
+                                                {can('usuario_view') && (
+                                                    <Link href={route('compras.estado')}>
+                                                        <span className="sub-item">Ordenes de compra</span>
+                                                        {comprasFinanzas > 0 && (
+                                                            <span className="badge bg-success rounded-circle d-inline-flex align-items-center justify-content-center ms-2" style={{ width: '20px', height: '20px' }}>
+                                                                {comprasFinanzas}
+                                                            </span>
+
+
+                                                        )}
+                                                    </Link>
+                                                )}
+                                            </li>
+
                                             <li>
                                                 {can('proveedor_view') && (
                                                     <Link href={route('proveedores.index')}>

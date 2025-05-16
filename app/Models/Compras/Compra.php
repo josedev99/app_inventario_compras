@@ -25,7 +25,13 @@ class Compra extends Model
         'codigo',
         'pedido_id',
         'user_id',
+        'enviado_a_finanzas'
     ];
+
+    protected $casts = [
+        'enviado_a_finanzas' => 'boolean',
+    ];
+
 
     public function empresas()
     {
@@ -58,8 +64,17 @@ class Compra extends Model
             ->join('sucursals as s', 's.id', '=', 'compras.sucursal_id')
             ->join('users as u', 'u.id', '=', 'compras.user_id')
             ->join('proveedors as p', 'p.id', '=', 'compras.proveedor_id')
-            ->select('compras.*', 'm.nombre as empresa', 's.nombre as sucursal', 'u.nombre as usuario', 'p.nombre as proveedor')
-            ->orderBy('compras.id', 'desc')->get();
+            ->leftJoin('pedidos as pe', 'pe.id', '=', 'compras.pedido_id')
+            ->select(
+                'compras.*',
+                'm.nombre as empresa',
+                's.nombre as sucursal',
+                'u.nombre as usuario',
+                'p.nombre as proveedor',
+                'pe.estado as pedido_estado'
+            )
+            ->orderBy('compras.id', 'desc')
+            ->get();
 
         return $data;
     }

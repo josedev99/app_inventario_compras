@@ -97,8 +97,9 @@
 
     <table>
         <tr>
-            <td style="width: 50%"><strong>Fecha de Compra:</strong> {{ $compras->created_at->format('d/m/Y H:i') }}</td>
+            <td style="width: 50%"><strong>Fecha de Compra:</strong> {{ optional($compras->created_at)->format('d/m/Y H:i') ?? '-' }}</td>
             <td style="width: 50%"><strong>Realizado por:</strong> {{ $compras->users->nombre ?? '-' }}</td>
+            <td style="width: 50%"><strong>Estado:</strong> {{ $compras->estado ?? '-' }}</td>
         </tr>
     </table>
 

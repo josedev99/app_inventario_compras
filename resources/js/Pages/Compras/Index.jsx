@@ -8,6 +8,7 @@ import FormCompra from './Modal/FormCompras';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import ModalNotificaciones from './Modal/ModalNotificaciones';
 
 export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
@@ -18,16 +19,36 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const [compras, setCompras] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [editing, setEditing] = useState(false);
-    const [compra,setCompra] = useState({});
+    const [compra, setCompra] = useState({});
+    const [notificaciones, setNotificaciones] = useState([]);
+    const [showNotiModal, setShowNotiModal] = useState(false);
 
     const fetchCompras = async () => {
         try {
             const response = await axios.get(route('compras.getDataCompras'));
-            setCompras(response.data.data);
+            const comprasData = response.data.data;
+            setCompras(comprasData);
+
+            const notified = JSON.parse(localStorage.getItem('compras_notificadas') || '[]');
+
+            const nuevasNotificadas = comprasData.filter(compra =>
+                (compra.estado === 'PAGADO' || compra.estado === 'CANCELADO') &&
+                !notified.includes(compra.id)
+            );
+
+            if (nuevasNotificadas.length > 0) {
+                setNotificaciones(nuevasNotificadas);
+                setShowNotiModal(true);
+
+                const nuevosIds = nuevasNotificadas.map(c => c.id);
+                localStorage.setItem('compras_notificadas', JSON.stringify([...notified, ...nuevosIds]));
+            }
+
         } catch (error) {
             console.error('Error al cargar las compras:', error);
         }
     };
+
 
     useEffect(() => {
         fetchCompras();
@@ -92,16 +113,57 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
         });
     }
 
+
+    const sendPedidoBodega = (id) => {
+        Swal.fire({
+            title: "¿Confirmar envío?",
+            text: "¿Estás seguro de que deseas enviar esta compra a bodega?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, enviar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post(route('compras.senPedidoBodega'), { compra_id: id })
+                    .then((response) => {
+                        if (response.data.status === "success") {
+                            Swal.fire({
+                                title: "Éxito",
+                                text: response.data.message,
+                                icon: "success"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response.data.message,
+                                icon: "error"
+                            });
+                        }
+                    }).catch((err) => {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Ha ocurrido un error, intente nuevamente mas tarde.",
+                            icon: "error"
+                        });
+                        console.log(err);
+                    })
+            }
+        });
+    }
+
+
     //Editar compra
     const editingCompra = (id) => {
         setShowModal(true);
         setEditing(true);
-        axios.post(route('compras.data.obtener'),{compra_id: id})
-        .then((response)=>{
-            setCompra(response.data);
-        }).catch((err) => {
-            console.log(err);
-        })
+        axios.post(route('compras.data.obtener'), { compra_id: id })
+            .then((response) => {
+                setCompra(response.data);
+            }).catch((err) => {
+                console.log(err);
+            })
     }
 
     const columns = [
@@ -140,7 +202,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             cell: row => (
                 <div className="d-flex align-items-center">
                     {
-                        row.estado !== "Pendiente" ? (
+                        row.estado !== "PAGADO" ? (
                             <>
                                 <Button
                                     variant="outline-info"
@@ -158,6 +220,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                                 >
                                     <i className="bi bi-check-circle"></i>
                                 </Button>{' '}
+
                                 <Button
                                     variant="outline-info"
                                     title="Imprimir detalles de la compra"
@@ -187,14 +250,28 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                                 )}
                             </>
                         ) : (
-                            <Button
-                                variant="outline-info mx-2"
-                                title="Imprimir detalles de la compra"
-                                size="sm"
-                                onClick={() => showPDF(row.id)}
-                            >
-                                <i className="bi bi-filetype-pdf"></i>
-                            </Button>
+                            <>
+                                {
+                                    row.pedido_estado !== 'APROBADO' && (
+                                        <Button
+                                            variant="outline-dark mx-2"
+                                            title="Enviar notificación a bodega"
+                                            size="sm"
+                                            onClick={() => sendPedidoBodega(row.id)}
+                                        >
+                                            <i className="bi bi-bell"></i>
+                                        </Button>
+                                    )
+                                }
+                                <Button
+                                    variant="outline-info mx-2"
+                                    title="Imprimir detalles de la compra"
+                                    size="sm"
+                                    onClick={() => showPDF(row.id)}
+                                >
+                                    <i className="bi bi-filetype-pdf"></i>
+                                </Button>
+                            </>
                         )
                     }
                 </div>
@@ -276,11 +353,18 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                     />
                 )
             }
+
+            <ModalNotificaciones
+                show={showNotiModal}
+                onClose={() => setShowNotiModal(false)}
+                compras={notificaciones}
+            />
+
             <Card>
                 <Card.Header>
                     {can('compras_create') && (
                         <Button onClick={() => {
-                            setEditing(false);   
+                            setEditing(false);
                             setShowModal(true);
                         }} variant='outline-success' size='sm'>
                             <i className="bi bi-plus-circle"></i> Nueva compra

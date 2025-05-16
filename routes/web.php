@@ -76,6 +76,12 @@ Route::middleware(['auth', 'estado'])->group(function () {
     //Update compra
     Route::post('/compra/actualizar', [ComprasController::class, 'updateCompra'])->name('compras.update');
 
+    //flujo para finanzas
+    Route::get('/obetener/orden/por/estado', [ComprasController::class, 'viewComprasFinanzas'])->name('compras.estado');
+    Route::get('/obetener/orden/por/estado/get/data/finanzas', [ComprasController::class, 'obtenerCompraporFinanzas'])->name('compras.obtenerCompraporFinanzas');
+    Route::post('/update/estado/compra', [ComprasController::class, 'estadoCompraUpdate'])->name('compras.estadoCompraUpdate');
+    Route::post('/notificacion/pedido/bodega', [ComprasController::class, 'senPedidoBodega'])->name('compras.senPedidoBodega');
+
     /** Parte para empresas */
     Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
     Route::post('/storeEmpresa', [EmpresaController::class, 'store'])->name('empresa.store');

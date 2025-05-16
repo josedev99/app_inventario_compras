@@ -3,8 +3,8 @@ import { router, usePage } from '@inertiajs/react';
 function Nav() {
 
     const { auth } = usePage().props;
-
     const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user?.name || 'User')}&background=0D8ABC&color=fff&size=50`;
+    const { compraspendientes } = usePage().props;
 
     return (
         <>
@@ -140,7 +140,9 @@ function Nav() {
                                 aria-expanded="false"
                             >
                                 <i className="bi bi-bell" />
-                                <span className="notification">4</span>
+                                {compraspendientes > 0 && (
+                                    <span className="notification">{compraspendientes}</span>
+                                )}
                             </a>
                             <ul
                                 className="dropdown-menu notif-box animated fadeIn"
