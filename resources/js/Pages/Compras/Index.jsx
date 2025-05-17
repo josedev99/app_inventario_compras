@@ -49,10 +49,9 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
         }
     };
 
-
     useEffect(() => {
         fetchCompras();
-    }, []);
+    }, [editing]);
 
     const filteredCompras = compras.filter(compra =>
         (compra.codigo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||

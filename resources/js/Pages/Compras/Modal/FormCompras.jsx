@@ -23,27 +23,34 @@ export default function FormCompras({
     const [productosPedido, setProductosPedido] = useState([]);
 
     useEffect(() => {
-        if (compra && Object.keys(compra).length > 0) {
+        // Solo ejecuta esto si se está editando y hay compra con ID
+        if (editing && compra?.id) {
             const nuevoData = {
-                id: compra?.id || '',
-                nombre: compra.nombre || '', 
+                id: compra.id,
+                nombre: compra.nombre || '',
                 fecha_compra: compra.fecha_compra || '',
                 proveedor_id: compra.proveedor_id || 0,
                 sucursal_id: compra.sucursal_id || 0,
                 pedido_id: compra.pedido_id || 0
             };
-
-            /* Solo actualizar si los datos han cambiado */
-            setData(nuevoData);
-        }
-        //Editing
-        if(editing){
+    
+            // Evita volver a setear el mismo estado
+            setData(prev => {
+                if (JSON.stringify(prev) !== JSON.stringify(nuevoData)) {
+                    return nuevoData;
+                }
+                return prev;
+            });
+    
             setProductosPedido(compra.detalle ?? []);
-        }else{
+        }
+    
+        // Si NO estamos editando y no hay compra => es nueva compra
+        if (!editing && (!compra || Object.keys(compra).length === 0)) {
             reset();
             setProductosPedido([]);
         }
-    }, [compra, data, editing]);
+    }, [compra?.id, editing]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -153,6 +160,7 @@ export default function FormCompras({
                                     }}
                                     options={safeArray(pedidos).map(p => ({ value: p.id, label: `${p.fecha} - ${p.nombre}` }))}
                                     isClearable
+                                    required
                                 />
                             </div>
                         </div>
@@ -164,6 +172,7 @@ export default function FormCompras({
                                     className="form-control"
                                     value={data.fecha_compra}
                                     onChange={(e) => setData('fecha_compra', e.target.value)}
+                                    required
                                 />
                             </div>
                         </div>
@@ -185,6 +194,7 @@ export default function FormCompras({
                                     onChange={(option) => setData('proveedor_id', option ? option.value : '')}
                                     options={safeArray(proveedores).map(p => ({ value: p.id, label: p.nombre }))}
                                     isClearable
+                                    required
                                 />
                             </div>
                         </div>
@@ -199,6 +209,7 @@ export default function FormCompras({
                                     onChange={(option) => setData('sucursal_id', option ? option.value : '')}
                                     options={safeArray(sucursales).map(s => ({ value: s.id, label: s.nombre }))}
                                     isClearable
+                                    required
                                 />
                             </div>
                         </div>
