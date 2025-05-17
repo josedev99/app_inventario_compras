@@ -216,7 +216,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             cell: row => (
                 <div className="d-flex align-items-center">
                     {
-                        row.estado !== "PAGADO" ? (
+                        row.estado !== "Pendiente" ? (
                             <>
                                 <Button
                                     variant="outline-info"
