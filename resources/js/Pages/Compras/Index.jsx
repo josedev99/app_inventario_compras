@@ -171,34 +171,48 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             name: '#',
             selector: row => row.id,
             sortable: true,
+            width: '5%',
+            center: true,
         },
         {
             name: 'Código',
             selector: row => row.codigo,
             sortable: true,
+            width: '10%',
+            center: true
+        },
+        {
+            name: 'Nombre',
+            selector: row => row.nombre,
+            sortable: true,
+            width: '20%',
+            center: true
         },
         {
             name: 'Proveedor',
             selector: row => row.proveedor,
             sortable: true,
+            width: '15%',
+            center: true
         },
         {
             name: 'Sucursal',
             selector: row => row.sucursal,
             sortable: true,
-        },
-        {
-            name: 'Empresa',
-            selector: row => row.empresa,
-            sortable: true,
+            width: '20%',
+            center: true
         },
         {
             name: 'Estado',
             selector: row => row.estado,
             sortable: true,
+            width: '10%',
+            center: true
         },
         {
             name: 'Acciones',
+            width: '20%',
+            center: true,
             cell: row => (
                 <div className="d-flex align-items-center">
                     {
