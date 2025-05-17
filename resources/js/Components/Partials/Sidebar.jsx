@@ -198,11 +198,6 @@ function Sidebar() {
                                                 <span className="sub-item">Salidas</span>
                                             </a>
                                         </li>
-                                        <li>
-                                            <a href="#">
-                                                <span className="sub-item">Historial movimientos</span>
-                                            </a>
-                                        </li>
                                     </ul>
                                 </div>
                             </li>

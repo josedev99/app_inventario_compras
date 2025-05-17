@@ -64,16 +64,14 @@ function Template({sidebar,navbar, infoPage, contentPage}) {
                                 </li>
                             </ul>
                         </nav>
-                        <div className="copyright">
-                            2024, made with <i className="fa fa-heart heart text-danger" /> by
-                            <a href="http://www.themekita.com">ThemeKita</a>
+                        <div className="copyright">{ new Date().getUTCFullYear() }<i className="fa fa-heart heart text-danger" /> by
+                            <a href="#">Estudiantes de la ULS</a>
                         </div>
                         <div>
-                            Distributed by
-                            <a target="_blank" href="https://themewagon.com/">
-                                ThemeWagon
+                            Boostrap 5.3
+                            <a target="_blank" href="#">
+                                -
                             </a>
-                            .
                         </div>
                     </div>
                 </footer>

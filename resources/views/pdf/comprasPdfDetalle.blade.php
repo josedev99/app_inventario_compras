@@ -88,7 +88,7 @@
                 @if ($logoBase64)
                     <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;">
                 @else
-                    <p>Logo no disponible</p>
+                    <p></p>
                 @endif
             </td>
         </tr>

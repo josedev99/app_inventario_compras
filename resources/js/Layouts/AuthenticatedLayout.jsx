@@ -55,35 +55,17 @@ export default function Authenticated({ user, sidebar, header, children }) {
                     <div className="container-fluid d-flex justify-content-between">
                         <nav className="pull-left">
                             <ul className="nav">
-                                <li className="nav-item">
-                                    <a className="nav-link" href="http://www.themekita.com">
-                                        ThemeKita
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" href="#">
-                                        {" "}
-                                        Help{" "}
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" href="#">
-                                        {" "}
-                                        Licenses{" "}
-                                    </a>
-                                </li>
+                                
                             </ul>
                         </nav>
-                        <div className="copyright">
-                            2024, made with <i className="fa fa-heart heart text-danger" /> by
-                            <a href="http://www.themekita.com">ThemeKita</a>
+                        <div className="copyright">{ new Date().getUTCFullYear() }<i className="fa fa-heart heart text-danger" /> by
+                            <a href="#"> Estudiantes de la ULS</a>
                         </div>
                         <div>
-                            Distributed by
-                            <a target="_blank" href="https://themewagon.com/">
-                                ThemeWagon
+                            Boostrap 5.3
+                            <a target="_blank" href="#">
+                                -
                             </a>
-                            .
                         </div>
                     </div>
                 </footer>

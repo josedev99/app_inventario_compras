@@ -63,7 +63,7 @@ export default function Ingreso({ auth, productos }) {
     };
 
     const showDetalleIng = codigo => {
-        axios.post(route('inv.det.ingreso.pdf'), { codigo: codigo })
+        axios.post(route('inv.det.ingreso'), { codigo: codigo })
             .then((response) => {
                 let data = response.data;
                 if (data.length > 0) {
@@ -82,8 +82,8 @@ export default function Ingreso({ auth, productos }) {
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
-        { name: 'Fecha ingreso', selector: row => row.fecha, sortable: true, width: '15%', center: true },
-        { name: 'Código', selector: row => row.codigo, sortable: true, width: '15%', center: true },
+        { name: 'Fecha', selector: row => row.fecha, sortable: true, width: '15%', center: true },
+        { name: 'Código ingreso', selector: row => row.codigo, sortable: true, width: '15%', center: true },
         { name: 'Cantidad', selector: row => row.cantidad, sortable: true, width: '10%', center: true },
         { name: 'Realizado por', selector: row => row.nombre, sortable: true, width: '35%', center: true },
         {

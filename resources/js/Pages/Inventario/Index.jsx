@@ -114,31 +114,11 @@ export default function Index({ auth, productos }) {
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
-        { name: 'Código producto', selector: row => row.codigo, sortable: true, width: '10%', center: true },
-        { name: 'Descripción', selector: row => row.descripcion, sortable: true, width: '35%', center: true },
+        { name: 'Código producto', selector: row => row.codigo, sortable: true, width: '20%', center: true },
+        { name: 'Descripción', selector: row => row.descripcion, sortable: true, width: '45%', center: true },
         { name: 'Unidad medida', selector: row => row.Umedida, sortable: true, width: '10%', center: true },
-        { name: 'Precio venta', selector: row => `$${parseFloat(row.precio_venta).toFixed(2)}`, sortable: true, width: '10%', center: true },
+        { name: 'Precio', selector: row => `$${parseFloat(row.precio_venta).toFixed(2)}`, sortable: true, width: '10%', center: true },
         { name: 'Stock', selector: row => row.stock, sortable: true, width: '10%', center: true },
-        {
-            name: 'Acciones',
-            cell: row => (
-                <div className="text-center">
-                    {can('inventarios_edit') && (
-                        <Button variant="outline-info" size="sm" onClick={() => handleEdit(row.id)}>
-                            <i className="bi bi-pencil-square"></i>
-                        </Button>)}{' '}
-                    {can('inventarios_delete') && (
-                        <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.id)}>
-                            <i className="bi bi-trash"></i>
-                        </Button>
-                    )}
-                </div>
-            ),
-            ignoreRowClick: true,
-            allowOverflow: true,
-            width: '20%',
-            center: true,
-        },
     ];
     const customStyles = {
         headRow: {

@@ -94,7 +94,14 @@
     <table class="header no-border">
         <tr>
             <td class="header-logo">
-                <img src="ruta_del_logo.png" alt="LOGO EMPRESA">
+                @php
+                    $logoBase64 = getLogoSucursal();
+                @endphp
+                @if ($logoBase64)
+                    <img src="{{ $logoBase64 }}" alt="Logo" style="width: 150px;">
+                @else
+                    <p></p>
+                @endif
             </td>
             <td class="header-title">
                 {{ $empresa['nombre'] }} <br>
