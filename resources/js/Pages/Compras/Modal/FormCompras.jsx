@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 export default function FormCompras({
     title, showModal, setShowModal, compra = {}, editing = false, setEditing = '',
-    proveedores,pedidos, sucursales, onCompraCreated
+    proveedores,pedidos, sucursales, onCompraCreated, newCompra, setNewCompra, reloadDt,setReloadDt
 }) {
     const { data, setData, reset, processing } = useForm({
         id: compra?.id || '',
@@ -57,7 +57,7 @@ export default function FormCompras({
         try {
             data.productos = JSON.stringify(productosPedido);
             let response = null;
-            if(data.id && editing){
+            if(data.id && editing && newCompra === false){
                 response = await axios.post(route('compras.update'), data);
             }else{
                 response = await axios.post(route('compras.storeCompra'), data);
@@ -65,6 +65,8 @@ export default function FormCompras({
             /* Manejo de respuesta exitosa */
             if (response.data.status === 'success') {
                 setEditing(false);
+                setNewCompra(false);
+                setReloadDt(true);
                 Swal.fire({
                     icon: 'success',
                     title: 'Éxito',

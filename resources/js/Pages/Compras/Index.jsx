@@ -22,6 +22,8 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const [compra, setCompra] = useState({});
     const [notificaciones, setNotificaciones] = useState([]);
     const [showNotiModal, setShowNotiModal] = useState(false);
+    const [newCompra, setNewCompra] = useState(false);
+    const [reloadDt, setReloadDt] = useState(false);
 
     const fetchCompras = async () => {
         try {
@@ -51,7 +53,10 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
     useEffect(() => {
         fetchCompras();
-    }, [editing]);
+        if (reloadDt) {
+            setReloadDt(false);
+        }
+    }, [reloadDt, editing]);
 
     const filteredCompras = compras.filter(compra =>
         (compra.codigo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -154,10 +159,15 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
 
     //Editar compra
-    const editingCompra = (id) => {
+    const editingCompra = (id, codigo = "") => {
         setShowModal(true);
         setEditing(true);
-        axios.post(route('compras.data.obtener'), { compra_id: id })
+        if (codigo === "") {
+            setNewCompra(true);
+        } else {
+            setNewCompra(false);
+        }
+        axios.post(route('compras.data.obtener'), { compra_id: id, codigo: codigo })
             .then((response) => {
                 setCompra(response.data);
             }).catch((err) => {
@@ -181,6 +191,13 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             center: true
         },
         {
+            name: 'Fecha',
+            selector: row => row.fecha_compra,
+            sortable: true,
+            width: '10%',
+            center: true
+        },
+        {
             name: 'Nombre',
             selector: row => row.nombre,
             sortable: true,
@@ -191,14 +208,14 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             name: 'Proveedor',
             selector: row => row.proveedor,
             sortable: true,
-            width: '15%',
+            width: '10%',
             center: true
         },
         {
             name: 'Sucursal',
             selector: row => row.sucursal,
             sortable: true,
-            width: '20%',
+            width: '15%',
             center: true
         },
         {
@@ -221,46 +238,53 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                                     variant="outline-info"
                                     title="Editar compra"
                                     size="sm"
-                                    onClick={() => editingCompra(row.id)}
+                                    onClick={() => editingCompra(row.id, row.codigo)}
                                 >
                                     <i className="bi bi-bag-plus"></i>
                                 </Button>{' '}
-                                <Button
-                                    variant="outline-info mx-2"
-                                    title="Enviar compra a finanzas"
-                                    size="sm"
-                                    onClick={() => sendCompraFinanza(row.id)}
-                                >
-                                    <i className="bi bi-check-circle"></i>
-                                </Button>{' '}
+                                {
+                                    row.codigo !== "" && (
+                                        <>
 
-                                <Button
-                                    variant="outline-info"
-                                    title="Imprimir detalles de la compra"
-                                    size="sm"
-                                    onClick={() => showPDF(row.id)}
-                                >
-                                    <i className="bi bi-filetype-pdf"></i>
-                                </Button>{' '}
-                                {can('compras_delete') && (
-                                    <Button
-                                        variant="outline-danger"
-                                        onClick={() => handleDelete(row.id)}
-                                        className="ms-1 d-flex align-items-center justify-content-center"
-                                        style={{
-                                            fontSize: '15px',
-                                            height: '32px',
-                                            width: '32px',
-                                            padding: '0',
-                                            lineHeight: '0',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <i className="bi bi-trash" style={{ fontSize: '15px' }}></i>
-                                    </Button>
-                                )}
+                                            <Button
+                                                disabled={row.codigo === ""}
+                                                variant="outline-info mx-2"
+                                                title="Enviar compra a finanzas"
+                                                size="sm"
+                                                onClick={() => sendCompraFinanza(row.id)}
+                                            >
+                                                <i className="bi bi-send-check"></i>
+                                            </Button>
+                                            <Button
+                                                variant={row.codigo === "" ? "outline-info mx-2" : 'outline-info'}
+                                                title="Imprimir detalles de la compra"
+                                                size="sm"
+                                                onClick={() => showPDF(row.id)}
+                                            >
+                                                <i className="bi bi-filetype-pdf"></i>
+                                            </Button>{' '}
+                                            {can('compras_delete') && (
+                                                <Button
+                                                    variant="outline-danger"
+                                                    onClick={() => handleDelete(row.id)}
+                                                    className="ms-1 d-flex align-items-center justify-content-center"
+                                                    style={{
+                                                        fontSize: '15px',
+                                                        height: '32px',
+                                                        width: '32px',
+                                                        padding: '0',
+                                                        lineHeight: '0',
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center'
+                                                    }}
+                                                >
+                                                    <i className="bi bi-trash" style={{ fontSize: '15px' }}></i>
+                                                </Button>
+                                            )}
+                                        </>
+                                    )
+                                }
                             </>
                         ) : (
                             <>
@@ -350,6 +374,10 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                         compra={compra}
                         editing={editing}
                         setEditing={setEditing}
+                        newCompra={newCompra}
+                        setNewCompra={setNewCompra}
+                        reloadDt={reloadDt}
+                        setReloadDt={setReloadDt}
                     />
                 ) : (
                     <FormCompra
@@ -363,6 +391,10 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                         sucursales={sucursales}
                         editing={editing}
                         setEditing={setEditing}
+                        newCompra={newCompra}
+                        setNewCompra={setNewCompra}
+                        reloadDt={reloadDt}
+                        setReloadDt={setReloadDt}
                     />
                 )
             }
@@ -375,14 +407,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
             <Card>
                 <Card.Header>
-                    {can('compras_create') && (
-                        <Button onClick={() => {
-                            setEditing(false);
-                            setShowModal(true);
-                        }} variant='outline-success' size='sm'>
-                            <i className="bi bi-plus-circle"></i> Nueva compra
-                        </Button>
-                    )}
+                    
                     <FormControl
                         type="text"
                         placeholder="Buscar..."
