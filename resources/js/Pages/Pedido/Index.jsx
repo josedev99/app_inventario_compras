@@ -17,7 +17,6 @@ export default function Index({ auth, categorias }) {
     const can = (permissionName) => permissions.includes(permissionName);
 
     const [productos, setProductos] = useState([]);
-    const [producto, setProducto] = useState({});
     const [totalRows, setTotalRows] = useState(0);
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,6 +31,8 @@ export default function Index({ auth, categorias }) {
     const [productosPedido, setProductosPedido] = useState([]);
     const [refreshProduct, setRefreshProduct] = useState(false);
     const [newProductoId, setProductoId] = useState(0);
+    //editing useState
+    const [pedido,setPedido] = useState({});
 
     const fetchPedidos = async (page = 1, perPage = 10, search = '') => {
         const start = (page - 1) * perPage;
@@ -73,9 +74,6 @@ export default function Index({ auth, categorias }) {
             console.error('Error al cargar los pedidos:', error);
         }
     };
-
-
-
 
     const fetchProductos = async () => {
         let response = await axios.get(route('pedidos.productos.obtener'));
@@ -171,6 +169,18 @@ export default function Index({ auth, categorias }) {
         });
     };
 
+    //Function para editar el pedido
+    const editPedido = (id) => {
+        axios.post(route('pedido.edit'), {id: id})
+        .then((response) => {
+            setEditing(true);
+            setPedido(response.data);
+            setShowModal(true);
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
         { name: 'Codigo', selector: row => row.codigo, sortable: true, width: '10%', center: true },
@@ -182,6 +192,9 @@ export default function Index({ auth, categorias }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
+                    <Button variant="outline-info" title='Editar el pedido' size="sm" onClick={() => editPedido(row.id)}>
+                        <i class="bi bi-pencil-square"></i>
+                        </Button>{' '}
                     {can('pedido_pdf') && (
                         <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
                             <i className="bi bi-filetype-pdf"></i>
@@ -212,7 +225,8 @@ export default function Index({ auth, categorias }) {
     return (
         <AuthenticatedLayout user={auth.user} sidebar={<Sidebar />} header={<Nav />}>
             <Head title="Pedidos" />
-            <FormPedido showModal={showModal} setReloadDt={setReloadDt} setShowModal={setShowModal} title={"Nuevo pedido"} productos={productos} setShowModalProduct={setShowModalProduct} newProductoId={newProductoId} setProductoId={setProductoId} />
+
+            <FormPedido showModal={showModal} setReloadDt={setReloadDt} setShowModal={setShowModal} title={editing ? `Actulizando el pedido: ${pedido?.nombre}` : "Nuevo pedido"} productos={productos} setShowModalProduct={setShowModalProduct} newProductoId={newProductoId} setProductoId={setProductoId} editing={editing} setEditing={setEditing} pedido={pedido} />
 
             <DetallePedido showModalDet={showModalDet} setShowModalDet={setShowModalDet} title={"Detalle del pedido"} productosPedido={productosPedido} />
 
@@ -223,6 +237,7 @@ export default function Index({ auth, categorias }) {
                         <Button onClick={() => {
                             setShowModal(true);
                             setEditing(false);
+                            setPedido({})
                         }} variant='outline-success' size='sm'>
                             <i className="bi bi-plus-circle"></i> Nuevo pedido
                         </Button>
