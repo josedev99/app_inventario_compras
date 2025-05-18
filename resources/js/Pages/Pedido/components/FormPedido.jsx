@@ -17,6 +17,14 @@ export default function FormPedido({ title, showModal, setShowModal, pedido = {}
     const [productosPedido, setProductosPedido] = useState([]);
     //Agregar productos
     const handleAddProduct = () => {
+        //Validacion para cantidad de productos
+        if(data.cantidad === 0 || data.cantidad === ""){
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aviso',
+                text: 'Cantidad no válida.'
+            });return;
+        }
         if (data.producto_id) {
             let index = productosPedido.findIndex(p => parseInt(p.id) === parseInt(data.producto_id));
             if (index !== -1) {
@@ -34,6 +42,12 @@ export default function FormPedido({ title, showModal, setShowModal, pedido = {}
             data.producto_id = 0;
             setProductoId(0);
             data.cantidad = 1;
+        }else{
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aviso',
+                text: 'Producto no seleccionado.'
+            });
         }
     }
 
