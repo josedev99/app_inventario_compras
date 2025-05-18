@@ -104,6 +104,7 @@ class PedidosCompraController extends Controller
                 DB::raw('DATE_FORMAT(p.created_at,"%d/%m/%Y") as fecha'),
                 'p.nombre',
                 'p.estado',
+                'p.estado_envio',
                 DB::raw('sum(dp.cantidad) as cantidad')
             )->orderBy('p.id', 'desc');
 
@@ -232,5 +233,26 @@ class PedidosCompraController extends Controller
                 'message' => 'Ha ocurrido un error inesperado.'
             ]);
         }
+    }
+
+    //Method para enviar pedido a proveeduria
+    public function enviarPedido(Request $request){
+        $empresaId = Auth::user()->empresa_id;
+        $pedidoId = $request->input('id');
+
+        $result = Pedido::where('id', $pedidoId)->where('empresa_id', $empresaId)->update([
+            'estado_envio' => 1
+        ]);
+        if ($result) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'El pedido ha sido enviado correctamente a Proveeduría.'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Ocurrió un error al enviar el pedido a Proveeduría. Intente nuevamente.'
+        ]);
     }
 }

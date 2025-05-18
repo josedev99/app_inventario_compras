@@ -78,7 +78,6 @@ export default function Index({ auth, categorias }) {
     const fetchProductos = async () => {
         let response = await axios.get(route('pedidos.productos.obtener'));
         setProductos(response.data);
-        console.log(response.data);
     }
 
     useEffect(() => {
@@ -180,6 +179,51 @@ export default function Index({ auth, categorias }) {
             console.log(err);
         })
     }
+    //Accion para enviar pedido a proveedor
+
+    const sendPedido = (id) => {
+        Swal.fire({
+            title: "¿Desea enviar el pedido?",
+            text: "Una vez enviado, será procesado por Proveeduría.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, enviar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post(route('pedido.send.proved'),{ id: id})
+                .then((response)=>{
+                    console.log(response);
+                    if(response.data.status === "success"){
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: response.data.message,
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        });
+                        setReloadDt(true);
+                    }else{
+                        Swal.fire({
+                            title: '¡Error inesperado!',
+                            text: response.data.message,
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                    Swal.fire({
+                        title: '¡Error inesperado!',
+                        text: 'Ocurrió un problema al intentar enviar la solicitud. Por favor, intenta nuevamente.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                })
+            }
+        });
+    }
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
@@ -192,17 +236,37 @@ export default function Index({ auth, categorias }) {
             name: 'Acciones',
             cell: row => (
                 <div className="text-center">
-                    <Button variant="outline-info" title='Editar el pedido' size="sm" onClick={() => editPedido(row.id)}>
-                        <i class="bi bi-pencil-square"></i>
-                        </Button>{' '}
-                    {can('pedido_pdf') && (
-                        <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
-                            <i className="bi bi-filetype-pdf"></i>
-                        </Button>)}{' '}
-                    {can('pedido_details') && (
-                        <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
-                            <i className="bi bi-eye"></i>
-                        </Button>)}{' '}
+                    {
+                        row.estado_envio ? (
+                            <>
+                                {can('pedido_pdf') && (
+                                    <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
+                                        <i className="bi bi-filetype-pdf"></i>
+                                    </Button>)}{' '}
+                                {can('pedido_details') && (
+                                    <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
+                                        <i className="bi bi-eye"></i>
+                                    </Button>)}{' '}
+                            </>
+                        ) : (
+                            <>
+                            <Button variant="outline-info" title='Enviar pedido a Proveeduría' size="sm" onClick={() => sendPedido(row.id)}>
+                                <i class="bi bi-send-check"></i>
+                            </Button>{' '}
+                            <Button variant="outline-info" title='Editar el pedido' size="sm" onClick={() => editPedido(row.id)}>
+                                <i class="bi bi-pencil-square"></i>
+                            </Button>{' '}
+                            {can('pedido_pdf') && (
+                                <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
+                                    <i className="bi bi-filetype-pdf"></i>
+                                </Button>)}{' '}
+                            {can('pedido_details') && (
+                                <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
+                                    <i className="bi bi-eye"></i>
+                                </Button>)}{' '}
+                            </>
+                            )
+                        }
                 </div>
             ),
             ignoreRowClick: true,
