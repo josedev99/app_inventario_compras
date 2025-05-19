@@ -12,6 +12,7 @@ class Pedido extends Model
         'codigo',
         'nombre',
         'estado',
+        'estado_envio',
         'empresa_id',
         'sucursal_id',
         'user_id',

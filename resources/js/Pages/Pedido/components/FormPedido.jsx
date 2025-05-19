@@ -6,9 +6,10 @@ import Select from 'react-select';
 import { useEffect } from 'react';
 import "./formPedido.css";
 
-export default function FormPedido({ title, showModal, setShowModal, productos = [], setReloadDt, setShowModalProduct, newProductoId = 0, setProductoId }) {
+export default function FormPedido({ title, showModal, setShowModal, pedido = {}, productos = [], setReloadDt, setShowModalProduct, newProductoId = 0, setProductoId, editing, setEditing }) {
     const { data, reset, setData, processing } = useForm({
-        nombre: '',
+        id: pedido.id ?? 0,
+        nombre: pedido.nombre ?? '',
         cantidad: 1,
         producto_id: 0
     });
@@ -16,6 +17,14 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
     const [productosPedido, setProductosPedido] = useState([]);
     //Agregar productos
     const handleAddProduct = () => {
+        //Validacion para cantidad de productos
+        if(data.cantidad === 0 || data.cantidad === ""){
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aviso',
+                text: 'Cantidad no válida.'
+            });return;
+        }
         if (data.producto_id) {
             let index = productosPedido.findIndex(p => parseInt(p.id) === parseInt(data.producto_id));
             if (index !== -1) {
@@ -33,8 +42,41 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
             data.producto_id = 0;
             setProductoId(0);
             data.cantidad = 1;
+        }else{
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aviso',
+                text: 'Producto no seleccionado.'
+            });
         }
     }
+
+    useEffect(()=>{
+        // Solo ejecuta esto si se está editando y hay compra con ID
+        if (editing && pedido?.id) {
+            const nuevoData = {
+                id: pedido.id,
+                nombre: pedido.nombre || '',
+                cantidad: 1,
+                producto_id: 0
+            };
+    
+            // Evita volver a setear el mismo estado
+            setData(prev => {
+                if (JSON.stringify(prev) !== JSON.stringify(nuevoData)) {
+                    return nuevoData;
+                }
+                return prev;
+            });
+            setProductosPedido(pedido.detalles ?? []);
+        }
+    
+        // Si NO estamos editando y no hay compra => es nueva compra
+        if (!editing && (!pedido || Object.keys(pedido).length === 0)) {
+            reset();
+            setProductosPedido([]);
+        }
+    },[pedido?.id, editing, showModal]);
 
     useEffect(()=>{
         if(newProductoId !== 0){
@@ -42,13 +84,13 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
         }else{
             data.producto_id = 0;
         }
-    },[newProductoId]);
+    }, [newProductoId])
 
     const deleteItem = (index) => {
         const newProductos = productosPedido.filter((_, i) => i !== index);
         setProductosPedido(newProductos);
     }
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         //validaciones
         if (data.nombre.trim() === "") {
@@ -66,27 +108,44 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
             }); return;
         }
         data.productos = JSON.stringify(productosPedido);
-        axios.post(route('pedido.save'), data)
-            .then((response) => {
-                if (response.data.status === "success") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Éxito',
-                        text: response.data.message
-                    });
-                    reset();
-                    setShowModal(false);
-                    setReloadDt(true);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.data.message
-                    });
-                }
-            }).catch((err) => {
-                console.log(err);
-            })
+        try{
+            let response = null;
+            if(data.id !== 0){
+                response = await axios.post(route('pedido.update'), data);
+            }else{
+                response = await axios.post(route('pedido.save'), data);
+            }
+    
+            if (response.data.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: response.data.message
+                });
+                reset();
+                setShowModal(false);
+                setReloadDt(true);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.data.message
+                });
+            }
+        }catch(err){
+            console.log(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ha ocurrido un error, intente nuvamente.'
+            });
+        }
+    }
+    //Editing cantidad item
+    const handleCantidadItem = (value,index) => {
+        const nuevosProductos = [...productosPedido];
+        nuevosProductos[index].cantidad = value;
+        setProductosPedido(nuevosProductos);
     }
     return (
         <>
@@ -174,7 +233,18 @@ export default function FormPedido({ title, showModal, setShowModal, productos =
                                                                         <td style={{ textAlign: 'center' }}>{item.codigo}</td>
                                                                         <td>{item.Umedida}</td>
                                                                         <td>{item.descripcion.split(' - ')[1]}</td>
-                                                                        <td style={{ textAlign: 'center' }}>{item.cantidad}</td>
+                                                                        <td style={{ textAlign: 'center' }}>
+                                                                        <input
+                                                                            onChange={(e) => handleCantidadItem(e.target.value, index)}
+                                                                            value={item.cantidad || ''}
+                                                                            className="form-control"
+                                                                            type="number"
+                                                                            step={1}
+                                                                            min={1}
+                                                                            max={10000000}
+                                                                            style={{ width: '120px', height: '34px' }}
+                                                                        />
+                                                                        </td>
                                                                         <td style={{ textAlign: 'center' }}>
                                                                             <div className="action-btn" onClick={() => deleteItem(index)} title="Eliminar">
                                                                                 <i className="bi bi-trash"></i>

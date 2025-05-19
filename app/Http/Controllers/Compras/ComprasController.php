@@ -48,9 +48,7 @@ class ComprasController extends Controller
     public function storeCompra(Request $request)
     {
         try {
-
             $empresa_id = Auth::user()->empresa_id;
-
             $codigoCompra = $this->genCodeCompra();
             DB::beginTransaction();
             $compra = Compra::create([
@@ -386,15 +384,30 @@ class ComprasController extends Controller
     {
         $empresa_id = Auth::user()->empresa_id;
         $compra_id = $request->get('compra_id');
+        $existsCodigo = $request->get('codigo');
+        $compra = null;
+        if(!empty($existsCodigo)){
+            $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
+            if ($compra) {
+                $detalleCompra = DB::select("select p.id as producto_id,dc.id,dc.cantidad,p.codigo,p.nombre,p.Umedida, dc.costo_unitario as precio_unit from detalle_compras as dc inner join productos as p on dc.producto_id=p.id where dc.compra_id = ? and p.empresa_id = ?;", [$compra['id'], $empresa_id]);
+    
+                $compra->fecha_compra = date('Y-m-d', strtotime($compra['fecha_compra']));
+                $compra->detalle = $detalleCompra;
+    
+                return response()->json($compra);
+            }
+        }else{
+            $pedido = Pedido::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
+            if ($pedido) {
+                $pedido->pedido_id = $pedido['id'];
 
-        $compra = Compra::where('id', $compra_id)->where('empresa_id', $empresa_id)->first();
-        if ($compra) {
-            $detalleCompra = DB::select("select p.id as producto_id,dc.id,dc.cantidad,p.codigo,p.nombre,p.Umedida, dc.costo_unitario as precio_unit from detalle_compras as dc inner join productos as p on dc.producto_id=p.id where dc.compra_id = ? and p.empresa_id = ?;", [$compra['id'], $empresa_id]);
-
-            $compra->fecha_compra = date('Y-m-d', strtotime($compra['fecha_compra']));
-            $compra->detalle = $detalleCompra;
-
-            return response()->json($compra);
+                $detallePedido = DB::select("select p.id as producto_id,0 as id,dp.cantidad,p.codigo,p.nombre,p.Umedida, 0 as precio_unit from det_pedidos as dp inner join productos as p on dp.producto_id=p.id where dp.pedido_id = ? and p.empresa_id = ?;", [$compra_id, $empresa_id]);
+    
+                $pedido->fecha_compra = date('Y-m-d');
+                $pedido->detalle = $detallePedido;
+    
+                return response()->json($pedido);
+            }
         }
         return response()->json([]);
     }

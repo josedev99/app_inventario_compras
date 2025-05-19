@@ -104,6 +104,7 @@ class PedidosCompraController extends Controller
                 DB::raw('DATE_FORMAT(p.created_at,"%d/%m/%Y") as fecha'),
                 'p.nombre',
                 'p.estado',
+                'p.estado_envio',
                 DB::raw('sum(dp.cantidad) as cantidad')
             )->orderBy('p.id', 'desc');
 
@@ -162,5 +163,96 @@ class PedidosCompraController extends Controller
         $detalle_pedido = DB::select("select p.id as producto_id,dp.id,dp.cantidad,p.codigo,p.nombre,p.Umedida, 0 as precio_unit from det_pedidos as dp inner join productos as p on dp.producto_id=p.id where dp.pedido_id = ? and dp.empresa_id = ?", [$id, $empresaId]);
 
         return response()->json($detalle_pedido);
+    }
+
+    //Obtener datos del pedido por ID
+    public function getPedidoById(Request $request){
+        $pedido_id = $request->get('id');
+        $pedido = DB::table('pedidos as p')
+            ->where('p.id',$pedido_id)
+            ->select('id','nombre','estado')
+            ->first();
+        if($pedido){
+            $dataDetPedido= DB::table('det_pedidos as dp')
+                ->join('productos as p', 'p.id','=', 'dp.producto_id')
+                ->where('dp.pedido_id', $pedido_id)
+                ->select('dp.pedido_id','p.id','p.codigo', DB::raw('CONCAT(p.codigo, " - ", p.nombre , " - ", p.Umedida) as descripcion'), 'p.Umedida', 'dp.cantidad')
+                ->orderBy('dp.id','desc')
+                ->get();
+            $pedido->detalles = $dataDetPedido;
+            return response()->json($pedido);
+        }
+        return response()->json([]);
+    }
+
+    public function updatePedido(Request $request){
+        try {
+            DB::beginTransaction();
+            $empresaId = Auth::user()->empresa_id;
+            $sucursalId = Auth::user()->sucursal_id;
+            $userId = Auth::user()->id;
+
+            $productosPedido = json_decode($request->get('productos'));
+            $pedido = Pedido::where('id', $request->get('id'))->where('empresa_id', $empresaId)->update([
+                'nombre' => $request['nombre']
+            ]);
+
+            if ($pedido) {
+                //Deleting data
+                $okDelete = DetPedido::where('pedido_id', $request->get('id'))->where('empresa_id', $empresaId)->delete();
+                if($okDelete){
+                    foreach ($productosPedido as $item) {
+                        DetPedido::create([
+                            'cantidad' => $item->cantidad,
+                            'producto_id' => $item->id,
+                            'pedido_id' => $request->get('id'),
+                            'empresa_id' => $empresaId
+                        ]);
+                    }
+                    DB::commit();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'El pedido se ha actualizado con éxito.'
+                    ]);
+                }else{
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Se produjo un error al intentar actualizar el detalle del pedido.'
+                    ]);
+                }
+            }
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ha ocurrido un error al actualizar el pedido.'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ha ocurrido un error inesperado.'
+            ]);
+        }
+    }
+
+    //Method para enviar pedido a proveeduria
+    public function enviarPedido(Request $request){
+        $empresaId = Auth::user()->empresa_id;
+        $pedidoId = $request->input('id');
+
+        $result = Pedido::where('id', $pedidoId)->where('empresa_id', $empresaId)->update([
+            'estado_envio' => 1
+        ]);
+        if ($result) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'El pedido ha sido enviado correctamente a Proveeduría.'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Ocurrió un error al enviar el pedido a Proveeduría. Intente nuevamente.'
+        ]);
     }
 }

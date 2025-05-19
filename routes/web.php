@@ -143,6 +143,11 @@ Route::prefix('pedidos')->middleware(['auth', 'estado'])->group(function () {
     Route::get('obtener-productos', [ProductoController::class,'getProductsPedidos'])->name('pedidos.productos.obtener');
     //show pdf pedido
     Route::get('/documento/pdf/{id}', [PedidosCompraController::class, 'showPdf'])->name('pedido.show.pdf');
+    //Editing pedidos
+    Route::post('obtener/data', [PedidosCompraController::class, 'getPedidoById'])->name('pedido.edit');
+    Route::post('update', [PedidosCompraController::class, 'updatePedido'])->name('pedido.update');
+    //Ruta para enviar a proveeduria
+    Route::post('enviar/depto/proveeduria', [PedidosCompraController::class, 'enviarPedido'])->name('pedido.send.proved');
 });
 /**
  * Rutas para el módulo de inventario
