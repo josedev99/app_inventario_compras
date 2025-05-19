@@ -164,6 +164,12 @@ Route::prefix('inventario')->middleware(['auth', 'estado'])->group(function () {
     Route::post('/detalle-ingresos', [InventarioController::class, 'getDetalleMov'])->name('inv.det.ingreso');
     //show pdf pedido
     Route::get('/documento/pdf/ingresos/{id}', [InventarioController::class, 'genPdfMovIngreso'])->name('inv.det.ingreso.pdf');
+
+
+    Route::get('/index/salidas', [InventarioController::class, 'indexMovSalidas'])->name('inv.salidasindex');
+    Route::get('/get/index/data/salidas', [InventarioController::class, 'getSalidaMov'])->name('inv.getSalidaMov');
+    Route::post('/registrar/salida/inv', [InventarioController::class, 'saveSalida'])->name('inv.saveSalida');
+    Route::get('/documento/pdf/salidas/{id}', [InventarioController::class, 'genPdfMovSalida'])->name('inv.salida.pdf');
 });
 /**
  * Routas para usuarios

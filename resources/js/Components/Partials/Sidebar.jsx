@@ -194,9 +194,9 @@ function Sidebar() {
                                             </Link>
                                         </li>
                                         <li>
-                                            <a href="#">
+                                            <Link href={route('inv.salidasindex')}>
                                                 <span className="sub-item">Salidas</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
