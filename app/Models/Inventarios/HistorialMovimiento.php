@@ -4,7 +4,7 @@ namespace App\Models\Inventarios;
 
 use App\Models\Empresa\Empresa;
 use App\Models\Productos\Producto;
-use App\Models\Sursales\Sucursal;
+use App\Models\Sucursales\Sucursal;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
