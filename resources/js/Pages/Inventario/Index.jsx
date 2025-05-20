@@ -135,7 +135,7 @@ export default function Index({ auth, productos }) {
         { name: 'Descripción', selector: row => row.descripcion, sortable: true, width: '45%', center: true },
         { name: 'Unidad medida', selector: row => row.Umedida, sortable: true, width: '10%', center: true },
         { name: 'Costo', selector: row => `$${parseFloat(row.precio_venta).toFixed(2)}`, sortable: true, width: '10%', center: true },
-        { name: 'Stock', selector: row => row.stock, sortable: true, width: '10%', center: true },
+        { name: 'Stock', selector: row => ( row.stock < 5 ? <span class="badge rounded-pill text-bg-danger">{row.stock}</span> : <span class="badge rounded-pill text-bg-success">{row.stock}</span>), sortable: true, width: '10%', center: true },
     ];
     const customStyles = {
         headRow: {
