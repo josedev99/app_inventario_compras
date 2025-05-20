@@ -3,7 +3,7 @@ import { router, usePage } from '@inertiajs/react';
 function Nav() {
 
     const { auth } = usePage().props;
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user?.name || 'User')}&background=0D8ABC&color=fff&size=50`;
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user?.nombre || 'User')}&background=0D8ABC&color=fff&size=50`;
     const { compraspendientes } = usePage().props;
 
     return (
@@ -194,30 +194,10 @@ function Nav() {
                                             <div className="u-text">
                                                 <h4>{auth?.user?.nombre}</h4>
                                                 <p className="text-muted">{auth?.user?.email}</p>
-                                                <a
-                                                    href="profile.html"
-                                                    className="btn btn-xs btn-secondary btn-sm"
-                                                >
-                                                    View Profile
-                                                </a>
                                             </div>
                                         </div>
                                     </li>
                                     <li>
-                                        <div className="dropdown-divider" />
-                                        <a className="dropdown-item" href="#">
-                                            My Profile
-                                        </a>
-                                        <a className="dropdown-item" href="#">
-                                            My Balance
-                                        </a>
-                                        <a className="dropdown-item" href="#">
-                                            Inbox
-                                        </a>
-                                        <div className="dropdown-divider" />
-                                        <a className="dropdown-item" href="#">
-                                            Account Setting
-                                        </a>
                                         <div className="dropdown-divider" />
                                         <a
                                             href="#"

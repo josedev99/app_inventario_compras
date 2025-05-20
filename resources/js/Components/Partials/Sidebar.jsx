@@ -47,7 +47,7 @@ function Sidebar() {
                             <li className="nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarHomedash">
                                     <i className="bi bi-house fs-4" style={{ color: '#ced4da' }} />
-                                    <p>Home</p>
+                                    <p>Inicio</p>
                                     <span className="caret" />
                                 </a>
                                 <div className="collapse" id="sidebarHomedash">

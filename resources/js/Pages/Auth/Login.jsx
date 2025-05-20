@@ -96,7 +96,7 @@ export default function Login({ status, canResetPassword }) {
                                 </form>
                             </div>
                             <p className="text-center text-muted mt-4 small">
-                                &copy; {new Date().getFullYear()} Tu Empresa. Todos los derechos reservados.
+                                &copy; {new Date().getFullYear()} GrupoGuerrero. Todos los derechos reservados.
                             </p>
                         </div>
                     </div>

@@ -46,7 +46,7 @@ function Home({ auth, categoriasCount, usuariosCount, proveedoresCount, comprasC
                     <div className="d-flex align-items-start align-items-md-center flex-column flex-md-row pb-3">
                         <div>
                             <h3 className="fw-bold mb-1">
-                                Bienvenido <b style={{ color: '#F3C623' }}>{auth ? auth.nombre : 'Usuario'}</b>
+                                Bienvenido <b style={{ color: '#F3C623' }}>{auth && auth.user ? auth.user.nombre : 'Usuario'}</b>
                             </h3>
                             <h6 className="text-muted">Sistema de gestión de inventarios</h6>
                         </div>
