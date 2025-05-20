@@ -106,6 +106,7 @@ class ConfiguracionesSeeder extends Seeder
         Permission::create(['name' => 'compras_detallesadd']);
         Permission::create(['name' => 'compras_viewdetails']);
         Permission::create(['name' => 'compras_delete']);
+        Permission::create(['name' => 'compras_solicitud']);
 
         //usuarios
         Permission::create(['name' => 'usuario_view']);
@@ -198,6 +199,7 @@ class ConfiguracionesSeeder extends Seeder
             'compras_detallesadd',
             'compras_viewdetails',
             'compras_delete',
+            'compras_solicitud',
             'usuario_view',
             'usuario_create',
             'usuario_edit',
@@ -246,6 +248,7 @@ class ConfiguracionesSeeder extends Seeder
             'compras_detallesadd',
             'compras_viewdetails',
             'compras_delete',
+            'compras_solicitud',
             'usuario_view',
             'usuario_create',
             'usuario_edit',
@@ -291,7 +294,8 @@ class ConfiguracionesSeeder extends Seeder
             'productos_create',
             'productos_edit',
             'productos_delete',
-            'nuevo_pedido'
+            'nuevo_pedido',
+            'compras_solicitud'
         ]);
 
         $bodega->givePermissionTo([

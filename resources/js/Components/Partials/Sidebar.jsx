@@ -144,7 +144,7 @@ function Sidebar() {
                                     <div className="collapse" id="sidebarProviders">
                                         <ul className="nav nav-collapse">
                                             <li>
-                                                {can('compras_view') && (
+                                                {can('compras_solicitud') && (
                                                     <Link href={route('compras.index')}>
                                                         <span className="sub-item">Solicitud de compra</span>
                                                     </Link>
