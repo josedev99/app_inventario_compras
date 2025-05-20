@@ -22,14 +22,21 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         require_once app_path('Helpers/globalLogo.php');
+
         Inertia::share([
             'appLogo' => asset('assets/img/kaiadmin/grupo.png'),
             'auth' => function () {
                 $user = auth()->user();
-                return [
-                    'user' => $user,
-                    'permissions' => optional($user)->getAllPermissions()?->pluck('name') ?? [],
-                ];
+                return $user
+                    ? [
+                        'user' => [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                        ],
+                        'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
+                    ]
+                    : null;
             },
             'compraspendientes' => function () {
                 return Compra::where('estado', 'PENDIENTE')->count();

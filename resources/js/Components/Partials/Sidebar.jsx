@@ -3,8 +3,12 @@ import { Link, usePage } from '@inertiajs/react';
 function Sidebar() {
 
     const { auth } = usePage().props;
-    const permissions = auth.permissions || [];
-    const can = (permissionName) => permissions.includes(permissionName);
+    const permissions = auth?.permissions || [];
+
+    // Función para saber si tiene un permiso
+    const can = (perm) => permissions.includes(perm);
+
+    console.log("Permisos usuario:", permissions);
     const { appLogo } = usePage().props;
     const logoUrl = appLogo;
     const { comprasFinanzas } = usePage().props;
@@ -14,7 +18,6 @@ function Sidebar() {
             {/* Sidebar */}
             <div className="sidebar" data-background-color="dark">
                 <div className="sidebar-logo">
-                    {/* Logo Header */}
                     <div className="logo-header" data-background-color="dark">
                         <Link href={route('home.index')} className="logo">
                             <img
@@ -36,7 +39,6 @@ function Sidebar() {
                             <i className="gg-more-vertical-alt" />
                         </button>
                     </div>
-                    {/* End Logo Header */}
                 </div>
                 <div className="sidebar-wrapper scrollbar scrollbar-inner">
                     <div className="sidebar-content">
@@ -131,76 +133,80 @@ function Sidebar() {
                             )}
 
 
-                            {/* Proveeduria */}
-                            <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarProviders">
-                                    <i className="bi bi-inboxes fs-4" style={{ color: '#ced4da' }} />
-                                    <p>Proveeduria</p>
-                                    <span className="caret" />
-                                </a>
-                                <div className="collapse" id="sidebarProviders">
-                                    <ul className="nav nav-collapse">
-                                        <li>
-                                            {can('compras_view') && (
-                                                <Link href={route('compras.index')}>
-                                                    <span className="sub-item">Solicitud de compra</span>
-                                                </Link>
-                                            )}
-                                        </li>
-                                        <li>
-                                            {can('productos_view') && (
-                                                <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
-                                            )}
-                                        </li>
-                                        <li>
-                                            {can('proveedor_view') && (
-                                                <Link href={route('proveedores.index')}>
-                                                    <span className="sub-item">Proveedores</span>
-                                                </Link>
-                                            )}
-                                        </li>
-                                        <li>
-                                            {can('category_view') && (
-                                                <Link href={route('categorias.index')}>
-                                                    <span className="sub-item">Categorías</span>
-                                                </Link>
-                                            )}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                            {/* proveeduria */}
+                            {can('modulo_proveeduria') && (
+                                <li className="nav-item">
+                                    <a data-bs-toggle="collapse" href="#sidebarProviders">
+                                        <i className="bi bi-inboxes fs-4" style={{ color: '#ced4da' }} />
+                                        <p>Proveeduria</p>
+                                        <span className="caret" />
+                                    </a>
+                                    <div className="collapse" id="sidebarProviders">
+                                        <ul className="nav nav-collapse">
+                                            <li>
+                                                {can('compras_view') && (
+                                                    <Link href={route('compras.index')}>
+                                                        <span className="sub-item">Solicitud de compra</span>
+                                                    </Link>
+                                                )}
+                                            </li>
+                                            <li>
+                                                {can('productos_view') && (
+                                                    <Link href={route('producto.index')}><span className="sub-item">Productos</span></Link>
+                                                )}
+                                            </li>
+                                            <li>
+                                                {can('proveedor_view') && (
+                                                    <Link href={route('proveedores.index')}>
+                                                        <span className="sub-item">Proveedores</span>
+                                                    </Link>
+                                                )}
+                                            </li>
+                                            <li>
+                                                {can('category_view') && (
+                                                    <Link href={route('categorias.index')}>
+                                                        <span className="sub-item">Categorías</span>
+                                                    </Link>
+                                                )}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            )}
 
-                            <li className="nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarBodega">
-                                    <i className="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
-                                    <p>Bodega</p>
-                                    <span className="caret" />
-                                </a>
-                                <div className="collapse" id="sidebarBodega">
-                                    <ul className="nav nav-collapse">
-                                        <li>
-                                            <Link href={route('pedido.index')}>
-                                                <span className="sub-item">Nuevo pedido</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('inventario.index')}>
-                                                <span className="sub-item">Inventario</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('inv.ingreso.index')}>
-                                                <span className="sub-item">Entradas</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href={route('inv.salidasindex')}>
-                                                <span className="sub-item">Salidas</span>
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                            {can('modulo_bodegas') && (
+                                <li className="nav-item">
+                                    <a data-bs-toggle="collapse" href="#sidebarBodega">
+                                        <i className="bi bi-box-seam fs-4" style={{ color: '#ced4da' }} />
+                                        <p>Bodega</p>
+                                        <span className="caret" />
+                                    </a>
+                                    <div className="collapse" id="sidebarBodega">
+                                        <ul className="nav nav-collapse">
+                                            <li>
+                                                <Link href={route('pedido.index')}>
+                                                    <span className="sub-item">Nuevo pedido</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('inventario.index')}>
+                                                    <span className="sub-item">Inventario</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('inv.ingreso.index')}>
+                                                    <span className="sub-item">Entradas</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('inv.salidasindex')}>
+                                                    <span className="sub-item">Salidas</span>
+                                                </Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>

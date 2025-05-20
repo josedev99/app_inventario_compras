@@ -278,6 +278,7 @@ class ConfiguracionesSeeder extends Seeder
         ]);
 
         $proveedor->givePermissionTo([
+            'modulo_proveeduria',
             'category_view',
             'category_create',
             'category_edit',
@@ -294,6 +295,7 @@ class ConfiguracionesSeeder extends Seeder
         ]);
 
         $bodega->givePermissionTo([
+            'modulo_bodegas',
             'inventarios_view',
             'inventarios_create',
             'inventarios_entrdas',

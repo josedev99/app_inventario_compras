@@ -71,7 +71,10 @@ class HomeController extends Controller
             'productosLabels' => $productosLabels,
             'productosData' => $productosData,
             'inventario' => $inventario,
-            'auth' => auth()->user()
+            'auth' => [
+                'user' => auth()->user()->only(['id', 'nombre', 'email']),
+                'permissions' => auth()->user()->getAllPermissions()->pluck('name')->toArray(),
+            ],
         ]);
     }
 }
