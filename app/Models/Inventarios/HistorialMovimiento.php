@@ -23,7 +23,9 @@ class HistorialMovimiento extends Model
         'producto_id',
         'empresa_id',
         'sucursal_id',
-        'usuario_id'
+        'usuario_id',
+        'observaciones',
+        'nombre'
     ];
 
     public function productos()

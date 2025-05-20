@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('producto_id')->unsigned();
             $table->integer('empresa_id')->unsigned();
             $table->integer('sucursal_id')->unsigned();
+            $table->text('observaciones')->nullable();
+            $table->string('nombre')->nullable();
             $table->timestamps();
 
             $table->foreign('producto_id')->references('id')->on('productos');

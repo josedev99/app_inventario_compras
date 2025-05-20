@@ -115,7 +115,7 @@ class InventarioController extends Controller
         $empresaId = Auth::user()->empresa_id;
         $codigo = request()->get('codigo');
 
-        $detalle = DB::select("select hm.id,hm.cantidad,p.codigo,p.nombre,p.Umedida from historial_movimientos as hm inner join productos as p on hm.producto_id=p.id where hm.codigo = ? and hm.empresa_id = ?", [$codigo, $empresaId]);
+        $detalle = DB::select("select hm.id,hm.cantidad, p.codigo,p.nombre,p.Umedida from historial_movimientos as hm inner join productos as p on hm.producto_id=p.id where hm.codigo = ? and hm.empresa_id = ?", [$codigo, $empresaId]);
 
         return response()->json($detalle);
     }
@@ -266,6 +266,7 @@ class InventarioController extends Controller
     //guardamos el detalle de la salida
     public function saveSalida(Request $request)
     {
+
         $empresaId = Auth::user()->empresa_id;
         $sucursalId = Auth::user()->sucursal_id;
         $usuario_id = Auth::user()->id;
@@ -298,6 +299,8 @@ class InventarioController extends Controller
                 $productoId = $producto['id'];
                 $cantidad = $producto['cantidad'];
                 $precio = 0; // Si quieres obtener el precio real, debes traerlo
+                $observaciones = $producto['observaciones'];
+                $nombre = $producto['nombre'];
 
                 /**
                  * Buscamos producto en inventario
@@ -342,7 +345,9 @@ class InventarioController extends Controller
                     'producto_id' => $productoId,
                     'empresa_id' => $empresaId,
                     'sucursal_id' => $sucursalId,
-                    'usuario_id' => $usuario_id
+                    'usuario_id' => $usuario_id,
+                    'observaciones' => $observaciones,
+                    'nombre' => $nombre
                 ]);
             }
 
@@ -373,7 +378,7 @@ class InventarioController extends Controller
 
         $user = User::where('id', $userId)->first();
 
-        $detalle_mov = DB::select("select hm.id,DATE_FORMAT(hm.created_at,'%d/%m/%Y') as fecha,hm.cantidad,p.codigo,p.nombre,p.Umedida from historial_movimientos as hm inner join productos as p on hm.producto_id=p.id where hm.codigo = ? and hm.empresa_id = ?", [$codigo_mov, $empresaId]);
+        $detalle_mov = DB::select("select hm.id,DATE_FORMAT(hm.created_at,'%d/%m/%Y') as fecha,hm.cantidad, hm.observaciones, hm.nombre as nombremov, p.codigo,p.nombre,p.Umedida from historial_movimientos as hm inner join productos as p on hm.producto_id=p.id where hm.codigo = ? and hm.empresa_id = ?", [$codigo_mov, $empresaId]);
 
         if (count($detalle_mov) > 0) {
             $fecha_mov = $detalle_mov[0]->fecha;
@@ -386,7 +391,8 @@ class InventarioController extends Controller
         return $pdf->stream(date('d-m-Y') . "_ingreso_" . $codigo_mov . ".pdf");
     }
     //Generar documento PDF
-    public function generarDocStockActual(){
+    public function generarDocStockActual()
+    {
         $userId = Auth::user()->id;
         $empresaId = Auth::user()->empresa_id;
         $sucursalId = Auth::user()->sucursal_id;

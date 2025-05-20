@@ -131,6 +131,8 @@
                 <th style="text-align: center">#</th>
                 <th style="text-align: center">CÓDIGO</th>
                 <th style="text-align: center">DESCRIPCIÓN</th>
+                <th style="text-align: center">NOMBRE</th>
+                <th style="text-align: center">OBSERVACIONES</th>
                 <th style="text-align: center">CANTIDAD</th>
                 <th style="text-align: center">UNIDAD</th>
             </tr>
@@ -144,6 +146,8 @@
                     <td>{{ $contador }}</td>
                     <td style="text-align: center">{{ $item->codigo }}</td>
                     <td>{{ $item->nombre }}</td>
+                    <td>{{ $item->nombremov }}</td>
+                    <td>{{ $item->observaciones }}</td>
                     <td style="text-align: center">{{ $item->cantidad }}</td>
                     <td>{{ $item->Umedida }}</td>
                 </tr>
