@@ -246,7 +246,7 @@ export default function FormCompras({
                                                                 value={item.cantidad || ''}
                                                                 className="form-control"
                                                                 type="number"
-                                                                step={1}
+                                                                step={0.01}
                                                                 min={1}
                                                                 max={10000000}
                                                                 style={{ width: '120px', height: '34px' }}
