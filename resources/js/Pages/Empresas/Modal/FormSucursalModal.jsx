@@ -87,7 +87,10 @@ const FormSucursalModal = ({ show, onClose, onSubmit, sucursalData, sucursalesLi
             </Modal.Header>
             <Modal.Body>
                 
-
+            {sucursalData && (
+                    <p className="mb-3"><strong>Empresa:</strong> {sucursalData.nombre}</p>
+                )}
+                
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <div className="row g-2">
                         <div className="col-md-6">
@@ -125,41 +128,9 @@ const FormSucursalModal = ({ show, onClose, onSubmit, sucursalData, sucursalesLi
                     </div>
                 </form>
 
-                {sucursalData && (
-                    <p className="mb-3"><strong>Empresa:</strong> {sucursalData.nombre}</p>
-                )}
+                
 
-                <div className="mb-3">
-                    <h6>Sucursales existentes</h6>
-                    <div className="table-responsive">
-                        <table className="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Encargado</th>
-                                    <th>Teléfono</th>
-                                    <th>Dirección</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sucursalesList.length > 0 ? (
-                                    sucursalesList.map((suc, idx) => (
-                                        <tr key={idx}>
-                                            <td>{suc.nombre}</td>
-                                            <td>{suc.encargado}</td>
-                                            <td>{suc.telefono}</td>
-                                            <td>{suc.direccion}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="4" className="text-center">No hay sucursales registradas.</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                
 
                 {error && <div className="alert alert-danger">{error}</div>}
             </Modal.Body>

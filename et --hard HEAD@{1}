@@ -1,0 +1,20 @@
+[33mab9bc13[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: pull origin main: Fast-forward
+[33m47fc8b1[m HEAD@{1}: pull origin main: Fast-forward
+[33m67faccb[m HEAD@{2}: pull origin main: Fast-forward
+[33mb770529[m HEAD@{3}: pull origin main: Fast-forward
+[33me6d78ef[m HEAD@{4}: pull origin main: Fast-forward
+[33mbb561bb[m HEAD@{5}: commit: Actualización de SucursalController, eliminación de migración vieja y nuevos logos
+[33mfa5cc04[m HEAD@{6}: pull --rebase origin main: Fast-forward
+[33m064c19b[m HEAD@{7}: checkout: moving from testing-datatable to main
+[33mcc26f2a[m[33m ([m[1;32mtesting-datatable[m[33m)[m HEAD@{8}: rebase (finish): returning to refs/heads/testing-datatable
+[33mcc26f2a[m[33m ([m[1;32mtesting-datatable[m[33m)[m HEAD@{9}: rebase (continue): Añadidos cambios en imágenes y migraciones de sucursales
+[33mfa5cc04[m HEAD@{10}: pull --rebase origin main (start): checkout fa5cc041f075cfdb7bfaa00e024ab4e1cc9e182b
+[33me44a8a0[m HEAD@{11}: commit (merge): Añadidos cambios en imágenes y migraciones de sucursales
+[33mc4bf380[m HEAD@{12}: commit: Añadidos cambios en imágenes y migraciones de sucursales
+[33m064c19b[m HEAD@{13}: checkout: moving from main to testing-datatable
+[33m064c19b[m HEAD@{14}: commit (merge): Subiendo mis cambios
+[33mca86764[m HEAD@{15}: commit: Agrego lógica para listar sucursales en modal y actualizo rutas API
+[33m468514e[m HEAD@{16}: pull: Fast-forward
+[33m6998091[m HEAD@{17}: commit: Agregados archivos de Empresas, cambios en Sidebar y rutas
+[33m58ae2df[m HEAD@{18}: pull origin main: Fast-forward
+[33m4f8c897[m HEAD@{19}: clone: from https://github.com/josedev99/app_inventario_compras.git

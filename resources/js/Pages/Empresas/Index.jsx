@@ -170,7 +170,7 @@ function Index({ auth, empresas, paginacion }) {
                 <div className="card-header d-flex justify-content-between align-items-center">
                     {can('empresa_create') && (
                         <button className="btn btn-outline-success" onClick={openModal}>
-                            <i className="bi bi-plus-circle"></i>
+                            <i className="bi bi-plus-circle"></i> Nueva empresa
                         </button>
                     )}
                 </div>
