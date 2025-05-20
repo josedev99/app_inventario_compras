@@ -112,6 +112,23 @@ export default function Index({ auth, productos }) {
         });
     };
 
+    const generarDocumento = () => {
+        Swal.fire({
+            title: "¿Deseas generar el PDF?",
+            text: "Se generará un archivo con el inventario actual.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, generar PDF",
+            cancelButtonText: "Cancelar"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                window.open(route('inv.stock.pdf'), '_blank');
+            }
+          });
+    }
+
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
         { name: 'Código producto', selector: row => row.codigo, sortable: true, width: '20%', center: true },
@@ -138,11 +155,17 @@ export default function Index({ auth, productos }) {
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
                     {can('inventarios_create') && (
+                    <div>
                         <Button onClick={() => {
                             setShowModal(true);
                         }} variant='outline-success' size='sm'>
                             <i className="bi bi-plus-circle"></i> Ingreso
                         </Button>
+                        <Button
+                            onClick={()=>generarDocumento()}
+                            variant='outline-danger mx-3' size='sm'
+                        > <i class="bi bi-filetype-pdf"></i> Inventario</Button>
+                    </div>
                     )}
                     <input
                         type="text"

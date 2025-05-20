@@ -385,4 +385,21 @@ class InventarioController extends Controller
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream(date('d-m-Y') . "_ingreso_" . $codigo_mov . ".pdf");
     }
+    //Generar documento PDF
+    public function generarDocStockActual(){
+        $userId = Auth::user()->id;
+        $empresaId = Auth::user()->empresa_id;
+        $sucursalId = Auth::user()->sucursal_id;
+
+        $sucursal = Sucursal::where('id', $sucursalId)->where('empresa_id', $empresaId)->select('nombre', 'logo')->first();
+        $empresa = Empresa::where('id', $empresaId)->first();
+
+        $user = User::where('id', $userId)->first();
+
+        $invActual = DB::select("select p.codigo,p.nombre,p.Umedida,i.cantidad as stock from inventarios as i inner join productos as p on i.producto_id=p.id and i.empresa_id=p.empresa_id where i.empresa_id = ? and i.sucursal_id = ?;", [$empresaId, $sucursalId]);
+
+        $pdf = PDF::loadView('pdf.stockActual', compact('invActual', 'sucursal', 'empresa', 'user'));
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf->stream(date('d-m-Y') . "_inventario_actual.pdf");
+    }
 }

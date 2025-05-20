@@ -170,6 +170,9 @@ Route::prefix('inventario')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/get/index/data/salidas', [InventarioController::class, 'getSalidaMov'])->name('inv.getSalidaMov');
     Route::post('/registrar/salida/inv', [InventarioController::class, 'saveSalida'])->name('inv.saveSalida');
     Route::get('/documento/pdf/salidas/{id}', [InventarioController::class, 'genPdfMovSalida'])->name('inv.salida.pdf');
+
+    //Generar documento de stock
+    Route::get('/documento/pdf/stock', [InventarioController::class, 'generarDocStockActual'])->name('inv.stock.pdf');
 });
 /**
  * Routas para usuarios
