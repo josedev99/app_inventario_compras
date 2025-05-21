@@ -202,7 +202,7 @@ export default function FormCompras({
                         </div>
                         <div className="col-sm-12 col-md-12 col-lg-6 mb-2">
                             <div className="form-group m-0 p-0">
-                                <label className='m-0' htmlFor='bodegas'>Bodegas</label>
+                                <label className='m-0' htmlFor='bodegas'>Sucursal</label>
                                 <Select
                                     value={getSelectedOption(safeArray(sucursales), data.sucursal_id) ? {
                                         value: data.sucursal_id,
