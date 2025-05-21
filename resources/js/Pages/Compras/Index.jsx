@@ -289,7 +289,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                         ) : (
                             <>
                                 {
-                                    row.pedido_estado !== 'APROBADO' && (
+                                    row.pedido_estado !== 'PAGADO' && (
                                         <Button
                                             variant="outline-dark mx-2"
                                             title="Enviar notificación a bodega"

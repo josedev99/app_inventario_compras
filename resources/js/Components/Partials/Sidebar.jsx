@@ -84,14 +84,6 @@ function Sidebar() {
                                                     </Link>
                                                 )}
                                             </li>
-
-                                            <li>
-                                                {can('proveedor_view') && (
-                                                    <Link href={route('proveedores.index')}>
-                                                        <span className="sub-item">Proveedores</span>
-                                                    </Link>
-                                                )}
-                                            </li>
                                             <li>
                                                 {can('usuario_view') && (
                                                     <Link href={route('user.index')}>
