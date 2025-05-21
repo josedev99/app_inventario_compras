@@ -4,7 +4,7 @@ export default function ModalNotificaciones({ show, onClose, compras }) {
     return (
         <Modal show={show} onHide={onClose} size="lg" centered>
             <Modal.Header closeButton>
-                <Modal.Title>Finanzas, a mandado la siguuiente notificación.</Modal.Title>
+                <Modal.Title>Finanzas, a mandado la siguiente notificación.</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>Las siguientes compras han sido: <strong>"APROBADAS"</strong> o <strong>"RECHAZADAS"</strong>:</p>
