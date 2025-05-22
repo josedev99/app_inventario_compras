@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Compras\Compra;
+use App\Models\Pedido;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -44,6 +45,11 @@ class AppServiceProvider extends ServiceProvider
             'comprasFinanzas' => function () {
                 return Compra::where('estado', 'PENDIENTE')
                     ->where('enviado_a_finanzas', true)
+                    ->count();
+            },
+            'counterPendingCompra' => function () {
+                return Pedido::where('estado', 'Pendiente')
+                    ->where('estado_envio', true)
                     ->count();
             }
         ]);
