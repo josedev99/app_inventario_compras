@@ -11,7 +11,7 @@ function Sidebar() {
     console.log("Permisos usuario:", permissions);
     const { appLogo } = usePage().props;
     const logoUrl = appLogo;
-    const { comprasFinanzas } = usePage().props;
+    const { comprasFinanzas, counterPendingCompra } = usePage().props;
 
     return (
         <>
@@ -24,7 +24,7 @@ function Sidebar() {
                                 src={logoUrl}
                                 alt="navbar brand"
                                 className="navbar-brand"
-                                width={200}
+                                width={170}
                             />
                         </Link>
                         <div className="nav-toggle">
@@ -78,8 +78,6 @@ function Sidebar() {
                                                             <span className="badge bg-success rounded-circle d-inline-flex align-items-center justify-content-center ms-2" style={{ width: '20px', height: '20px' }}>
                                                                 {comprasFinanzas}
                                                             </span>
-
-
                                                         )}
                                                     </Link>
                                                 )}
@@ -139,6 +137,11 @@ function Sidebar() {
                                                 {can('compras_solicitud') && (
                                                     <Link href={route('compras.index')}>
                                                         <span className="sub-item">Solicitud de compra</span>
+                                                        {counterPendingCompra > 0 && (
+                                                            <span className="badge bg-success rounded-circle d-inline-flex align-items-center justify-content-center ms-2" style={{ width: '20px', height: '20px' }}>
+                                                                {counterPendingCompra}
+                                                            </span>
+                                                        )}
                                                     </Link>
                                                 )}
                                             </li>

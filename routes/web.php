@@ -58,7 +58,7 @@ Route::middleware(['auth', 'estado'])->group(function () {
      * parte para compras
      */
     Route::get('/compras', [ComprasController::class, 'index'])->name('compras.index');
-    Route::get('/obtener/compras/data', [ComprasController::class, 'getDataCompras'])->name('compras.getDataCompras');
+    Route::post('/obtener/compras/data', [ComprasController::class, 'getDataCompras'])->name('compras.getDataCompras');
     Route::post('/store/compra', [ComprasController::class, 'storeCompra'])->name('compras.storeCompra');
     Route::delete('/delete/compra/{id}', [ComprasController::class, 'deleteCompra'])->name('compras.deleteCompra');
     Route::get('/agregar/detalles/compras/{id}', [ComprasController::class, 'adddetallesdeCompra'])->name('compras.adddetallesdeCompra');

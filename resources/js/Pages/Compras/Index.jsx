@@ -25,11 +25,22 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const [newCompra, setNewCompra] = useState(false);
     const [reloadDt, setReloadDt] = useState(false);
 
-    const fetchCompras = async () => {
+    const fetchCompras = async (page = 1, perPage = 10, search = '') => {
         try {
-            const response = await axios.get(route('compras.getDataCompras'));
+            const start = (page - 1) * perPage;
+            const response = await axios.post(route('compras.getDataCompras'), {
+                params: {
+                    draw: 1,
+                    start: start,
+                    length: perPage,
+                    'search[value]': search,
+                },
+            });
+            console.log(search);
             const comprasData = response.data.data;
             setCompras(comprasData);
+            setTotalRows(response.data.recordsTotal);
+            setCurrentPage(page);
 
             const notified = JSON.parse(localStorage.getItem('compras_notificadas') || '[]');
 

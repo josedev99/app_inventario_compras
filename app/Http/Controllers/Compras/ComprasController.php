@@ -38,10 +38,21 @@ class ComprasController extends Controller
 
     public function getDataCompras(Request $request)
     {
-
         if ($request->ajax()) {
             $compras = Compra::getData();
-            return DataTables::of($compras)->toJson();
+            return DataTables::of($compras)->addIndexColumn()
+            ->filter(function ($query) use ($request) {
+                if ($search = $request->input('search.value')) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('fecha_compra', 'like', "%{$search}%")
+                            ->orWhere('sucursal', 'like', "%{$search}%")
+                            ->orWhere('codigo', 'like', "%{$search}%")
+                            ->orWhere('proveedor', 'like', "%{$search}%");
+                    });
+                }
+            })
+            ->make(true);
         }
     }
 
