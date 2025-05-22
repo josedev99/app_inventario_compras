@@ -61,12 +61,6 @@ export default function Authenticated({ user, sidebar, header, children }) {
                         <div className="copyright">{ new Date().getUTCFullYear() }<i className="fa fa-heart heart text-danger" /> by
                             <a href="#"> Estudiantes de la ULS</a>
                         </div>
-                        <div>
-                            Boostrap 5.3
-                            <a target="_blank" href="#">
-                                -
-                            </a>
-                        </div>
                     </div>
                 </footer>
             </div>
