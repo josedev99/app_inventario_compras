@@ -34,7 +34,7 @@ export default function Login({ status, canResetPassword }) {
                         <div className="col-md-8 col-lg-5">
                             <div className="card shadow-lg border-0 rounded-4 p-4">
                                 <div className="text-center mb-4">
-                                    <img src="/assets/img/kaiadmin/grupo.png" alt="Logo" width="250" />
+                                    <img src="/assets/img/kaiadmin/grupoguerrero_login.png" alt="Logo" width="250" />
                                 </div>
 
                                 {status && (

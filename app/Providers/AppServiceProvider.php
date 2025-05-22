@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
         Inertia::share([
             'appLogo' => asset('assets/img/kaiadmin/grupo.png'),
+            'appLogoLogin' => asset('assets/img/kaiadmin/grupoguerrero_login.png'),
             'auth' => function () {
                 $user = auth()->user();
                 return $user

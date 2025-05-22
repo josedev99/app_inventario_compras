@@ -24,7 +24,7 @@ function Sidebar() {
                                 src={logoUrl}
                                 alt="navbar brand"
                                 className="navbar-brand"
-                                width={200}
+                                width={170}
                             />
                         </Link>
                         <div className="nav-toggle">
