@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
         require_once app_path('Helpers/globalLogo.php');
 
         Inertia::share([
-            'appLogo' => asset('assets/img/kaiadmin/grupo.png'),
+            'appLogo' => asset('assets/img/kaiadmin/new_logo_grupo.png'),
             'appLogoLogin' => asset('assets/img/kaiadmin/grupoguerrero_login.png'),
             'auth' => function () {
                 $user = auth()->user();
