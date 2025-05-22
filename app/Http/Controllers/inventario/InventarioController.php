@@ -138,11 +138,10 @@ class InventarioController extends Controller
         try {
             DB::beginTransaction();
             $productos = json_decode($request->input('productos'), true);
-
             $code_mov = GenerateCode::generarMov("MOV");
 
             foreach ($productos as $producto) {
-                $productoId = $producto['id'];
+                $productoId = $producto['producto_id'];
                 $cantidad = $producto['cantidad'];
                 $precio = 0;
 

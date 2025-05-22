@@ -93,7 +93,7 @@ export default function FormIngModal({ title, showModal, setShowModal,setReloadD
         } else {
             // Agregar nuevo producto
             const nuevoProducto = {
-                id: data.producto_id,
+                producto_id: data.producto_id,
                 codigo: productoSeleccionado.codigo,
                 descripcion: productoSeleccionado.descripcion,
                 cantidad: data.cantidad
