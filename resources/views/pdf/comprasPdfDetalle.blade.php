@@ -3,16 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Resumen de Compra #{{ $compras->id }}</title>
+    <title>Resumen de compra #{{ $compras->id }}</title>
     <style>
         body {
-            font-family: Helvetica,sans-serif;
+            font-family: Helvetica, sans-serif;
             font-size: 12px;
             color: #333;
             margin: 15px 20px;
         }
 
-        h1, strong {
+        h1,
+        strong {
             color: #2c3e50;
         }
 
@@ -22,7 +23,8 @@
             margin-bottom: 6px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 6px;
             text-align: left;
             font-size: 12px;
@@ -72,16 +74,16 @@
 
 <body>
 
-
-    <table style="width: 100%;border-collapse:collapse">
-
+    <table style="width: 100%; border-collapse: collapse;">
         <tr>
-            <td style="width: 33.33"></td>
-            <td style="width: 33.33;text-align:center">
-                <b style="font-size: 14px">{{ $compras->empresas->nombre ?? '-' }}</b> <br>
-                <strong>Bodega:</strong> {{ $compras->sucursales->nombre ?? '-' }}
-                <br><br> <span style="font-size: 13px">ORDE DE COMPRA # {{ $compras->codigo }}</span></td>
-            <td style="width: 33.33; text-align:center">
+            <td style="width: 33.33%"></td>
+            <td style="width: 33.33%; text-align: center;">
+                <b style="font-size: 14px">{{ $compras->sucursales->nombre ?? '-' }}</b> <br>
+                {{ $compras->empresas->nombre ?? '-' }}
+                <br><br>
+                <span style="font-size: 13px">ORDEN DE COMPRA Nº {{ $compras->codigo }}</span>
+            </td>
+            <td style="width: 33.33%; text-align: center;">
                 @php
                     $logoBase64 = get_logo_sucursal($compras->id);
                 @endphp
@@ -92,28 +94,29 @@
                 @endif
             </td>
         </tr>
-
     </table>
 
     <table>
         <tr>
-            <td style="width: 50%"><strong>Fecha de Compra:</strong> {{ optional($compras->created_at)->format('d/m/Y H:i') ?? '-' }}</td>
+            <td style="width: 50%"><strong>Fecha de compra:</strong>
+                {{ optional($compras->created_at)->format('d/m/Y H:i') ?? '-' }}</td>
             <td style="width: 50%"><strong>Realizado por:</strong> {{ $compras->users->nombre ?? '-' }}</td>
             <td style="width: 50%"><strong>Estado:</strong> {{ $compras->estado ?? '-' }}</td>
+            <td style="width: 50%"><strong>Tipo de comprobante:</strong> {{ $compras->tipo_comprobante ?? '-' }}</td>
         </tr>
     </table>
 
     <div class="section">
-        <h4 style="text-align: center">DETALLES</h4>
+        <h4 style="text-align: center;">DETALLES</h4>
         <table>
             <thead>
                 <tr>
-                    <th style="text-align: center">#</th>
-                    <th style="text-align: center">Descripción</th>
-                    <th style="text-align: center">Cantidad</th>
-                    <th style="text-align: center">Unidad</th>
-                    <th style="text-align: center">Precio Unitario</th>
-                    <th style="text-align: center">Total</th>
+                    <th style="text-align: center;">#</th>
+                    <th style="text-align: center;">Descripción</th>
+                    <th style="text-align: center;">Cantidad</th>
+                    <th style="text-align: center;">Unidad de medida</th>
+                    <th style="text-align: center;">Precio unitario</th>
+                    <th style="text-align: center;">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -121,24 +124,24 @@
                 @foreach ($compras->detalles as $i => $detalle)
                     @php $total += $detalle->total; @endphp
                     <tr>
-                        <td style="text-align: center">{{ $i + 1 }}</td>
+                        <td style="text-align: center;">{{ $i + 1 }}</td>
                         <td>{{ $detalle->productos->nombre }}</td>
-                        <td style="text-align: center">{{ $detalle->cantidad }}</td>
-                        <td style="text-align: center">{{ $detalle->productos->Umedida }}</td>
-                        <td style="text-align: right">${{ number_format($detalle->costo_unitario, 2) }}</td>
-                        <td style="text-align: right">${{ number_format($detalle->total, 2) }}</td>
+                        <td style="text-align: center;">{{ $detalle->cantidad }}</td>
+                        <td style="text-align: center;">{{ $detalle->productos->Umedida }}</td>
+                        <td style="text-align: right;">${{ number_format($detalle->costo_unitario, 2) }}</td>
+                        <td style="text-align: right;">${{ number_format($detalle->total, 2) }}</td>
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="4" style="text-align: right"><strong>Total: </strong></td>
-                    <td style="text-align: right"><strong>${{ number_format($total, 2) }}</strong></td>
+                    <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
+                    <td colspan="2" style="text-align: right;"><strong>${{ number_format($total, 2) }}</strong></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="footer">
-        Este documento fue generado automáticamente el {{ now()->format('d/m/Y H:i') }}
+        Este documento ha sido generado automáticamente el {{ now()->format('d/m/Y H:i') }}
     </div>
 
 </body>

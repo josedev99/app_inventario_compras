@@ -57,8 +57,8 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             title: "Cambiar estado de la compra",
             input: "select",
             inputOptions: {
-                "PAGADO": "PAGADO",
-                "CANCELADO": "CANCELADO",
+                "APROBADO": "APROBADO",
+                "RECHAZADO": "RECHAZADO",
             },
             inputPlaceholder: "Selecciona un estado",
             showCancelButton: true,
@@ -128,7 +128,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             cell: row => (
                 <div className="d-flex align-items-center">
                     {
-                        row.estado !== "PAGADO" ? (
+                        row.estado !== "APROBADO" ? (
                             <>
                                 <Button
                                     variant="outline-info mx-2"

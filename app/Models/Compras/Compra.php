@@ -25,6 +25,7 @@ class Compra extends Model
         'sucursal_id',
         'estado',
         'codigo',
+        'tipo_comprobante',
         'pedido_id',
         'user_id',
         'enviado_a_finanzas'
@@ -81,7 +82,7 @@ class Compra extends Model
                 DB::raw('COALESCE(p.nombre, "") as proveedor'),
                 DB::raw('COALESCE(pe.estado, "") as pedido_estado')
             )
-            ->orderBy('compras.id','asc')
+            ->orderBy('compras.id', 'asc')
             ->get();
 
         return $data;
