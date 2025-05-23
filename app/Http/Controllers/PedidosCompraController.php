@@ -96,11 +96,13 @@ class PedidosCompraController extends Controller
 
         $stocks = DB::table('pedidos as p')
             ->join('det_pedidos as dp', 'dp.pedido_id', '=', 'p.id')
+            ->leftJoin('compras as c', 'c.pedido_id', '=', 'p.id')
             ->where('p.empresa_id', $empresaId)
             ->groupBy('p.id', 'p.codigo', 'p.nombre', 'p.created_at', 'p.estado')
             ->select(
                 'p.id',
                 'p.codigo',
+                DB::raw('COALESCE(c.codigo,"") as codigo_compra'),
                 DB::raw('DATE_FORMAT(p.created_at,"%d/%m/%Y") as fecha'),
                 'p.nombre',
                 'p.estado',
@@ -114,6 +116,7 @@ class PedidosCompraController extends Controller
                 if ($search = $request->input('search.value')) {
                     $query->where(function ($q) use ($search) {
                         $q->where('p.codigo', 'like', "%{$search}%")
+                            ->orWhere('c.codigo', 'like', "%{$search}%")
                             ->orWhere('p.nombre', 'like', "%{$search}%")
                             ->orWhere('p.created_at', 'like', "%{$search}%")
                             ->orWhere('p.estado', 'like', "%{$search}%");

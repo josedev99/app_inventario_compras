@@ -227,9 +227,10 @@ export default function Index({ auth, categorias }) {
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
-        { name: 'Codigo', selector: row => row.codigo, sortable: true, width: '10%', center: true },
+        { name: 'Código ped.', selector: row => row.codigo, sortable: true, width: '10%', center: true },
+        { name: 'Código comp.', selector: row => row.codigo_compra, sortable: true, width: '10%', center: true },
         { name: 'fecha', selector: row => row.fecha, sortable: true, width: '10%', center: true },
-        { name: 'Nombre pedido', selector: row => row.nombre, sortable: true, width: '35%', center: true },
+        { name: 'Nombre pedido', selector: row => row.nombre, sortable: true, width: '25%', center: true },
         { name: 'Cantidad', selector: row => row.cantidad, sortable: true, width: '10%', center: true },
         { name: 'Estado', selector: row => row.estado, sortable: true, width: '10%', center: true },
         {

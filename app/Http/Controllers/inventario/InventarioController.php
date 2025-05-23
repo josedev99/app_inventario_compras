@@ -126,7 +126,7 @@ class InventarioController extends Controller
         $empresaId = Auth::user()->empresa_id;
         $codigo = $request->input('codigo');
 
-        $productos = DB::select("select dc.cantidad,dc.producto_id,p.codigo,concat(p.nombre, ' ',p.umedida) as descripcion from compras as c inner join detalle_compras as dc on c.id=dc.compra_id inner join productos as p on dc.producto_id=p.id where c.estado = 'PAGADO' and c.empresa_id = ? and c.codigo = ?", [$empresaId, $codigo]);
+        $productos = DB::select("select dc.cantidad,dc.producto_id,p.codigo,concat(p.nombre, ' ',p.umedida) as descripcion from compras as c inner join detalle_compras as dc on c.id=dc.compra_id inner join productos as p on dc.producto_id=p.id where c.estado = 'APROBADO' and c.empresa_id = ? and c.codigo = ?", [$empresaId, $codigo]);
         return response()->json($productos);
     }
 
