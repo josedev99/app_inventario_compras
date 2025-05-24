@@ -14,6 +14,7 @@ export default function FormCategoria({
     onClose
 }) {
     const { data, setData, reset, processing } = useForm({
+        codigo: '',
         nombre: '',
         descripcion: ''
     });
@@ -21,6 +22,7 @@ export default function FormCategoria({
     useEffect(() => {
         if (editMode && categoriaToEdit) {
             setData({
+                codigo: categoriaToEdit.codigo || '',
                 nombre: categoriaToEdit.nombre || '',
                 descripcion: categoriaToEdit.descripcion || ''
             });
@@ -92,16 +94,29 @@ export default function FormCategoria({
             </Modal.Header>
             <Modal.Body className='p-1'>
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="nombre" className="form-label">Nombre</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="nombre"
-                            value={data.nombre}
-                            onChange={(e) => setData('nombre', e.target.value)}
-                            placeholder="Nombre de la categoría"
-                        />
+                    <div className="row">
+                        <div className="col-sm-12 col-md-4 mb-3">
+                            <label htmlFor="codigo" className="form-label">Código</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="nombre"
+                                value={data.codigo}
+                                onChange={(e) => setData('codigo', e.target.value)}
+                                placeholder="Código de la categoría"
+                            />
+                        </div>
+                        <div className="col-sm-12 col-md-8 mb-9">
+                            <label htmlFor="nombre" className="form-label">Nombre</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="nombre"
+                                value={data.nombre}
+                                onChange={(e) => setData('nombre', e.target.value)}
+                                placeholder="Nombre de la categoría"
+                            />
+                        </div>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="descripcion" className="form-label">Descripción</label>

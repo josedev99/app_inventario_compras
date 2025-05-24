@@ -8,6 +8,7 @@ use App\Models\Empresa\Empresa;
 use App\Models\Pedido;
 use App\Models\Productos\Producto;
 use App\Models\Sucursales\Sucursal;
+use App\Models\UnidadMedida;
 use App\Models\User;
 use PDF;
 use Exception;
@@ -24,7 +25,8 @@ class PedidosCompraController extends Controller
         $empresaId = Auth::user()->empresa_id;
         //New linea
         $categorias = Categoria::select('id', 'nombre')->get();
-        return Inertia::render('Pedido/Index', compact('categorias'));
+        $unidadMedidas = UnidadMedida::select('nombre')->get();
+        return Inertia::render('Pedido/Index', compact('categorias', 'unidadMedidas'));
     }
 
     public function save(Request $request)

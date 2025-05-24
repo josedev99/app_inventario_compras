@@ -18,15 +18,19 @@ class CategoriaController extends Controller
     public function storeCategoria(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
+            'codigo' => 'required',
+            'nombre' => 'required|unique:categorias,nombre',
             'descripcion' => 'required'
         ], [
-            'nombre.required' => 'El nombre dse la categoria es requerida',
-            'descripcion.required' => 'La descripcion de la categoria es requerida',
+            'codigo.required' => 'El código de la categoría es requerido',
+            'nombre.required' => 'El nombre de la categoría es requerido',
+            'nombre.unique' => 'El nombre de la categoría ya existe',
+            'descripcion.required' => 'La descripción de la categoría es requerida',
         ]);
 
         $categoria = Categoria::create([
-            'nombre' => $request->nombre,
+            'codigo' => trim(strtoupper($request->codigo)),
+            'nombre' => trim($request->nombre),
             'descripcion' => $request->descripcion
         ]);
 
@@ -58,7 +62,8 @@ class CategoriaController extends Controller
         }
 
         $categoria->update([
-            'nombre' => $request->nombre,
+            'codigo' => trim(strtoupper($request->codigo)),
+            'nombre' => trim($request->nombre),
             'descripcion' => $request->descripcion
         ]);
 

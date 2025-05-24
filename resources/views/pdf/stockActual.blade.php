@@ -141,9 +141,9 @@
                 <td>{{ $contador }}</td>
                 <td style="text-align: center">{{ $item->codigo }}</td>
                 <td>{{ $item->nombre }}</td>
-                <td style="text-align: center">{{ $item->nombre }}</td>
                 <td style="text-align: center">{{ $item->Umedida }}</td>
                 <td style="text-align: center">{{ $item->stock }}</td>
+                <td style="text-align: center"></td>
                 <th></th>
             </tr>
             @php

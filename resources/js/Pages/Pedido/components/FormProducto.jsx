@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { useEffect } from 'react';
 
-export default function FormProducto({ title, showModalProduct, setShowModalProduct, categorias, setRefreshProduct, setProductoId }) {
+export default function FormProducto({ title, showModalProduct, setShowModalProduct, categorias, unidadMedidas, setRefreshProduct, setProductoId }) {
     const { data, reset, setData, processing } = useForm({
         codigo: '',
         nombre: '',
@@ -48,6 +48,36 @@ export default function FormProducto({ title, showModalProduct, setShowModalProd
             }
         })
     }
+    //Buscar el codigo del producto por categoria
+    const searchCodigoCatById = (categoriaId) => {
+        if (categoriaId) {
+            axios.post(route('producto.getIncrementCodigo'), { categoria_id: categoriaId })
+                .then((response) => {
+                    if (response.data.status === 'success') {
+                        setData('codigo', response.data.codigo);
+                    } else {
+                        setData('codigo', '');
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: 'No se pudo obtener el código del producto.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                })
+                .catch(err => {
+                    setData('codigo', '');
+                    Swal.fire({
+                        title: '¡Error!',
+                        text: 'Hubo un problema al buscar el código del producto.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                });
+        } else {
+            setData('codigo', '');
+        }
+    }
     return (
         <>
             <Modal
@@ -70,7 +100,7 @@ export default function FormProducto({ title, showModalProduct, setShowModalProd
                                     <div className="col-sm-12 col-md-4">
                                         <div className="form-group mb-1 p-1">
                                             <label className='m-0' htmlFor="codigo">Código</label>
-                                            <input type="text" className='form-control' value={data.codigo} onChange={(e) => setData('codigo', e.target.value)} />
+                                            <input readOnly type="text" className='form-control' value={data.codigo} onChange={(e) => setData('codigo', e.target.value)} />
                                         </div>
                                     </div>
                                     <div className="col-sm-12 col-md-8">
@@ -81,8 +111,25 @@ export default function FormProducto({ title, showModalProduct, setShowModalProd
                                     </div>
                                     <div className="col-sm-12 col-md-4">
                                         <div className="form-group mb-1 p-1">
-                                            <label className='m-0' htmlFor="uMedida">Unidad de medida</label>
-                                            <input type="text" className='form-control' value={data.uMedida} onChange={(e) => setData('uMedida', e.target.value)} />
+                                            <label className='m-0' htmlFor="categoria">Unidad de medida</label>
+                                            <Select
+                                                value= {data.uMedida ?
+                                                    { value: data.uMedida.toUpperCase(), label: unidadMedidas.find(item => item.nombre.toUpperCase() === data.uMedida.toUpperCase())?.nombre.toUpperCase() }
+                                                    : null}
+                                                onChange={(selectedOption) => {
+                                                    setData('uMedida', selectedOption ? selectedOption.value : '');
+                                                }} // Asegúrate de actualizar correctamente
+                                                options={unidadMedidas.map(item => {
+                                                    return {
+                                                        value: item.nombre.toUpperCase(),
+                                                        label: item.nombre.toUpperCase()
+                                                    }
+                                                })}
+                                                className="basic-single"
+                                                classNamePrefix="Seleccionar"
+                                                isClearable
+                                                isSearchable
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-sm-12 col-md-4">
@@ -92,7 +139,10 @@ export default function FormProducto({ title, showModalProduct, setShowModalProd
                                                 value= {data.categoria_id ?
                                                     { value: data.categoria_id, label: categorias.find(categoria => categoria.id === data.categoria_id)?.nombre }
                                                     : null}
-                                                onChange={(selectedOption) => setData('categoria_id', selectedOption ? selectedOption.value : '')} // Asegúrate de actualizar correctamente
+                                                onChange={(selectedOption) => { 
+                                                    setData('categoria_id', selectedOption ? selectedOption.value : '');
+                                                    searchCodigoCatById(selectedOption ? selectedOption.value : '');    
+                                                }} // Asegúrate de actualizar correctamente
                                                 options={categorias.map(categoria => {
                                                     return {
                                                         value: categoria.id,

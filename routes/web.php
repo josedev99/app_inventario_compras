@@ -129,6 +129,8 @@ Route::prefix('producto')->middleware(['auth', 'estado'])->group(function () {
     Route::get('/obtener-productos', [ProductoController::class, 'getProducosAll'])->name('producto.all');
     Route::post('/actualizar-producto', [ProductoController::class, 'update'])->name('producto.update');
     Route::post('/eliminar', [ProductoController::class, 'destroy'])->name('producto.destroy');
+    //Obtener el increment del codigo del producto a partir de la categoria
+    Route::post('/obtener/codigo/producto', [ProductoController::class, 'getCodigoProducto'])->name('producto.getIncrementCodigo');
 });
 /**
  * Rutas para el módulo de inventario

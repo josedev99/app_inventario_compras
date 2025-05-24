@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Categorias\Categoria;
 use App\Models\Inventarios\Inventario;
 use App\Models\Productos\Producto;
+use App\Models\UnidadMedida;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,8 @@ class ProductoController extends Controller
 {
     public function index(){
         $categorias = Categoria::select('id','nombre')->get();
-        return Inertia::render('Producto/Index', compact('categorias'));
+        $unidadMedidas = UnidadMedida::select('nombre')->get();
+        return Inertia::render('Producto/Index', compact('categorias','unidadMedidas'));
     }
 
     public function save(ProductRequest $request){
@@ -158,5 +160,39 @@ class ProductoController extends Controller
             ->get();
 
         return response()->json($dataProductos);
+    }
+
+    //Obtener el codigo del producto autoincrementable
+    public function getCodigoProducto(Request $request){
+        $empresaId = Auth::user()->empresa_id;
+        $categoria_id = $request->input('categoria_id', null);
+        if($categoria_id){
+            $categoria = Categoria::where('id', $categoria_id)->first();
+            $codigo_cat = $categoria ? $categoria->codigo : 'SCD';
+            // Buscar el último producto de esa categoría y empresa que tenga ese prefijo
+            $ultimoProducto = Producto::where('empresa_id', $empresaId)
+                ->where('codigo', 'like', $codigo_cat . '%')
+                ->orderBy('codigo', 'desc')
+                ->first();
+            if ($ultimoProducto) {
+                // Extraer el número al final del código
+                $numero = (int) substr($ultimoProducto->codigo, strlen($codigo_cat));
+                $nuevoNumero = $numero + 1;
+            } else {
+                $nuevoNumero = 1;
+            }
+
+            $nuevoCodigo = $codigo_cat . str_pad($nuevoNumero, 4, '0', STR_PAD_LEFT);
+
+            return response()->json([
+                'status' => 'success',
+                'codigo' => $nuevoCodigo,
+                'categoria' => $categoria->nombre
+            ]);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No se ha proporcionado una categoría válida.'
+        ]);
     }
 }

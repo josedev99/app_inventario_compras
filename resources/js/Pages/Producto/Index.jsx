@@ -9,7 +9,7 @@ import axios from 'axios';
 import FormProduct from './Modal/FormProduct';
 import Swal from 'sweetalert2';
 
-export default function Index({ auth, categorias }) {
+export default function Index({ auth, categorias, unidadMedidas }) {
 
     const permissions = auth.permissions || [];
     const can = (permissionName) => permissions.includes(permissionName);
@@ -163,9 +163,9 @@ export default function Index({ auth, categorias }) {
             <Head title="Productos" />
             {
                 editing ?
-                    <FormProduct title="Registrar nuevo producto" producto={producto} editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
+                    <FormProduct unidadMedidas={unidadMedidas} title="Registrar nuevo producto" producto={producto} editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
                     :
-                    <FormProduct title="Registrar nuevo producto" editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
+                    <FormProduct unidadMedidas={unidadMedidas} title="Registrar nuevo producto" editing={editing} setReloadDt={setReloadDt} showModal={showModal} setShowModal={setShowModal} categorias={categorias} />
             }
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>

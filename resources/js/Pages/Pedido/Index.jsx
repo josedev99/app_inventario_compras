@@ -11,7 +11,7 @@ import FormPedido from './components/FormPedido';
 import DetallePedido from './components/DetallePedido';
 import FormProducto from './components/FormProducto';
 
-export default function Index({ auth, categorias }) {
+export default function Index({ auth, categorias, unidadMedidas }) {
 
     const permissions = auth.permissions || [];
     const can = (permissionName) => permissions.includes(permissionName);
@@ -295,7 +295,7 @@ export default function Index({ auth, categorias }) {
 
             <DetallePedido showModalDet={showModalDet} setShowModalDet={setShowModalDet} title={"Detalle del pedido"} productosPedido={productosPedido} />
 
-            <FormProducto title="Registrar nuevo producto" showModalProduct={showModalProduct} setShowModalProduct={setShowModalProduct} categorias={categorias} setRefreshProduct={setRefreshProduct} setProductoId={setProductoId} />
+            <FormProducto unidadMedidas={unidadMedidas} title="Registrar nuevo producto" showModalProduct={showModalProduct} setShowModalProduct={setShowModalProduct} categorias={categorias} setRefreshProduct={setRefreshProduct} setProductoId={setProductoId} />
             <Card>
                 <Card.Header className='d-flex justify-content-between align-items-center'>
                     {can('nuevo_pedido') && (

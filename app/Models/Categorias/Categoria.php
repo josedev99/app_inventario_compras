@@ -13,13 +13,14 @@ class Categoria extends Model
     protected $table = 'categorias';
 
     protected $fillable = [
+        'codigo',
         'nombre',
         'descripcion',
     ];
 
     public static function getCategories()
     {
-        $data = Categoria::select(['id', 'nombre', 'descripcion']);
+        $data = Categoria::select(['id','codigo', 'nombre', 'descripcion']);
         return  $data;
     }
 
