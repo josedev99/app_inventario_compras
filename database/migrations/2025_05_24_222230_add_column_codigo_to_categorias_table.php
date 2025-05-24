@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('categorias', function (Blueprint $table) {
             $table->string('codigo',50)->after('nombre')->nullable()->default('');
-            $table->unique('codigo', 'categorias_codigo_unique');
         });
     }
 
@@ -23,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categorias', function (Blueprint $table) {
-            $table->dropUnique('categorias_codigo_unique');
             $table->dropColumn('codigo');
         });
     }
