@@ -13,6 +13,7 @@ use App\Models\Pedido;
 use App\Models\Productos\Producto;
 use App\Models\Proveedores\Proveedor;
 use App\Models\Sucursales\Sucursal;
+use Carbon\Carbon;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use PDF;
 use Exception;
@@ -41,18 +42,18 @@ class ComprasController extends Controller
         if ($request->ajax()) {
             $compras = Compra::getData();
             return DataTables::of($compras)->addIndexColumn()
-            ->filter(function ($query) use ($request) {
-                if ($search = $request->input('search.value')) {
-                    $query->where(function ($q) use ($search) {
-                        $q->where('nombre', 'like', "%{$search}%")
-                            ->orWhere('fecha_compra', 'like', "%{$search}%")
-                            ->orWhere('sucursal', 'like', "%{$search}%")
-                            ->orWhere('codigo', 'like', "%{$search}%")
-                            ->orWhere('proveedor', 'like', "%{$search}%");
-                    });
-                }
-            })
-            ->make(true);
+                ->filter(function ($query) use ($request) {
+                    if ($search = $request->input('search.value')) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('nombre', 'like', "%{$search}%")
+                                ->orWhere('fecha_compra', 'like', "%{$search}%")
+                                ->orWhere('sucursal', 'like', "%{$search}%")
+                                ->orWhere('codigo', 'like', "%{$search}%")
+                                ->orWhere('proveedor', 'like', "%{$search}%");
+                        });
+                    }
+                })
+                ->make(true);
         }
     }
 
@@ -272,6 +273,7 @@ class ComprasController extends Controller
         if ($compra) {
             $compra->estado = 'Pendiente';
             $compra->enviado_a_finanzas = 1;
+            $compra->tiempo_transcurrido = Carbon::parse($compra->created_at)->diffForHumans();
             $compra->save();
             return response()->json([
                 'status' => 'success',
@@ -343,6 +345,8 @@ class ComprasController extends Controller
     public function obtenerCompraporFinanzas(Request $request)
     {
         if ($request->ajax()) {
+            Carbon::setLocale('es');
+
             $query = Compra::join('empresas as m', 'm.id', '=', 'compras.empresa_id')
                 ->join('sucursals as s', 's.id', '=', 'compras.sucursal_id')
                 ->join('users as u', 'u.id', '=', 'compras.user_id')
@@ -355,10 +359,16 @@ class ComprasController extends Controller
                 $query->where('compras.id', $request->input('compra_id'));
             }
 
-            return DataTables::of($query->get())->toJson();
+            $compras = $query->get();
+
+            $compras->map(function ($compra) {
+                $compra->tiempo_transcurrido = Carbon::parse($compra->created_at)->diffForHumans();
+                return $compra;
+            });
+
+            return DataTables::of($compras)->toJson();
         }
     }
-
 
     // logica para aprobar la compra
     public function estadoCompraUpdate(Request $request)

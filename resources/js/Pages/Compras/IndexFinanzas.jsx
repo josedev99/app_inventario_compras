@@ -71,11 +71,20 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             }
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Actualizando estado...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 axios.post(route('compras.estadoCompraUpdate'), {
                     compra_id: id,
                     estado: result.value
                 })
                     .then((response) => {
+                        Swal.close(); 
                         if (response.data.status === "success") {
                             Swal.fire("Éxito", response.data.message, "success");
                             fetchCompras();
@@ -84,6 +93,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                         }
                     })
                     .catch((err) => {
+                        Swal.close(); 
                         Swal.fire("Error", "Ha ocurrido un error, intente nuevamente más tarde.", "error");
                         console.error(err);
                     });
@@ -121,6 +131,11 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
         {
             name: 'Estado',
             selector: row => row.estado,
+            sortable: true,
+        },
+        {
+            name: 'Tiempo transcurrido',
+            selector: row => row.tiempo_transcurrido,
             sortable: true,
         },
         {

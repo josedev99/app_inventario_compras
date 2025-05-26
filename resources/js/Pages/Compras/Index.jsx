@@ -24,6 +24,10 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const [showNotiModal, setShowNotiModal] = useState(false);
     const [newCompra, setNewCompra] = useState(false);
     const [reloadDt, setReloadDt] = useState(false);
+    const [totalRows, setTotalRows] = useState(0);
+    console.log("TotalRows está definido:", typeof setTotalRows);
+    const [currentPage, setCurrentPage] = useState(1);
+
 
     const fetchCompras = async (page = 1, perPage = 10, search = '') => {
         try {
@@ -101,8 +105,18 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
             cancelButtonText: "Cancelar"
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Enviando a finanzas...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 axios.post(route('compras.enviar.finanza'), { compra_id: id })
                     .then((response) => {
+                        Swal.close();
+
                         if (response.data.status === "success") {
                             Swal.fire({
                                 title: "Éxito",
@@ -116,17 +130,21 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
                                 icon: "error"
                             });
                         }
-                    }).catch((err) => {
+                    })
+                    .catch((err) => {
+                        Swal.close();
+
                         Swal.fire({
                             title: "Error",
-                            text: "Ha ocurrido un error, intente nuevamente mas tarde.",
+                            text: "Ha ocurrido un error, intente nuevamente más tarde.",
                             icon: "error"
                         });
-                        console.log(err);
-                    })
+                        console.error(err);
+                    });
             }
         });
-    }
+    };
+
 
 
     const sendPedidoBodega = (id) => {
@@ -418,7 +436,7 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
 
             <Card>
                 <Card.Header>
-                    
+
                     <FormControl
                         type="text"
                         placeholder="Buscar..."

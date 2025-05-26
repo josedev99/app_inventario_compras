@@ -32,7 +32,7 @@ export default function Index({ auth, categorias, unidadMedidas }) {
     const [refreshProduct, setRefreshProduct] = useState(false);
     const [newProductoId, setProductoId] = useState(0);
     //editing useState
-    const [pedido,setPedido] = useState({});
+    const [pedido, setPedido] = useState({});
 
     const fetchPedidos = async (page = 1, perPage = 10, search = '') => {
         const start = (page - 1) * perPage;
@@ -170,16 +170,15 @@ export default function Index({ auth, categorias, unidadMedidas }) {
 
     //Function para editar el pedido
     const editPedido = (id) => {
-        axios.post(route('pedido.edit'), {id: id})
-        .then((response) => {
-            setEditing(true);
-            setPedido(response.data);
-            setShowModal(true);
-        }).catch((err) => {
-            console.log(err);
-        })
+        axios.post(route('pedido.edit'), { id: id })
+            .then((response) => {
+                setEditing(true);
+                setPedido(response.data);
+                setShowModal(true);
+            }).catch((err) => {
+                console.log(err);
+            })
     }
-    //Accion para enviar pedido a proveedor
 
     const sendPedido = (id) => {
         Swal.fire({
@@ -193,37 +192,49 @@ export default function Index({ auth, categorias, unidadMedidas }) {
             cancelButtonText: "Cancelar"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.post(route('pedido.send.proved'),{ id: id})
-                .then((response)=>{
-                    console.log(response);
-                    if(response.data.status === "success"){
-                        Swal.fire({
-                            title: '¡Éxito!',
-                            text: response.data.message,
-                            icon: 'success',
-                            confirmButtonText: 'Aceptar'
-                        });
-                        setReloadDt(true);
-                    }else{
+                Swal.fire({
+                    title: 'Enviando pedido...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                axios.post(route('pedido.send.proved'), { id: id })
+                    .then((response) => {
+                        Swal.close(); 
+
+                        if (response.data.status === "success") {
+                            Swal.fire({
+                                title: '¡Éxito!',
+                                text: response.data.message,
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            });
+                            window.dispatchEvent(new CustomEvent('nuevoPedidoEmitido'));
+                            setReloadDt(true);
+                        } else {
+                            Swal.fire({
+                                title: '¡Error inesperado!',
+                                text: response.data.message,
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        Swal.close(); 
+                        console.log(err);
                         Swal.fire({
                             title: '¡Error inesperado!',
-                            text: response.data.message,
+                            text: 'Ocurrió un problema al intentar enviar la solicitud. Por favor, intenta nuevamente.',
                             icon: 'error',
                             confirmButtonText: 'Aceptar'
                         });
-                    }
-                }).catch((err)=>{
-                    console.log(err);
-                    Swal.fire({
-                        title: '¡Error inesperado!',
-                        text: 'Ocurrió un problema al intentar enviar la solicitud. Por favor, intenta nuevamente.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
                     });
-                })
             }
         });
-    }
+    };
 
     const columns = [
         { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
@@ -251,23 +262,23 @@ export default function Index({ auth, categorias, unidadMedidas }) {
                             </>
                         ) : (
                             <>
-                            <Button variant="outline-info" title='Enviar pedido a Proveeduría' size="sm" onClick={() => sendPedido(row.id)}>
-                                <i class="bi bi-send-check"></i>
-                            </Button>{' '}
-                            <Button variant="outline-info" title='Editar el pedido' size="sm" onClick={() => editPedido(row.id)}>
-                                <i class="bi bi-pencil-square"></i>
-                            </Button>{' '}
-                            {can('pedido_pdf') && (
-                                <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
-                                    <i className="bi bi-filetype-pdf"></i>
-                                </Button>)}{' '}
-                            {can('pedido_details') && (
-                                <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
-                                    <i className="bi bi-eye"></i>
-                                </Button>)}{' '}
+                                <Button variant="outline-info" title='Enviar pedido a Proveeduría' size="sm" onClick={() => sendPedido(row.id)}>
+                                    <i class="bi bi-send-check"></i>
+                                </Button>{' '}
+                                <Button variant="outline-info" title='Editar el pedido' size="sm" onClick={() => editPedido(row.id)}>
+                                    <i class="bi bi-pencil-square"></i>
+                                </Button>{' '}
+                                {can('pedido_pdf') && (
+                                    <Button variant="outline-info" title='Imprimir detalles del pedido' size="sm" onClick={() => showPDF(row.id)}>
+                                        <i className="bi bi-filetype-pdf"></i>
+                                    </Button>)}{' '}
+                                {can('pedido_details') && (
+                                    <Button variant="outline-info" size="sm" title='Ver detalle del pedido' onClick={() => showDetallePedido(row.id)}>
+                                        <i className="bi bi-eye"></i>
+                                    </Button>)}{' '}
                             </>
-                            )
-                        }
+                        )
+                    }
                 </div>
             ),
             ignoreRowClick: true,

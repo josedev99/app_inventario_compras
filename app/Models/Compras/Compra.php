@@ -28,7 +28,8 @@ class Compra extends Model
         'tipo_comprobante',
         'pedido_id',
         'user_id',
-        'enviado_a_finanzas'
+        'enviado_a_finanzas',
+        'tiempo_transcurrido'
     ];
 
     protected $casts = [

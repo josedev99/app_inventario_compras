@@ -1,4 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
+import useSidebarCounters from '@/hooks/useSidebarCounters';
 
 function Sidebar() {
 
@@ -8,10 +9,10 @@ function Sidebar() {
     // Función para saber si tiene un permiso
     const can = (perm) => permissions.includes(perm);
 
-    console.log("Permisos usuario:", permissions);
+    /* console.log("Permisos usuario:", permissions); */
     const { appLogo } = usePage().props;
     const logoUrl = appLogo;
-    const { comprasFinanzas, counterPendingCompra } = usePage().props;
+    const { comprasFinanzas, counterPendingCompra } = useSidebarCounters();
 
     return (
         <>

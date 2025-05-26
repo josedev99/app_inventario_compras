@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Checkbox from '@/Components/Checkbox';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
@@ -13,6 +13,8 @@ export default function Login({ status, canResetPassword }) {
         password: '',
         remember: false,
     });
+    const [showForgotModal, setShowForgotModal] = useState(false);
+
 
     useEffect(() => {
         return () => {
@@ -81,9 +83,17 @@ export default function Login({ status, canResetPassword }) {
                                                 checked={data.remember}
                                                 onChange={(e) => setData('remember', e.target.checked)}
                                             />
-                                            <span className="ms-2 text-sm text-muted">Recordarme</span>
+                                            <span className="ms-2 text-sm text-muted">Recuérdame</span>
                                         </label>
+                                        <button
+                                            type="button"
+                                            className="btn btn-link p-0 text-decoration-none text-primary"
+                                            onClick={() => setShowForgotModal(true)}
+                                        >
+                                            ¿Olvidó su clave o contraseña?
+                                        </button>
                                     </div>
+
 
                                     <div className="d-grid mt-4">
                                         <PrimaryButton
@@ -102,6 +112,29 @@ export default function Login({ status, canResetPassword }) {
                     </div>
                 </div>
             </section>
+            {showForgotModal && (
+                <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">¿Olvidó su contraseña?</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowForgotModal(false)}></button>
+                            </div>
+                            <div className="modal-body">
+                                <p>
+                                    Si olvidó su clave o contraseña, por favor contáctese a{' '}
+                                    <strong>soportegrupogerrero@gmail.com</strong>
+                                </p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowForgotModal(false)}>
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </GuestLayout>
     );
 }

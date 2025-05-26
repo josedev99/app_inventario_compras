@@ -15,6 +15,7 @@ use App\Http\Controllers\Proveedor\ProveedorController;
 use App\Http\Controllers\Seguridad\AsignarController;
 use App\Http\Controllers\Seguridad\PermisoController;
 use App\Http\Controllers\Seguridad\RoleController;
+use App\Http\Controllers\SidebarController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -142,7 +143,7 @@ Route::prefix('pedidos')->middleware(['auth', 'estado'])->group(function () {
     //Obtener los detalles del pedido
     Route::post('/detalles', [PedidosCompraController::class, 'getDetalle'])->name('pedido.obtener');
     //Obtener productos de pedidos
-    Route::get('obtener-productos', [ProductoController::class,'getProductsPedidos'])->name('pedidos.productos.obtener');
+    Route::get('obtener-productos', [ProductoController::class, 'getProductsPedidos'])->name('pedidos.productos.obtener');
     //show pdf pedido
     Route::get('/documento/pdf/{id}', [PedidosCompraController::class, 'showPdf'])->name('pedido.show.pdf');
     //Editing pedidos
@@ -175,6 +176,11 @@ Route::prefix('inventario')->middleware(['auth', 'estado'])->group(function () {
 
     //Generar documento de stock
     Route::get('/documento/pdf/stock', [InventarioController::class, 'generarDocStockActual'])->name('inv.stock.pdf');
+
+
+
+    // routes/web.php
+    Route::get('/sidebar-counters', [SidebarController::class, 'counters'])->name('sidebar.counters');
 });
 /**
  * Routas para usuarios
