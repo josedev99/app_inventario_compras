@@ -131,7 +131,11 @@ function Home({ auth, categoriasCount, usuariosCount, proveedoresCount, comprasC
                                             <BarChart data={productosChartData} layout="vertical" margin={{ left: 40 }}>
                                                 <CartesianGrid strokeDasharray="3 3" />
                                                 <XAxis type="number" />
-                                                <YAxis dataKey="producto" type="category" />
+                                                <YAxis
+                                                    dataKey="producto"
+                                                    type="category"
+                                                    tickFormatter={(value) => value.length > 20 ? value.slice(0, 20) + '…' : value}
+                                                />
                                                 <Tooltip />
                                                 <Bar dataKey="cantidad" fill="#10B981" radius={[0, 10, 10, 0]} />
                                             </BarChart>
