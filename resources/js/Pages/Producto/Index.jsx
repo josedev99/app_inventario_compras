@@ -119,7 +119,7 @@ export default function Index({ auth, categorias, unidadMedidas }) {
 
 
     const columns = [
-        { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
+        { name: '#', selector: (_, index) => productos.length - index, sortable: true, width: '5%', center: true },
         { name: 'Codigo', selector: row => row.codigo, sortable: true, width: '10%', center: true },
         { name: 'Nombre', selector: row => row.nombre, sortable: true, width: '30%', center: true },
         { name: 'uMedida', selector: row => row.uMedida, sortable: true, width: '10%', center: true },

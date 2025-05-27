@@ -52,18 +52,31 @@ export default function Index({ auth }) {
     const columns = [
         {
             name: '#',
-            selector: row => row.id,
+            selector: (row, index) => filteredCategorias.length - index,
             sortable: true,
+            width: '10%',
+            center: true
+        },
+        {
+            name: 'Código',
+            selector: row => row.codigo,
+            sortable: true,
+            width: '15%',
+            center: true
         },
         {
             name: 'Nombre',
             selector: row => row.nombre,
             sortable: true,
+            width: '30%',
+            center: true
         },
         {
             name: 'Descripción',
             selector: row => row.descripcion,
             sortable: true,
+            width: '30%',
+            center: true
         },
         {
             name: 'Acciones',
@@ -85,6 +98,8 @@ export default function Index({ auth }) {
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
+            width: '15%',
+            center: true
         },
     ];
 

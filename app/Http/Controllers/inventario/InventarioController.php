@@ -219,8 +219,14 @@ class InventarioController extends Controller
     public function indexMovSalidas()
     {
         $empresaId = Auth::user()->empresa_id;
-        $productos = Producto::where('empresa_id', $empresaId)
-            ->select('id', 'codigo', DB::raw('CONCAT(codigo, " - ", nombre , " ", Umedida) as descripcion'))
+        $productos = DB::table('productos as p')
+            ->join('inventarios as i', function ($join) {
+                $join->on('p.id', '=', 'i.producto_id')
+                    ->on('p.empresa_id', '=', 'i.empresa_id');
+            })
+            ->where('p.empresa_id', $empresaId)
+            ->where('i.cantidad', '>', 0)
+            ->select('p.id', 'p.codigo', DB::raw('CONCAT(p.codigo, " - ", p.nombre , " ", p.Umedida) as descripcion'))
             ->orderBy('id', 'desc')
             ->get();
         return Inertia::render('Inventario/Salida', compact('productos'));
