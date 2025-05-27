@@ -207,10 +207,10 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const columns = [
         {
             name: '#',
-            selector: row => row.id,
+            selector: (_, index) => filteredCompras.length - index,
             sortable: true,
             width: '5%',
-            center: true,
+            center: true
         },
         {
             name: 'Código',

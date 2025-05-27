@@ -130,7 +130,7 @@ export default function Index({ auth, productos }) {
     }
 
     const columns = [
-        { name: '#', selector: (row, index) => index + 1, sortable: true, width: '5%', center: true },
+        { name: '#', selector: (_, index) => productoStocks.length - index, sortable: true, width: '5%', center: true },
         { name: 'Código producto', selector: row => row.codigo, sortable: true, width: '20%', center: true },
         { name: 'Descripción', selector: row => row.descripcion, sortable: true, width: '45%', center: true },
         { name: 'Unidad medida', selector: row => row.Umedida, sortable: true, width: '10%', center: true },

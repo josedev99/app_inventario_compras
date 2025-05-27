@@ -105,41 +105,57 @@ export default function Index({ auth, proveedores, pedidos, sucursales }) {
     const columns = [
         {
             name: '#',
-            selector: row => row.id,
+            selector: (row, index) => filteredCompras.length - index,
             sortable: true,
+            width: '5%',
+            center: true
         },
         {
             name: 'Código',
             selector: row => row.codigo,
             sortable: true,
+            width: '10%',
+            center: true
         },
         {
             name: 'Proveedor',
             selector: row => row.proveedor,
             sortable: true,
+            width: '20%',
+            center: true
         },
         {
             name: 'Sucursal',
             selector: row => row.sucursal,
             sortable: true,
+            width: '15%',
+            center: true
         },
         {
             name: 'Empresa',
             selector: row => row.empresa,
             sortable: true,
+            width: '20%',
+            center: true
         },
         {
             name: 'Estado',
             selector: row => row.estado,
             sortable: true,
+            width: '10%',
+            center: true
         },
         {
             name: 'Tiempo transcurrido',
             selector: row => row.tiempo_transcurrido,
             sortable: true,
+            width: '10%',
+            center: true
         },
         {
             name: 'Acciones',
+            width: '10%',
+            center: true,
             cell: row => (
                 <div className="d-flex align-items-center">
                     {

@@ -80,7 +80,7 @@ export default function Ingreso({ auth, productos }) {
     }
 
     const columns = [
-        { name: '#', selector: row => row.id, sortable: true, width: '5%', center: true },
+        { name: '#', selector: (_, index) => movimientoSalida.length - index, sortable: true, width: '5%', center: true },
         { name: 'Fecha', selector: row => row.fecha, sortable: true, width: '15%', center: true },
         { name: 'Código salida', selector: row => row.codigo, sortable: true, width: '15%', center: true },
         { name: 'Cantidad', selector: row => row.cantidad, sortable: true, width: '10%', center: true },
