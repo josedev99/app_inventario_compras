@@ -36,54 +36,7 @@ function Nav() {
                                 </form>
                             </ul>
                         </li>
-                        <li className="nav-item topbar-icon dropdown hidden-caret">
-                            <a
-                                className="nav-link dropdown-toggle"
-                                href="#"
-                                id="messageDropdown"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                            >
-                                <i className="bi bi-envelope" />
-                            </a>
-                            <ul
-                                className="dropdown-menu messages-notif-box animated fadeIn"
-                                aria-labelledby="messageDropdown"
-                            >
-                                <li>
-                                    <div className="dropdown-title d-flex justify-content-between align-items-center">
-                                        Messages
-                                        <a href="#" className="small">
-                                            Mark all as read
-                                        </a>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="message-notif-scroll scrollbar-outer">
-                                        <div className="notif-center">
-                                            <a href="#">
-                                                <div className="notif-img">
-                                                    <img src="assets/img/jm_denis.jpg" alt="Img Profile" />
-                                                </div>
-                                                <div className="notif-content">
-                                                    <span className="subject">Jimmy Denis</span>
-                                                    <span className="block"> How are you ? </span>
-                                                    <span className="time">5 minutes ago</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    {/* <a className="see-all" href="javascript:void(0);">
-                                        See all messages
-                                        <i className="bi bi-envelope" />
-                                    </a> */}
-                                </li>
-                            </ul>
-                        </li>
+                        
                         <li className="nav-item topbar-icon dropdown hidden-caret">
                             <a
                                 className="nav-link dropdown-toggle"
@@ -104,7 +57,7 @@ function Nav() {
                                 aria-labelledby="notifDropdown"
                             >
                                 <li>
-                                    <div className="dropdown-title">You have 4 new notification</div>
+                                    <div className="dropdown-title">No disponible - notificaciones</div>
                                 </li>
                                 <li>
                                     <div className="notif-scroll scrollbar-outer">
@@ -114,35 +67,8 @@ function Nav() {
                                                     <i className="fa fa-user-plus" />
                                                 </div>
                                                 <div className="notif-content">
-                                                    <span className="block"> New user registered </span>
-                                                    <span className="time">5 minutes ago</span>
-                                                </div>
-                                            </a>
-                                            <a href="#">
-                                                <div className="notif-icon notif-success">
-                                                    <i className="fa fa-comment" />
-                                                </div>
-                                                <div className="notif-content">
-                                                    <span className="block">Rahmad commented on Admin</span>
-                                                    <span className="time">12 minutes ago</span>
-                                                </div>
-                                            </a>
-                                            <a href="#">
-                                                <div className="notif-img">
-                                                    <img src="assets/img/profile2.jpg" alt="Img Profile" />
-                                                </div>
-                                                <div className="notif-content">
-                                                    <span className="block">Reza send messages to you</span>
-                                                    <span className="time">12 minutes ago</span>
-                                                </div>
-                                            </a>
-                                            <a href="#">
-                                                <div className="notif-icon notif-danger">
-                                                    <i className="fa fa-heart" />
-                                                </div>
-                                                <div className="notif-content">
-                                                    <span className="block"> Farrah liked Admin </span>
-                                                    <span className="time">17 minutes ago</span>
+                                                    <span className="block"> Sin notificaciones </span>
+                                                    <span className="time"> - </span>
                                                 </div>
                                             </a>
                                         </div>
